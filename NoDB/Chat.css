@@ -1,0 +1,90 @@
+﻿body {
+
+    background: -webkit-linear-gradient(right, #66ccff, #8DC26F);
+    background: -moz-linear-gradient(right, #66ccff, #8DC26F);
+    background: -o-linear-gradient(right, #66ccff, #8DC26F);
+    background: linear-gradient(to left, #66ccff, #8DC26F);
+}
+
+.container {
+    background: white;
+    border: 2px solid gray;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 697px;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    margin-top: 30px;
+}
+
+.currentuser {
+
+    font-size: 1.2em;
+    height: 35px;
+    width: 100%;
+    position: relative;
+    border: 2px solid gray;
+    border-radius: 5px;
+}
+
+.users {
+
+    position: relative;
+    height: 620px;
+    border: 2px solid gray;
+    border-radius: 5px;
+
+}
+
+#Users {
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    border: none;
+    font-size: 15px;
+}
+
+.messages {
+    position: relative;
+    height: 620px;
+    border: 2px solid gray;
+    border-radius: 5px;
+
+}
+
+#Messages {
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    border: none;
+    font-size: 15px;
+
+}
+
+.message {
+
+    height: 35px;
+    overflow: auto;
+    border: 2px solid gray;
+    border-radius: 5px;
+
+}
+
+.send, .refresh, .logout {
+
+    background: white;
+    position: relative;
+    height: 35px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    margin-bottom: 1px;
+}
+
+    .send:hover, .refresh:hover, .logout:hover {
+        background: #d2f9f7;
+    }
+
