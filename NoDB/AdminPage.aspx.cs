@@ -16,8 +16,13 @@ namespace NoDB
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["currentUser"] == null)
+            {
+                Response.Redirect("Login.aspx");
+            }
 
             if (IsPostBack) return;
+
             var uporabniki = new List<string>();
 
             // clear listview because we don't want duplicates
@@ -34,6 +39,7 @@ namespace NoDB
             {
                 uporabniki.Add(r.GetString(0));
             }
+
             conn.Close();
 
             foreach (var user in uporabniki)
@@ -76,7 +82,8 @@ namespace NoDB
 
         protected void LogoutAdmin_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            Session.Abandon();
+            Response.Redirect("Login.aspx");
         }
     }
 }

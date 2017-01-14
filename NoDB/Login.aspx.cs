@@ -4,17 +4,17 @@ using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
 using System.Configuration;
+using static System.Boolean;
+using static System.String;
 
 namespace NoDB
 {
    
-
     public partial class Chat : System.Web.UI.Page
     {
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var isAdmin = false;
             wrongPassword1.Text = "";
             wrongPassword2.Text = "";
         }
@@ -118,8 +118,7 @@ namespace NoDB
             var username = LoginUsername.Value;
             var password = LoginPassword.Value;
             var md5Pass = CalculateMd5(password);
-            var query = "SELECT Count(username) as cnt FROM Uporabnik WHERE username=" + "'" + username + "'" + " AND geslo=" + "'" + md5Pass + "'";
-            LoginUsername.Value = query;
+            var query = Format("SELECT Count(username) as cnt FROM Uporabnik WHERE username = '{0}' AND geslo = '{1}';", username, md5Pass);
 
             // check if user exists in database       
             try
@@ -155,6 +154,32 @@ namespace NoDB
             // if user exists in database and password is correct allow login
             return exists ? username : "";
     
+        }
+
+        // check if user is administrator
+        protected bool CheckIfAdmin(string user)
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            var conn = new SqlConnection(connectionString);
+            var query = Format("SELECT isadmin FROM Uporabnik WHERE username = '{0}';", user);
+            var cmd = new SqlCommand
+            {
+                CommandType = CommandType.Text,
+                CommandText = query,
+                Connection = conn
+            };
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
+
+            var r = cmd.ExecuteReader();
+            r.Read();
+
+            var isAdmin = r.GetBoolean(0);
+
+            conn.Close();
+
+            return isAdmin;
         }
 
         protected void RegistrationBtn_Click(object sender, EventArgs e)
@@ -221,13 +246,13 @@ namespace NoDB
 
         protected void AdminLoginBtn_OnClick(object sender, EventArgs e)
         {
-            var username = CheckCredentialsLogin();
 
-            if (!username.Equals(""))
-            {
-                Session["currentUser"] = username;
-                Response.Redirect("AdminPage.aspx");
-            }
+            var username = CheckCredentialsLogin();
+            var isAdmin = CheckIfAdmin(username);
+
+            if (username.Equals("") || !isAdmin) Response.Redirect("Login.aspx");
+            Session["currentUser"] = username;
+            Response.Redirect("AdminPage.aspx");
         }
     }
 }
