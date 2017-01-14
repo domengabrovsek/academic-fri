@@ -27,13 +27,13 @@ namespace NoDB
             if (o != null)
                 CurrentUser.Text = "Prijavljeni ste kot: " + o;
 
-            // test
+            /* test
             
             var service1 = new Service1();
 
             Message.Value = service1.VrniIme(1, true);
 
-            // test
+            */
 
 
             // if no users, create history and onlineUsers arrayList
