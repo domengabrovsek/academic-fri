@@ -30,7 +30,7 @@
 
             <div class="row">
                 <div class="col-sm-4">
-                    <asp:DropDownList ID="Test" runat="server"></asp:DropDownList>        
+                    <asp:DropDownList ID="Uporabniki" runat="server"></asp:DropDownList>        
                 </div>
             </div>
 
@@ -42,6 +42,8 @@
                 </div>
             </div>
         </form>
+        
+        <asp:Label runat="server" id="test" Text=""></asp:Label>
     </div>
 </body>
 </html>

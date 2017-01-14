@@ -31,13 +31,13 @@ namespace NoDB {
         protected global::System.Web.UI.WebControls.Button SetAdmin;
         
         /// <summary>
-        /// Test control.
+        /// Uporabniki control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList Test;
+        protected global::System.Web.UI.WebControls.DropDownList Uporabniki;
         
         /// <summary>
         /// LogoutAdmin control.
@@ -47,5 +47,14 @@ namespace NoDB {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button LogoutAdmin;
+        
+        /// <summary>
+        /// test control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label test;
     }
 }
