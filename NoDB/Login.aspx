@@ -85,7 +85,14 @@
                 <!-- Login button -->
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-12">
-                        <asp:Button ID="LoginBtn" Text="Prijava" CssClass="col-sm-offset-3 col-sm-4 btn btn-primary" runat="server" OnClick="LoginBtn_Click"/>
+                        <asp:Button ID="LoginBtn" Text="Prijava Uporabnik" CssClass="col-sm-offset-2 col-sm-6 btn btn-primary" runat="server" OnClick="LoginBtn_Click"/>
+                    </div>
+                </div>
+                
+                <!-- Admin Login button -->
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-12">
+                        <asp:Button ID="AdminLoginBtn" Text="Prijava Administrator" CssClass="col-sm-offset-2 col-sm-6 btn btn-primary" runat="server" OnClick="AdminLoginBtn_OnClick"/>
                     </div>
                 </div>
             </div>

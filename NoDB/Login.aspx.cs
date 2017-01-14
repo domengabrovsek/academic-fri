@@ -14,49 +14,40 @@ namespace NoDB
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            var isAdmin = false;
             wrongPassword1.Text = "";
             wrongPassword2.Text = "";
         }
 
-        protected string calculateMD5(string input)
-
+        // calculate md5 hash
+        protected string CalculateMd5(string input)
         {
-
             // step 1, calculate MD5 hash from input
-
-            MD5 md5 = System.Security.Cryptography.MD5.Create();
-
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-
-            byte[] hash = md5.ComputeHash(inputBytes);
+            var md5 = MD5.Create();
+            var inputBytes = Encoding.ASCII.GetBytes(input);
+            var hash = md5.ComputeHash(inputBytes);
 
             // step 2, convert byte array to hex string
+            var sb = new StringBuilder();
 
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < hash.Length; i++)
-
+            foreach (var t in hash)
             {
-
-                sb.Append(hash[i].ToString("X2"));
-
+                sb.Append(t.ToString("X2"));
             }
 
             return sb.ToString();
-
         }
 
         // count number of numbers in a string
-        protected int countNumbersInString(string password)
+        protected int CountNumbersInString(string password)
         {
             char[] numbers = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-            char[] letters = password.ToCharArray();
 
-            int numbersCount = 0;
+            var numbersCount = 0;
 
-            for (int i = 0; i < password.Length; i++)
+            foreach (var t in password)
             {
-                if (password[i].ToString().IndexOfAny(numbers) != -1)
+                if (t.ToString().IndexOfAny(numbers) != -1)
                 {
                     numbersCount += 1;
                 }
@@ -66,14 +57,14 @@ namespace NoDB
         }
 
         // count number of uppercase letters in a string
-        protected int countUpperCaseLetters(string password)
+        protected int CountUpperCaseLetters(string password)
         {
-            int upperCaseLettersCount = 0;
-            char[] letters = password.ToCharArray();
+            var upperCaseLettersCount = 0;
+            var letters = password.ToCharArray();
 
-            for (int i = 0; i < letters.Length; i++)
+            for (var i = 0; i < letters.Length; i++)
             {
-                if (Char.IsUpper(password[i]))
+                if (char.IsUpper(password[i]))
                 {
                     upperCaseLettersCount += 1;
                 }
@@ -83,19 +74,15 @@ namespace NoDB
         }
 
         // check if password satisfies the criteria
-        protected bool checkPasswordRegistration()
+        protected bool CheckPasswordRegistration()
         {
             char[] specialCharacters = { '?', '.', '!', '*', ':' };
-            string username, name, surname, password, repeatPassword;
 
-            username = Username.Value;
-            name = Name.Value;
-            surname = Surname.Value;
-            password = Password.Value;
-            repeatPassword = PasswordRepeat.Value;
+            var password = Password.Value;
+            var repeatPassword = PasswordRepeat.Value;
 
-            int numbersInString = countNumbersInString(password);
-            int uppercaseLettersInString = countUpperCaseLetters(password);
+            var numbersInString = CountNumbersInString(password);
+            var uppercaseLettersInString = CountUpperCaseLetters(password);
 
             // if passwords dont match
             if (!password.Equals(repeatPassword))
@@ -124,34 +111,33 @@ namespace NoDB
             return false;
         }
 
-        protected string checkCredentialsLogin()
+        // check credentials for login
+        protected string CheckCredentialsLogin()
         {
-            string username, password, query, md5Pass;
-            bool exists = false;
-
-            username = LoginUsername.Value;
-            password = LoginPassword.Value;
-            md5Pass = calculateMD5(password);
-            query = "SELECT Count(username) as cnt FROM Uporabnik WHERE username=" + "'" + username + "'" + " AND geslo=" + "'" + md5Pass + "'";
+            var exists = false;
+            var username = LoginUsername.Value;
+            var password = LoginPassword.Value;
+            var md5Pass = CalculateMd5(password);
+            var query = "SELECT Count(username) as cnt FROM Uporabnik WHERE username=" + "'" + username + "'" + " AND geslo=" + "'" + md5Pass + "'";
             LoginUsername.Value = query;
-            // check if user exists in database       
 
+            // check if user exists in database       
             try
             {
-                string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                var sqlConnection1 = new SqlConnection(connectionString);
 
-
-                SqlConnection sqlConnection1 = new SqlConnection(connectionString);
-
-                SqlCommand cmd = new SqlCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = query;
-                cmd.Connection = sqlConnection1;
+                var cmd = new SqlCommand
+                {
+                    CommandType = CommandType.Text,
+                    CommandText = query,
+                    Connection = sqlConnection1
+                };
 
                 sqlConnection1.Open();
                 cmd.ExecuteNonQuery();
 
-                SqlDataReader r = cmd.ExecuteReader();
+                var r = cmd.ExecuteReader();
                 r.Read();
                 if(r.GetInt32(0) >= 1)
                 {
@@ -167,51 +153,37 @@ namespace NoDB
             }
 
             // if user exists in database and password is correct allow login
-            if (exists)
-            {
-                return username;
-            }
-            // else return empty string
-            else
-            {
-                return "";
-            }
-
-            
+            return exists ? username : "";
+    
         }
 
         protected void RegistrationBtn_Click(object sender, EventArgs e)
         {
-
-            string username, name, surname, password, md5Pass, query;
-
-            username = Username.Value;
-            name = Name.Value;
-            surname = Surname.Value;
-            password = Password.Value;
-            md5Pass = calculateMD5(password);
-
-            bool jeRegistriran = false;
-            
+            var username = Username.Value;
+            var name = Name.Value;
+            var surname = Surname.Value;
+            var password = Password.Value;
+            var md5Pass = CalculateMd5(password);
 
             // if password meets all conditions insert user to database
-            if (checkPasswordRegistration())
+            if (CheckPasswordRegistration())
             {
                 //insert user to database (password has to be MD5)
                 try
                 {
-                    string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                    var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                    var query = "INSERT INTO Uporabnik(username, ime, priimek, geslo) VALUES(" + "'" + username + "'" + "," +
+                                   "'" + name + "'" + "," +
+                                   "'" + surname + "'" + "," +
+                                   "'" + md5Pass + "'" + ")";
+                    var sqlConnection1 = new SqlConnection(connectionString);
 
-                    query = "INSERT INTO Uporabnik(username, ime, priimek, geslo) VALUES(" + "'" + username + "'" + "," +
-                                                                                           "'" + name + "'" + "," +
-                                                                                           "'" + surname + "'" + "," +
-                                                                                           "'" + md5Pass + "'" + ")";
-                    SqlConnection sqlConnection1 = new SqlConnection(connectionString);
-
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = query;
-                    cmd.Connection = sqlConnection1;
+                    var cmd = new SqlCommand
+                    {
+                        CommandType = CommandType.Text,
+                        CommandText = query,
+                        Connection = sqlConnection1
+                    };
 
                     sqlConnection1.Open();
                     cmd.ExecuteNonQuery();
@@ -237,23 +209,25 @@ namespace NoDB
 
         protected void LoginBtn_Click(object sender, EventArgs e)
         {
-            string username = checkCredentialsLogin();
+            var username = CheckCredentialsLogin();
 
-            // ce je veljaven uporabnik
+            // ce ni veljaven uporabnik
+            if (username.Equals("")) Response.Redirect("Login.aspx");
+
+            Session["currentUser"] = username;
+            Response.Redirect("Chat.aspx");
+            
+        }
+
+        protected void AdminLoginBtn_OnClick(object sender, EventArgs e)
+        {
+            var username = CheckCredentialsLogin();
+
             if (!username.Equals(""))
             {
                 Session["currentUser"] = username;
-                Response.Redirect("Chat.aspx");
+                Response.Redirect("AdminPage.aspx");
             }
-
-            // ce uporabnik ne obstaja ali napacno geslo
-            else
-            {
-                
-               // Response.Redirect("Login.aspx");
-                Username.Value = "no worke";
-            }
-
         }
     }
 }
