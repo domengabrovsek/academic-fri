@@ -31,5 +31,7 @@ namespace NoDB
         public string Username { get; set; }
         [DataMember]
         public string Text { get; set; }
+        [DataMember]
+        public DateTime DateTime { get; set; }
     }
 }

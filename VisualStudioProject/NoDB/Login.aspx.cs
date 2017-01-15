@@ -15,9 +15,9 @@ namespace NoDB
         // page load
         protected void Page_Load(object sender, EventArgs e)
         {
-            // test service
 
-            Service1 service = new Service1();
+            // test service
+            // Service1 service = new Service1();
 
             wrongPassword1.Text = "";
             wrongPassword2.Text = "";

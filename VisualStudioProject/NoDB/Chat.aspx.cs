@@ -3,6 +3,7 @@ using System.Collections;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
+using static System.String;
 
 namespace NoDB
 {
@@ -65,7 +66,7 @@ namespace NoDB
             // insert message(username = Session["currentUser], sporocilo = Message.Value into [chatdb].[Pogovor]
             try
             {
-                var query = String.Format("INSERT INTO Pogovor VALUES ('{0}', '{1}', '{2}');", Session["currentUser"], Message.Value, "");
+                var query = Format("INSERT INTO Pogovor VALUES ('{0}', '{1}', '{2}');", Session["currentUser"], Message.Value, DateTime.Now);
                 var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
                 var sqlConnection1 = new SqlConnection(connectionString);
