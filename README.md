@@ -54,7 +54,8 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 
 ## Opis podatkovnega modela ##
 
-Podatkovni model vsebuje dve tabeli
+Podatkovni model vsebuje dve tabeli:
+
 - Uporabnik
 - Pogovor
 
