@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +77,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -105,20 +109,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\ServiceChat.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Content Include="Web References\PlsWorke\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
-    <None Include="Web References\PlsWorke\Service1.wsdl" />
-    <None Include="Web References\PlsWorke\Service1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Web References\PlsWorke\Service10.xsd">
-      <SubType>Designer</SubType>
     </None>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -135,7 +129,7 @@
     <Content Include="scripts\ai.0.22.19-build00125.js" />
     <Content Include="scripts\ai.0.22.19-build00125.min.js" />
     <Content Include="Login.css" />
-    <None Include="Web References\PlsWorke\Service1.disco" />
+    <Content Include="Service1.svc" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +140,7 @@
     <Compile Include="AdminPage.aspx.designer.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="IService1.cs" />
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -169,10 +164,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Web References\PlsWorke\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
+    <Compile Include="Service1.svc.cs">
+      <DependentUpon>Service1.svc</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -183,19 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:39133/Service1.svc">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\PlsWorke\</RelPath>
-      <UpdateFromURL>http://localhost:39133/Service1.svc</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>NoDB_PlsWorke_Service1</CachedSettingsPropName>
-    </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

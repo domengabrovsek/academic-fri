@@ -22,15 +22,5 @@ namespace NoDB.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:39133/Service1.svc")]
-        public string NoDB_PlsWorke_Service1 {
-            get {
-                return ((string)(this["NoDB_PlsWorke_Service1"]));
-            }
-        }
     }
 }
