@@ -35,17 +35,17 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 ## Opis nalog, ki jih je izvedel posamezni student: ##
 
 Domen Gabrovšek
-- izdelava računa in spletne strani na www.somee.com
-- objava celotne aplikacije na www.somee.com, uvoz podatkovne baze
-- nadgradnja uporabniškega vmesnika (gumb za prijavo administratorja + logika)
-- izdelava administratorske plošče (GUI + logika)
-- implementacija REST storitev
-- kreiranje bitbucket / GIT repozitorija
-- nadgradnja podatkovne baze (dodaten stolpec za preverjanje administratorskih pravic, dodaten stolpec za beleženje časa poslanega sporočila)
+* izdelava računa in spletne strani na www.somee.com
+* objava celotne aplikacije na www.somee.com, uvoz podatkovne baze
+* nadgradnja uporabniškega vmesnika (gumb za prijavo administratorja + logika)
+* izdelava administratorske plošče (GUI + logika)
+* implementacija REST storitev
+* kreiranje bitbucket / GIT repozitorija
+* nadgradnja podatkovne baze (dodaten stolpec za preverjanje administratorskih pravic, dodaten stolpec za beleženje časa poslanega sporočila)
 
 Simon Kovač
-- izdelava Android odjemalca
-- povezava Android odjemalca, REST storitev in spletne aplikacije
+* izdelava Android odjemalca
+* povezava Android odjemalca, REST storitev in spletne aplikacije
 
 ## Slika podatkovnega modela ##
 ![baza.png](https://bitbucket.org/repo/ExydLG/images/1394966401-baza.png)
