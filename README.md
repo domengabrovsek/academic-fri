@@ -18,8 +18,8 @@ Nadgradnja aplikacije ChatDB. Aplikacija je gostovana na spletni strani http://s
 
 Tezave sva imela predvsem pri vzpostavitvi spletnih storitev in objavljanjem celotne aplikacije na spletni strani www.somee.com. Nekaj manjših težav, ki so se veliko ponavljale je bilo s sintakso in izvedbo poizvedb na bazi. To sva rešila s pomočje funkcije String.Format(), ki omogoča lepše formatiranje nizov za boljšo preglednost. Preprost problem, ki pa nama je vzel kar nekaj časa je bil, ko sva ročno vnašala uporabnike v bazo za namen testiranja. Prišlo je do tega, da je v hash funkcijo MD5 prišel presledek preveč, kar pomeni naslednje:
 
-MD5(Geslo.01)  -> 775d9180bbd7d8354d13116c385e37e8
-MD5(Geslo.01 ) -> b8b97a066f3f6731a03e386913ecd8c2
+- MD5(Geslo.01)  -> 775d9180bbd7d8354d13116c385e37e8
+- MD5(Geslo.01 ) -> b8b97a066f3f6731a03e386913ecd8c2
 
 Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni povedal nič uporabnega. Na koncu sva težave rešila s pomočjo "debuggerja", prosojnic na učilnici, stack overflowa in .NET dokumentacije. 
 
