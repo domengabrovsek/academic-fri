@@ -29,7 +29,7 @@
                         <asp:ListItem>-- Izberi uporabnika --</asp:ListItem>
                     </asp:DropDownList>        
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                     <asp:Label ID="izbraniUporabnik" runat="server" Text="Izbrani uporabnik: "></asp:Label>
                 </div>
             </div>
@@ -45,14 +45,11 @@
             
             <!-- 3. row start -->
             <div class="row">
-                <div class="col-sm-3">
-                    <asp:Label runat="server" Text="Je administrator: "></asp:Label>
-                </div>
                 <div class="col-sm-4">
-                     <asp:DropDownList ID="IsAdminList" runat="server" AutoPostBack="true"></asp:DropDownList> 
+                    <asp:Label runat="server" ID="isAdmin" Text="Je administrator: "></asp:Label>
                 </div>
                 <div class=col-sm-6">
-                    <asp:Button ID="MakeAdmin" Text="Administrator" CssClass="col-sm-2 btn btn-primary gumb setAdmin" runat="server" OnClick="MakeAdmin_Click"/>
+                    <asp:Button ID="makeAdmin" Text="Administrator" CssClass="col-sm-2 btn btn-primary gumb setAdmin" runat="server" OnClick="makeAdmin_Click"/>
                 </div>
             </div>
             <!-- 3. row end -->
@@ -65,8 +62,6 @@
             </div>
             <!-- 4. row end -->
         </form>
-        
-        <asp:Label runat="server" id="test" Text=""></asp:Label>
     </div>
 </body>
 </html>

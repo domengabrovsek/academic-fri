@@ -49,22 +49,22 @@ namespace NoDB {
         protected global::System.Web.UI.WebControls.Label stSporocil;
         
         /// <summary>
-        /// IsAdminList control.
+        /// isAdmin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList IsAdminList;
+        protected global::System.Web.UI.WebControls.Label isAdmin;
         
         /// <summary>
-        /// MakeAdmin control.
+        /// makeAdmin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button MakeAdmin;
+        protected global::System.Web.UI.WebControls.Button makeAdmin;
         
         /// <summary>
         /// LogoutAdmin control.
@@ -74,14 +74,5 @@ namespace NoDB {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button LogoutAdmin;
-        
-        /// <summary>
-        /// test control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label test;
     }
 }
