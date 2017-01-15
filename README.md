@@ -35,6 +35,7 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 ## Opis nalog, ki jih je izvedel posamezni student: ##
 
 **Domen Gabrovšek**
+
 * izdelava računa in spletne strani na www.somee.com
 * objava celotne aplikacije na www.somee.com, uvoz podatkovne baze
 * nadgradnja uporabniškega vmesnika (gumb za prijavo administratorja + logika)
@@ -44,6 +45,7 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 * nadgradnja podatkovne baze (dodaten stolpec za preverjanje administratorskih pravic, dodaten stolpec za beleženje časa poslanega sporočila)
 
 **Simon Kovač**
+
 * izdelava Android odjemalca
 * povezava Android odjemalca, REST storitev in spletne aplikacije
 
