@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using static System.String;
 
 namespace NoDB
 {
     public partial class AdminPage : System.Web.UI.Page
     {
+        // page load
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            /*
             if (Session["currentUser"] == null)
             {
                 Response.Redirect("Login.aspx");
             }
-            */
+            
             if (IsPostBack)
             {
                 // ce je ne prvem mestu dropdowna --Izberi uporabnika-- nočemo brati iz baze ker to ni dejanski uporabnik
@@ -31,7 +25,7 @@ namespace NoDB
                 {
                     Application["selectedUser"] = Uporabniki.SelectedValue;
                     var user = Application["selectedUser"].ToString();
-                    izbraniUporabnik.Text = String.Format("Izbrani uporabnik: {0}", user);
+                    izbraniUporabnik.Text = Format("Izbrani uporabnik: {0}", user);
                     stSporocil.Text = Format("Stevilo sporocil: {0}", GetNumOfMessages(user));
                     isAdmin.Text = Format("Je administrator: {0}", CheckIfAdmin(user) ? "Da" : "Ne");
                     // ce je uporabnik administrator na gumbu pise uporabnik in obratno
@@ -55,7 +49,7 @@ namespace NoDB
             // 1 = select one user
             if (option == 1)
             {
-                var cmd = new SqlCommand(String.Format("SELECT username FROM Uporabnik WHERE username = '{0}';", user), conn);
+                var cmd = new SqlCommand(Format("SELECT username FROM Uporabnik WHERE username = '{0}';", user), conn);
                 var r = cmd.ExecuteReader();
                 conn.Close();
                 return r.GetString(0);
@@ -107,14 +101,14 @@ namespace NoDB
         }
 
         // set / unset user as admin
-        protected void SetAdmin(string user, bool isAdmin)
+        protected void SetAdmin(string user, bool admin)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             var conn = new SqlConnection(connectionString);
             conn.Open();
 
-            var cmd = new SqlCommand(Format("UPDATE Uporabnik SET isadmin = {0} WHERE username = '{1}';", isAdmin ? 0 : 1, user), conn);
-            var r = cmd.ExecuteReader();
+            var cmd = new SqlCommand(Format("UPDATE Uporabnik SET isadmin = {0} WHERE username = '{1}';", admin ? 0 : 1, user), conn);
+            cmd.ExecuteReader();
             conn.Close();
         }
 
@@ -125,17 +119,15 @@ namespace NoDB
             var conn = new SqlConnection(connectionString);
             conn.Open();
 
-            // delete all conversations from selected user from database
             var query = Format("SELECT COUNT(besedilo) as n FROM Pogovor WHERE username = '{0}';", user);
             var cmd = new SqlCommand(query, conn);
             var r = cmd.ExecuteReader();
 
-
             if (r.Read())
             {
-                var stSporocil = r.GetInt32(0);
+                var stsporocil = r.GetInt32(0);
                 conn.Close();
-                return stSporocil;
+                return stsporocil;
             }
 
             conn.Close();
@@ -166,28 +158,31 @@ namespace NoDB
             return admin;
         }
 
-
+        // delete user click
         protected void DeleteUser_Click(object sender, EventArgs e)
         {
             var selectedUser = Application["selectedUser"].ToString();
             DeleteUser(selectedUser);
         }
 
+        // logout click
         protected void LogoutAdmin_Click(object sender, EventArgs e)
         {
             Session.Abandon();
             Response.Redirect("Login.aspx");
         }
 
+        // make user admin / user
         protected void makeAdmin_Click(object sender, EventArgs e)
         {
             var user = Application["selectedUser"].ToString();
             var admin = CheckIfAdmin(user);
 
             SetAdmin(user, admin);
-            izbraniUporabnik.Text = String.Format("Izbrani uporabnik: {0}", user);
+            izbraniUporabnik.Text = Format("Izbrani uporabnik: {0}", user);
             stSporocil.Text = Format("Stevilo sporocil: {0}", GetNumOfMessages(user));
             isAdmin.Text = Format("Je administrator: {0}", CheckIfAdmin(user) ? "Da" : "Ne");
+
             // ce je uporabnik administrator na gumbu pise uporabnik in obratno
             makeAdmin.Text = CheckIfAdmin(user) ? "Uporabnik" : "Administrator";
         }

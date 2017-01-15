@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Security.Cryptography;
 using System.Text;
 using System.Configuration;
-using static System.Boolean;
 using static System.String;
 
 namespace NoDB
@@ -12,7 +11,7 @@ namespace NoDB
    
     public partial class Chat : System.Web.UI.Page
     {
-
+        // page load
         protected void Page_Load(object sender, EventArgs e)
         {
             wrongPassword1.Text = "";
@@ -182,6 +181,7 @@ namespace NoDB
             return isAdmin;
         }
 
+        // registration button click
         protected void RegistrationBtn_Click(object sender, EventArgs e)
         {
             var username = Username.Value;
@@ -232,6 +232,7 @@ namespace NoDB
 
         }
 
+        // login user button click
         protected void LoginBtn_Click(object sender, EventArgs e)
         {
             var username = CheckCredentialsLogin();
@@ -244,6 +245,7 @@ namespace NoDB
             
         }
 
+        // login admin button click
         protected void AdminLoginBtn_OnClick(object sender, EventArgs e)
         {
 

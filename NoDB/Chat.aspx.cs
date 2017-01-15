@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Data;
-using NoDB.PlsWorke;
 
 namespace NoDB
 {
 
     public partial class Login : System.Web.UI.Page
     {
+        // page load
         protected void Page_Load(object sender, EventArgs e)
         {
             // if user isn't logged in send him back to login screen
@@ -52,6 +51,7 @@ namespace NoDB
             }
         }
 
+        // logout click
         protected void Logout_Click(object sender, EventArgs e)
         {
             RemoveUser();
@@ -59,6 +59,7 @@ namespace NoDB
             Response.Redirect("Login.aspx");
         }
 
+        // send click
         protected void Send_Click(object sender, EventArgs e)
         {
             // insert message(username = Session["currentUser], sporocilo = Message.Value into [chatdb].[Pogovor]
@@ -98,6 +99,7 @@ namespace NoDB
 
         }
 
+        // refresh click
         protected void Refresh_Click(object sender, EventArgs e)
         {
             RefreshUsers();
@@ -135,6 +137,7 @@ namespace NoDB
                 Users.Items.Add(item.ToString());
             }
         }
+       
         // remove user on logout
         protected void RemoveUser()
         {

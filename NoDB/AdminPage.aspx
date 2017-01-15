@@ -12,7 +12,6 @@
     <script src="jQuery.min.js" type="text/javascript"></script>
 </head>
 <body>
-
     <div id="admin-page">
         <h1>Administrator Menu</h1>
         <form class="form" runat="server">
