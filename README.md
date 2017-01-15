@@ -62,3 +62,5 @@ Podatkovni model vsebuje dve tabeli:
 - V tabeli Uporabnik se hranijo podatki o registriranih uporabnikih in sicer: uporabniški ime, ime, priimek in MD5 izvleček gesla. 
 - V tabeli Pogovor se hranijo podatki o vseh poslanih sporočilih in sicer: id sporočila, vsebina sporočila, pošiljatelj sporočila in čas poslanega sporočila.
 - Podatkovni model je narejen tako, da vsak uporabnik lahko pošlje več sporočil medtem ko eno sporočilo ne mora pripadati več kot le enemu uporabniku.
+
+Opomba: uporabniški vmesnik na gostujočem strežniku zgleda vizualno drugače kot lokalno, ker se javascript in css noče pravilno naložiti zaradi meni neznanega razloga.
