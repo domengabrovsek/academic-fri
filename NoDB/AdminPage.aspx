@@ -16,31 +16,54 @@
     <div id="admin-page">
         <h1>Administrator Menu</h1>
         <form class="form" runat="server">
+            <!-- 1. row start -->
             <div class="row">
                 <div class="col-sm-3">
                     <asp:Label runat="server" Text="Izberi uporabnika: "></asp:Label>
                 </div>
-                <div class=col-sm-4">
-                    <asp:Button ID="DeleteUser" Text="Izbrisi uporabnika" CssClass="col-sm-3 btn btn-primary gumb" runat="server" OnClick="DeleteUser_Click"/>
+                <div class=col-sm-3">
+                    <asp:Button ID="deleteUser" Text="Izbrisi uporabnika" CssClass="col-sm-2 btn btn-primary gumb deleteUser" runat="server" OnClick="DeleteUser_Click"/>
                 </div>
-                <div class=col-sm-4">
-                    <asp:Button ID="SetAdmin" Text="Nastavi za administratorja" CssClass="col-sm-4 btn btn-primary gumb" runat="server" OnClick="SetAdmin_Click"/>
+                <div class="col-sm-4">
+                    <asp:DropDownList ID="Uporabniki" runat="server" AutoPostBack="true" AppendDataBoundItems="True">
+                        <asp:ListItem>-- Izberi uporabnika --</asp:ListItem>
+                    </asp:DropDownList>        
+                </div>
+                <div class="col-sm-3">
+                    <asp:Label ID="izbraniUporabnik" runat="server" Text="Izbrani uporabnik: "></asp:Label>
                 </div>
             </div>
-
+            <!-- 1. row end --> 
+            
+            <!-- 2. row start -->
             <div class="row">
                 <div class="col-sm-4">
-                    <asp:DropDownList ID="Uporabniki" runat="server"></asp:DropDownList>        
+                    <asp:Label runat="server" ID="stSporocil" Text="Stevilo sporocil: "></asp:Label>
                 </div>
             </div>
-
-            <div class="row"><div class="col-sm-12">&nbsp</div></div>
-
+            <!-- 2. row end -->
+            
+            <!-- 3. row start -->
+            <div class="row">
+                <div class="col-sm-3">
+                    <asp:Label runat="server" Text="Je administrator: "></asp:Label>
+                </div>
+                <div class="col-sm-4">
+                     <asp:DropDownList ID="IsAdminList" runat="server" AutoPostBack="true"></asp:DropDownList> 
+                </div>
+                <div class=col-sm-6">
+                    <asp:Button ID="MakeAdmin" Text="Administrator" CssClass="col-sm-2 btn btn-primary gumb setAdmin" runat="server" OnClick="MakeAdmin_Click"/>
+                </div>
+            </div>
+            <!-- 3. row end -->
+            
+            <!-- 4. row start -->
             <div class="row">
                 <div class=col-sm-6">
                     <asp:Button ID="LogoutAdmin" Text="Odjava" CssClass="col-sm-2 btn btn-primary gumb odjava" runat="server" OnClick="LogoutAdmin_Click"/>
                 </div>
             </div>
+            <!-- 4. row end -->
         </form>
         
         <asp:Label runat="server" id="test" Text=""></asp:Label>

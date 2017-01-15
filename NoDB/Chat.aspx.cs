@@ -23,17 +23,7 @@ namespace NoDB
             if (IsPostBack) return;
 
             // set currentUser label
-            var o = Session["currentUser"];
-            if (o != null)
-                CurrentUser.Text = "Prijavljeni ste kot: " + o;
-
-            /* test
-            
-            var service1 = new Service1();
-
-            Message.Value = service1.VrniIme(1, true);
-
-            */
+            CurrentUser.Text = "Prijavljeni ste kot: " + Session["currentUser"];
 
 
             // if no users, create history and onlineUsers arrayList
@@ -62,8 +52,6 @@ namespace NoDB
             }
         }
 
-        public object WebReference1 { get; set; }
-
         protected void Logout_Click(object sender, EventArgs e)
         {
             RemoveUser();
@@ -76,7 +64,7 @@ namespace NoDB
             // insert message(username = Session["currentUser], sporocilo = Message.Value into [chatdb].[Pogovor]
             try
             {
-                var query = "INSERT INTO Pogovor VALUES (" + "'" + Session["currentUser"] + "'" + "," + "'" + Message.Value + "'" + ")";
+                var query = String.Format("INSERT INTO Pogovor VALUES ('{0}', '{1}', '{2}');", Session["currentUser"], Message.Value, "");
                 var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
                 var sqlConnection1 = new SqlConnection(connectionString);

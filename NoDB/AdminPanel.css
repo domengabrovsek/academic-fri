@@ -35,18 +35,30 @@ h1 {
     background: #FFFFFF;
     padding: 20px;
     display: block;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     border-radius: 3px;
 }
 
 .gumb {
-    font-size: 18px;
+    font-size: 13px;
     margin-left: 5px;
 }
 
 .odjava {
 
-    top: 20px;
-    left: 650px;
+    float: right;
+}
+
+.deleteUser {
+
+    position: relative;
+    float: right;
+}
+
+.setAdmin {
+
+    position: relative;
+    float: right;
+
 }

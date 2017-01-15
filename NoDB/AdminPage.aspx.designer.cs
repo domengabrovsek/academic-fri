@@ -13,22 +13,13 @@ namespace NoDB {
     public partial class AdminPage {
         
         /// <summary>
-        /// DeleteUser control.
+        /// deleteUser control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DeleteUser;
-        
-        /// <summary>
-        /// SetAdmin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SetAdmin;
+        protected global::System.Web.UI.WebControls.Button deleteUser;
         
         /// <summary>
         /// Uporabniki control.
@@ -38,6 +29,42 @@ namespace NoDB {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList Uporabniki;
+        
+        /// <summary>
+        /// izbraniUporabnik control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label izbraniUporabnik;
+        
+        /// <summary>
+        /// stSporocil control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label stSporocil;
+        
+        /// <summary>
+        /// IsAdminList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList IsAdminList;
+        
+        /// <summary>
+        /// MakeAdmin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button MakeAdmin;
         
         /// <summary>
         /// LogoutAdmin control.
