@@ -12,40 +12,18 @@ namespace NoDB
     public interface IService1
     {
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "Login", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        LoginResponse LoginSrv(LoginRequest usr);
+        [WebInvoke(UriTemplate = "Login/{username}/{password}", ResponseFormat = WebMessageFormat.Json)]
+        bool Login(string username, string password);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "Send", ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Bare)]
-        void SendSrv(SendRequest msg);
+        [WebInvoke(UriTemplate = "Send/{username}/{message}", ResponseFormat = WebMessageFormat.Json)]
+        void Send(string username, string message);
 
         [OperationContract]
         [WebGet(UriTemplate = "Messages/{id}", ResponseFormat = WebMessageFormat.Json)]
         List<Message> GetMessages(int id);
     }
 
-    [DataContract]
-    public class LoginResponse
-    {
-        [DataMember]
-        public bool isAuth { get; set; }
-    }
-    [DataContract]
-    public class LoginRequest
-    {
-        [DataMember]
-        public string Username { get; set; }
-        [DataMember]
-        public string Password { get; set; }
-    }
-    [DataContract]
-    public class SendRequest
-    {
-        [DataMember]
-        public string Username { get; set; }
-        [DataMember]
-        public string Message { get; set; }
-    }
     [DataContract]
     public class Message
     {

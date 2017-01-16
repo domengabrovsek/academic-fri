@@ -16,15 +16,6 @@ namespace NoDB
 {
     public class Service1 : IService1
     {
-        public LoginResponse LoginSrv(LoginRequest usr)
-        {
-            var response = Login(usr.Username, usr.Password);
-            return new LoginResponse { isAuth = response };
-        }
-        public void SendSrv(SendRequest msg)
-        {
-            Send(msg.Username, msg.Message);
-        }
         // check if user is signed in with every request
         private bool AuthenticateUser()
         {
