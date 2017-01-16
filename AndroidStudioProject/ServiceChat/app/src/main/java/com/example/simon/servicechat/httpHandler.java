@@ -1,8 +1,6 @@
 package com.example.simon.servicechat;
 import android.util.Log;
 
-import org.json.JSONObject;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +17,7 @@ import java.net.URL;
 
 class httpHandler {
     private static final String TAG = httpHandler.class.getSimpleName();
+    private static final String reqUrl = "http://servicechat3.somee.com/Service1.svc/Login";
     private String usr;
     private String pwd;
     public httpHandler(String username, String password) {
@@ -26,7 +25,7 @@ class httpHandler {
         this.pwd = password;
     }
 
-    public String makeServiceCall(String reqUrl, String req) {
+    public String makeServiceCall(String req) {
         String response = null;
         try {
             URL url = new URL(reqUrl);

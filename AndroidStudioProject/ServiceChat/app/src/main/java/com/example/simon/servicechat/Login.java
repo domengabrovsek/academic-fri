@@ -10,18 +10,50 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-
+class LoginResponse {
+    private boolean isAuth;
+    public boolean getAuth(){
+        return this.isAuth;
+    }
+    public void setAuth(boolean newAuth){
+        this.isAuth = newAuth;
+    }
+}
+class LoginRequest {
+    private String Username;
+    private String Password;
+    public String getUsername(){
+        return this.Username;
+    }
+    public void setUsername(String newUsername){
+        this.Username = newUsername;
+    }
+    public String getPassword(){
+        return this.Password;
+    }
+    public void setPassword(String newPassword){
+        this.Password = newPassword;
+    }
+    public JSONObject toJson(){
+        JSONObject temp = new JSONObject();
+        try{
+            temp.put("Username", this.Username);
+            temp.put("Password", this.Password);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return temp;
+    }
+}
 public class Login extends AppCompatActivity {
-    private static String url = "http://servicechat3.somee.com/Service1.svc/Login/";
+    boolean isAuth;
+    String usr;
+    String pwd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +61,7 @@ public class Login extends AppCompatActivity {
         final Context ctx = getApplicationContext();
         Button login_btn = (Button) findViewById(R.id.button);
         login_btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 EditText usr_et = (EditText) findViewById(R.id.editText3);
@@ -36,98 +69,45 @@ public class Login extends AppCompatActivity {
                 String username = usr_et.getText().toString();
                 String password = pwd_et.getText().toString();
                 TextView wrong_pw = (TextView) findViewById(R.id.textView4);
-                Intent i = new Intent(ctx, chat.class);
-                i.putExtra("usr", username);
-                i.putExtra("pwd", password);
-                String[] params = {url, username, password};
-                grabber g = new grabber(username, password);
-                g.callService(url, params);
+                String[] params = {username, password};
+                CallAPI call = new CallAPI();
             }
         });
 
     }
 
     public class CallAPI extends AsyncTask<String, String, String> {
-
-        public CallAPI() {
-            //set context variables if required
-        }
-
+        final Context ctx = getApplicationContext();
+        public CallAPI() {}
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
-
-
         @Override
         protected String doInBackground(String... params) {
-
-            String urlString = params[0]; // URL to call
-            System.out.println(urlString);
-            String resultToDisplay = "";
-
-            InputStream in = null;
+            LoginRequest req = new LoginRequest();
+            req.setUsername(params[0]);
+            req.setPassword(params[1]);
+            httpHandler hh = new httpHandler(req.getUsername(), req.getPassword());
+            return hh.makeServiceCall(req.toString());
+        }
+        @Override
+        protected void onPostExecute(String result) {
             try {
-
-                URL url = new URL(urlString);
-
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-                in = new BufferedInputStream(urlConnection.getInputStream());
-
-
-            } catch (Exception e) {
-
-                System.out.println(e.getMessage());
-
-                return e.getMessage();
-
-            }
-
-            try {
-                byte[] contents = new byte[1024];
-
-                int bytesRead = 0;
-                String strFileContents = "";
-                while ((bytesRead = in.read(contents)) != -1) {
-                    strFileContents += new String(contents, 0, bytesRead);
+                JSONObject msg = new JSONObject(result);
+                if(msg.getBoolean("isAuth")){
+                    Intent i = new Intent();
+                    EditText usr_et = (EditText) findViewById(R.id.editText3);
+                    EditText pwd_et = (EditText) findViewById(R.id.editText4);
+                    String username = usr_et.getText().toString();
+                    String password = pwd_et.getText().toString();
+                    i.putExtra("usr", username);
+                    i.putExtra("pwd", password);
+                    startActivity(i);
                 }
-                //to [convert][1] byte stream to a string
-            } catch (IOException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println(resultToDisplay);
-            return resultToDisplay;
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Update the UI
-        }
-    }
-
-    private class authUser extends AsyncTask<String, String, String> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            if (params.length == 2) {
-                grabber g = new grabber(params[0], params[1]);
-                String result = g.callService(url, params);
-                return result;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            TextView wrong_pw = (TextView) findViewById(R.id.textView4);
-            wrong_pw.setText(result);
         }
     }
 }
