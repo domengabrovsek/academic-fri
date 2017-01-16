@@ -63,10 +63,10 @@ namespace NoDB
         // send click
         protected void Send_Click(object sender, EventArgs e)
         {
-            // insert message(username = Session["currentUser], sporocilo = Message.Value into [chatdb].[Pogovor]
+            // datetime ne dela for some reason :(
             try
             {
-                var query = Format("INSERT INTO Pogovor VALUES ('{0}', '{1}', '{2}');", Session["currentUser"], Message.Value, DateTime.Now);
+                var query = Format("INSERT INTO Pogovor VALUES ('{0}', '{1}', '{2}');", Session["currentUser"], Message.Value, "");
                 var connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
                 var sqlConnection1 = new SqlConnection(connectionString);
