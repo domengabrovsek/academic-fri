@@ -32,7 +32,7 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 - možnost pošiljanja slik, videov ... 
 - možnost integracije z raznimi storitvami (Google services ...?)
 
-## Opis nalog, ki jih je izvedel posamezni student: ##
+## Opis nalog, ki jih je izvedel posamezni student:(commit list) ##
 
 **Domen Gabrovšek**
 
@@ -40,7 +40,7 @@ Presledek je bilo zelo težko najti, saj nama napaka oz. "stack trace" ni poveda
 * objava celotne aplikacije na www.somee.com, uvoz podatkovne baze
 * nadgradnja uporabniškega vmesnika (gumb za prijavo administratorja + logika)
 * izdelava administratorske plošče (GUI + logika)
-* implementacija REST storitev
+* izdelava funkcij za REST storitve
 * kreiranje bitbucket / GIT repozitorija
 * nadgradnja podatkovne baze (dodaten stolpec za preverjanje administratorskih pravic, dodaten stolpec za beleženje časa poslanega sporočila)
 
