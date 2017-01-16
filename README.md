@@ -64,3 +64,10 @@ Podatkovni model vsebuje dve tabeli:
 - Podatkovni model je narejen tako, da vsak uporabnik lahko pošlje več sporočil medtem ko eno sporočilo ne mora pripadati več kot le enemu uporabniku.
 
 Opomba: uporabniški vmesnik na gostujočem strežniku zgleda vizualno drugače kot lokalno, ker se javascript in css noče pravilno naložiti zaradi meni neznanega razloga.
+
+## Registrirani uporabniki ##
+
+Privzeta sta dva uporabnika:
+
+- admin / Geslo.01
+- uporabnik / Uporabnik.01
