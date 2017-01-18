@@ -7,7 +7,7 @@
 ![admin-panel.jpeg](https://bitbucket.org/repo/ExydLG/images/3714767854-admin-panel.jpeg)
 
 ## Zaslonska slika mobilne aplikacije ##
-TODO
+![Screenshot_1.png](https://bitbucket.org/repo/ExydLG/images/2318513752-Screenshot_1.png)
 
 ## Kratek opis delovanja: ##
 
