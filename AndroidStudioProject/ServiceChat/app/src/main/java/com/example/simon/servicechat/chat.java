@@ -65,6 +65,50 @@ public class chat extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private class CallRefresh extends AsyncTask<String, String, String>{
+        @Override
+        protected String doInBackground(String... params){
+            String response = "";
+            InputStream in = null;
+            HttpURLConnection conn = null;
+            try{
+                URL url = new URL("http://chatton.azurewebsites.net/api/Message/Android");
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.connect();
+                in = new BufferedInputStream(conn.getInputStream());
+                response = convertStreamToString(in);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return response;
+        }
+        @Override
+        protected void onPostExecute(String result){
+            updateChat(result);
+        }
+        private String convertStreamToString(InputStream is) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            StringBuilder sb = new StringBuilder();
+
+            String line;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append('\n');
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return sb.toString();
+        }
+    }
     private class CallAPI extends AsyncTask<String, String, String>{
         final Context ctx = getApplicationContext();
         @Override
@@ -82,24 +126,19 @@ public class chat extends AppCompatActivity {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
                 conn.setRequestProperty("Accept", "application/json");
-
                 conn.setChunkedStreamingMode(0);
                 conn.setDoInput(true);
-                if(params.length == 2) conn.setDoOutput(true);
+                conn.setDoOutput(true);
                 conn.connect();
-                if(params.length == 2){
-
-                    messageRequest req = new messageRequest(params[0], params[1]);
-                    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                    wr.write(req.toJson().toString());
-                    wr.flush();
-                }
+                messageRequest req = new messageRequest(params[0], params[1]);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(req.toJson().toString());
+                wr.flush();
                 in = new BufferedInputStream(conn.getInputStream());
                 response = convertStreamToString(in);
             }catch (Exception e) {
                 e.printStackTrace();
             }
-
             return response;
         }
         @Override
@@ -130,12 +169,13 @@ public class chat extends AppCompatActivity {
     void onSendClick(){
         EditText messageEt = (EditText) findViewById(R.id.editText);
         String text = messageEt.getText().toString();
+        messageEt.setText("");
         CallAPI call = new CallAPI();
         String[] params = {this.usr, text};
         call.execute(params);
     }
     void onRefreshClick(){
-        CallAPI call = new CallAPI();
+        CallRefresh call = new CallRefresh();
         String[] params = {};
         call.execute(params);
     }
@@ -161,6 +201,7 @@ public class chat extends AppCompatActivity {
                 onRefreshClick();
             }
         });
+        onRefreshClick();
     }
 
 }
