@@ -9,12 +9,13 @@ import java.net.URL;
  */
 
 public class sender {
-    private static final String reqUrl = "http://servicechat3.somee.com/Service1.svc/Send";
+    private static final String reqUrl = "http://localhost:52686/Service1.svc/Send";
     private String usr;
     private String pwd;
-    public sender(String user, String pass){
+    public sender(String user, String pass, String message){
         this.usr = user;
         this.pwd = pass;
+        this.sendMessage(message);
     }
     public void sendMessage(String req){
         try{

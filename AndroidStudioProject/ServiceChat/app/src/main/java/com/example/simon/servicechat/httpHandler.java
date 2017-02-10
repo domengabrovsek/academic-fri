@@ -17,7 +17,7 @@ import java.net.URL;
 
 class httpHandler {
     private static final String TAG = httpHandler.class.getSimpleName();
-    private static final String reqUrl = "http://servicechat3.somee.com/Service1.svc/Login";
+    private static final String reqUrl = "http://localhost:52686/Service1.svc/Login";
     private String usr;
     private String pwd;
     public httpHandler(String username, String password) {

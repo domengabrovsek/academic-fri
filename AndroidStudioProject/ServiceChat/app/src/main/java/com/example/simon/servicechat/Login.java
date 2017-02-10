@@ -9,21 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-
-class LoginResponse {
-    private boolean isAuth;
-    public boolean getAuth(){
-        return this.isAuth;
-    }
-    public void setAuth(boolean newAuth){
-        this.isAuth = newAuth;
-    }
-}
 class LoginRequest {
     private String Username;
     private String Password;
@@ -54,6 +44,18 @@ public class Login extends AppCompatActivity {
     boolean isAuth;
     String usr;
     String pwd;
+    void loginClicked(Boolean isAuth){
+        if(isAuth){
+            EditText usr_et = (EditText) findViewById(R.id.editText3);
+            EditText pwd_et = (EditText) findViewById(R.id.editText4);
+            this.usr = usr_et.getText().toString();
+            this.pwd = pwd_et.getText().toString();
+            Intent i = new Intent(this, chat.class);
+            i.putExtra("usr", this.usr);
+            i.putExtra("pwd", this.pwd);
+            startActivity(i);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +73,13 @@ public class Login extends AppCompatActivity {
                 TextView wrong_pw = (TextView) findViewById(R.id.textView4);
                 String[] params = {username, password};
                 CallAPI call = new CallAPI();
+                call.execute(params);
             }
         });
 
     }
 
-    public class CallAPI extends AsyncTask<String, String, String> {
+    public class CallAPI extends AsyncTask<String, String, Integer> {
         final Context ctx = getApplicationContext();
         public CallAPI() {}
         @Override
@@ -84,28 +87,38 @@ public class Login extends AppCompatActivity {
             super.onPreExecute();
         }
         @Override
-        protected String doInBackground(String... params) {
+        protected Integer doInBackground(String... params) {
             LoginRequest req = new LoginRequest();
             req.setUsername(params[0]);
             req.setPassword(params[1]);
-            httpHandler hh = new httpHandler(req.getUsername(), req.getPassword());
-            return hh.makeServiceCall(req.toString());
+            Integer status = 0;
+            HttpURLConnection conn = null;
+            try {
+                URL url = new URL("http://chatton.azurewebsites.net/api/user/Androidlogin");
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setChunkedStreamingMode(0);
+                conn.setDoInput(true);
+                conn.connect();
+
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(req.toJson().toString());
+                wr.flush();
+                status = conn.getResponseCode();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return status;
         }
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Integer result) {
             try {
-                JSONObject msg = new JSONObject(result);
-                if(msg.getBoolean("isAuth")){
-                    Intent i = new Intent();
-                    EditText usr_et = (EditText) findViewById(R.id.editText3);
-                    EditText pwd_et = (EditText) findViewById(R.id.editText4);
-                    String username = usr_et.getText().toString();
-                    String password = pwd_et.getText().toString();
-                    i.putExtra("usr", username);
-                    i.putExtra("pwd", password);
-                    startActivity(i);
-                }
-            } catch (JSONException e) {
+                if(result == 200) loginClicked(true);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

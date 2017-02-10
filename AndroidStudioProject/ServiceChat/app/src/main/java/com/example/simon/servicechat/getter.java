@@ -15,7 +15,7 @@ import java.net.URL;
 public class getter {
     String usr;
     String pwd;
-    private static final String reqUrl = "http://servicechat3.somee.com/Service1.svc/Messages/";
+    private static final String reqUrl = "http://localhost:52686/Service1.svc/Messages/";
     public getter(String username, String password){
         this.usr = username;
         this.pwd = password;
