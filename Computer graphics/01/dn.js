@@ -12,7 +12,7 @@ class Vector4f {
     // methods
 
     // negate input vector
-    negate(vector) {
+    static negate(vector) {
         // check if input is of correct type and length
         if(!(vector instanceof Vector4f && Object.keys(vector).length === 3)) {
             return new Error('Vhod mora biti tipa Vector4f in more vsebovati koordinate x,y in z.')
@@ -23,7 +23,7 @@ class Vector4f {
     };
 
     // add two vectors
-    add(vector1, vector2) {
+    static add(vector1, vector2) {
 
         // there should be only two vectors in input, both of same type and length
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 3) && Object.values(arguments).length === 2)) {
@@ -35,7 +35,7 @@ class Vector4f {
     };
 
     // scalar product (scalar * vector)
-    scalarProduct(scalar, vector) {
+    static scalarProduct(scalar, vector) {
         
         if(typeof(scalar) !== 'number') {
             return;
@@ -50,7 +50,7 @@ class Vector4f {
     };
 
     // dot product (vector * vector)
-    dotProduct(vector1, vector2) {
+    static dotProduct(vector1, vector2) {
         // there should be only two vectors in input, both of same type and length
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 3) && Object.values(arguments).length === 2)) {
             return;
@@ -61,7 +61,7 @@ class Vector4f {
 
     };
 
-    crossProduct(vector1, vector2) {
+    static crossProduct(vector1, vector2) {
         // there should be only two vectors in input, both of same type and length
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 3) && Object.values(arguments).length === 2)) {
             return;
@@ -76,7 +76,7 @@ class Vector4f {
     };
 
     // second norm -> square root of sum of all elements to the second power 
-    length(vector) {
+    static length(vector) {
         if(!(vector instanceof Vector4f) && Object.keys(vector).length === 3) {
             return;
         }
@@ -85,7 +85,7 @@ class Vector4f {
     };
 
     // unit vector -> vector divided by its length
-    normalize(vector) {
+    static normalize(vector) {
         if(!(vector instanceof Vector4f) && Object.keys(vector).length === 3) {
             return;
         }
@@ -99,7 +99,7 @@ class Vector4f {
     };
 
     // scalar product (dot product(vector1, vector2) / vector1.length^2, vector1)
-    project(vector1, vector2) {
+    static project(vector1, vector2) {
         // there should be only two vectors in input, both of same type and length
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 3) && Object.values(arguments).length === 2)) {
             return;
@@ -119,7 +119,7 @@ class Vector4f {
     };
 
     // vector lengths multiplied by cos phi is equal to dot product of vectors
-    cosPhi(vector1, vector2) {
+    static cosPhi(vector1, vector2) {
         // there should be only two vectors in input, both of same type and length
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 3) && Object.values(arguments).length === 2)) {
             return;
@@ -140,19 +140,140 @@ class Vector4f {
     };
 }
 
-const vector1 = new Vector4f(1, 2, 3);
-const vector2 = new Vector4f(3, 2, 1);
+class Matrix4f {
 
-console.log('Vektor 1: ', vector1);
-console.log('Vektor 2: ', vector2);
+    constructor(matrix) {
+        this.matrix = matrix;
+    }
 
-console.log('Negate: ', vector1.negate(vector1));
-console.log('Add: ', vector1.add(vector1, vector2));
-console.log('Scalar product: ', vector1.scalarProduct(5, vector1));
-console.log('Dot product: ', vector1.dotProduct(vector1, vector2));
-console.log('Cross product: ', vector1.crossProduct(vector1, vector2));
-console.log('Length: ', vector1.length(vector1));
-console.log('Normalize: ', vector1.normalize(vector1));
-console.log('Project: ', vector1.project(vector1, vector2));
-console.log('Cos phi: ', vector1.cosPhi(vector1, vector2));
+    static negate(matrix) {
 
+        if(!(matrix instanceof Matrix4f) && Object.keys(matrix).length === 4) {
+            return;
+        }
+
+        return new Matrix4f(matrix.matrix.map(row => row.map(value => value * -1)));
+
+    }
+
+    static add(matrix1, matrix2) {
+
+        // there should be only two matrices in input, both of same type and length
+        if(!(Object.values(arguments).every(matrix => matrix instanceof Matrix4f && Object.keys(matrix.matrix).length === 4) && Object.values(arguments).length === 2)) {
+            return;
+        }
+
+        // sum all elements at same indexes in both arrays
+        return new Matrix4f((Object.values(matrix1.matrix).map((row, i) => row.map((value, j) => value + matrix2.matrix[i][j]))));
+    };
+
+    static transpose(matrix) {
+        if(!(matrix instanceof Matrix4f) && Object.keys(matrix).length === 4) {
+            return;
+        }
+
+        return new Matrix4f(matrix.matrix[0].map((column, i) => matrix.matrix.map(row => row[i])));
+    }
+
+    static multiplyScalar(scalar, matrix) {
+        if(typeof(scalar) !== 'number') {
+            return;
+        }
+
+        if(!(matrix instanceof Matrix4f && Object.keys(matrix.matrix).length === 4)) {
+            return;
+        }
+
+        return new Matrix4f(matrix.matrix.map(row => row.map(value => value * scalar)));
+    }
+
+    static multiply(matrix1, matrix2) {
+
+        // number of rows in first matrix has to match number of columns in the second matrix, we are using 4x4 matrices here
+        if(!(matrix1.matrix.length === 4 && matrix1.matrix.every(row => row.length === 4) && matrix2.matrix.every(row => row.length === 4))) {
+            return;
+        }
+
+        // multiply values in same indexes and add them together
+        const multiplyAndAdd = (a, b) => a && b && a.map((value, i) => value * b[i]).reduce((sum, tmp) => sum + tmp, 0); 
+
+        // number of rows in first matrix
+        const rows = matrix1.matrix.length;
+
+        // number of columns in second matrix
+        const columns = matrix2.matrix[0].length;
+
+        let newMatrix = [];
+
+        for(let i = 0; i < rows; i++) {
+            // if array doesn't exist yet
+            if(!newMatrix[i]) {
+                newMatrix[i] = [];
+            }
+
+            for(let j = 0; j < columns; j++) {
+                // multiply row from first matrix with column from second matrix and add it up
+                newMatrix[i][j] = multiplyAndAdd(matrix1.matrix[i], this.transpose(matrix2).matrix[j]);
+            }
+        }
+
+        return new Matrix4f(newMatrix);
+    }
+}
+
+const matrix1 = new Matrix4f([
+    [1, 2, 3, 4],
+    [4, 3, 2, 1],
+    [5, 6, 7, 8],
+    [8, 7, 6, 5]
+]);
+
+const matrix2 = new Matrix4f([
+    [1, 2, 4, 8],
+    [8, 4, 2, 1],
+    [1, 3, 5, 7],
+    [7, 5, 3, 1]
+]);
+
+const scalar = 2;
+
+// helpers
+
+const outMatrix = matrix => matrix && Object.values(matrix).forEach(row => console.table(row));
+
+console.log('Matrix 1:')
+outMatrix(matrix1);
+
+console.log('Matrix 2:')
+outMatrix(matrix2);
+
+console.log('Negate Matrix 1: ');
+outMatrix(Matrix4f.negate(matrix1));
+
+console.log('Add Matrix 1,2: ');
+outMatrix(Matrix4f.add(matrix1, matrix2));
+
+console.log('Transpose Matrix 1: ');
+outMatrix(Matrix4f.transpose(matrix1));
+
+console.log('Multiply Matrix 1 with scalar(2): ')
+outMatrix(Matrix4f.multiplyScalar(scalar, matrix1));
+
+console.log('Multiply Matrix 1 with Matrix 2: ')
+outMatrix(Matrix4f.multiply(matrix1, matrix2));
+
+// const vector1 = new Vector4f(1, 2, 3);
+// const vector2 = new Vector4f(3, 2, 1);
+
+// console.log('Vektor 1: ', vector1);
+// console.log('Vektor 2: ', vector2);
+
+// console.log('Negate: ', Vector4f.negate(vector1));
+// console.log('Add: ', Vector4f.add(vector1, vector2));
+// console.log('Scalar product: ', Vector4f.scalarProduct(5, vector1));
+// console.log('Dot product: ', Vector4f.dotProduct(vector1, vector2));
+// console.log('Cross product: ', Vector4f.crossProduct(vector1, vector2));
+// console.log('Length: ', Vector4f.length(vector1));
+// console.log('Normalize: ', Vector4f.normalize(vector1));
+// console.log('Project: ', Vector4f.project(vector1, vector2));
+// console.log('Cos phi: ', Vector4f.cosPhi(vector1, vector2));
