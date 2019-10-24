@@ -6,62 +6,51 @@ class Vector4f {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = 1; // homogena komponenta
+        this.w = 1; // homogenous component
     };
 
-    // negacija vektorja
     static negate(vector) {
-        // check za pravi tip in dolžino inputa
         if(!(vector instanceof Vector4f && Object.keys(vector).length === 4)) {
-            return new Error('Vhod mora biti tipa Vector4f in more vsebovati koordinate x,y,z,w!')
+            throw new Error('Provided vector should be of type Vector4f and should include components x,y,z,w!')
         }
 
-        // pomnoži vse komponente z -1
+        // multiply components by -1 to negate it
         return new Vector4f(...Object.keys(vector).filter(x => x !== 'w').map(x => vector[x] * -1));
     };
 
-    // seštevek dveh vektorjev
     static add(vector1, vector2) {
-        // check za pravi tip in dolžino inputa
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 4) && Object.values(arguments).length === 2)) {
-            return new Error('Vhod morata biti dva vektorja tipa Vector4f in morata vsebovati koordinate x,y,z!');
+            throw new Error('Provided vectors should be of type Vector4f and should include components x,y,z,w!');
         }
 
-        // seštej vse istoležne elemente
+        // sum up all elements at same indexes
         return new Vector4f(...Object.keys(vector1).filter(x => x !== 'w').map((n, i) => vector1[n] + Object.values(vector2)[i]));
     };
 
-    // produkt s skalarjem
     static scalarProduct(scalar, vector) {
-        // skalar mora biti številka
         if(typeof(scalar) !== 'number') {
-            return new Error('Skalar mora biti številka!')
+            throw new Error('Provided scalar should be a number!');
         }
-        // check za pravi tip in dolžino inputa
+
         if(!(vector instanceof Vector4f && Object.keys(vector).length === 4)) {
-            return new Error('Podan vektor mora biti tipa Vector4f in mora vsebovati koordinate x,y,z,w');
+            throw new Error('Provided vector should be of type Vector4f and should include components x,y,z,w!')
         }
 
         return new Vector4f(...Object.values(vector).map(value => value * scalar));
     };
 
-    // skalarni produkt
     static dotProduct(vector1, vector2) {
-        // check za pravi tip in dolžino inputa
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 4) && Object.values(arguments).length === 2)) {
-            return new Error('Vhod morata biti dva vektorja tipa Vector4f in morata vsebovati koordinate x,y,z,w!');
+            throw new Error('Provided vectors should be of type Vector4f and should include components x,y,z,w!');
         }
 
-        // zmnoži istoležne elemente in jih seštej
+        // multiply all elements at same indexes and sum them
         return Object.keys(vector1).filter(x => x !== 'w').map((n, i) => vector1[n] * Object.values(vector2)[i]).reduce((sum, value) => sum + value, 0);
-
     };
 
-    // vektorski produkt
     static crossProduct(vector1, vector2) {
-        // check za pravi tip in dolžino inputa
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 4) && Object.values(arguments).length === 2)) {
-            return new Error('Vhod morata biti dva vektorja tipa Vector4f in morata vsebovati koordinate x,y,z,w!');
+            throw new Error('Provided vectors should be of type Vector4f and should include components x,y,z,w!');
         }
 
         const x = vector1.y * vector2.z - vector1.z * vector2.y;
@@ -71,64 +60,60 @@ class Vector4f {
         return new Vector4f(x, y, z);
     };
 
-    // dolžina vektorja = druga norma = kvadratni koren vsote vseh komponent na drugo potenco
     static length(vector) {
         if(!(vector instanceof Vector4f) && Object.keys(vector).length === 4) {
-            return new Error('Vhod mora biti tipa Vector4f in more vsebovati koordinate x,y,z,w.')
+            throw new Error('Provided vector should be of type Vector4f and should include components x,y,z,w!')
         }
 
+        // vector length = second norm = sqrt of sum of all components to the second power
         return Math.sqrt(Object.keys(vector).filter(x => x !== 'w').reduce((length, key) => length + Math.pow(vector[key], 2), 0));
     };
 
-    // normalizacija vektorja
     static normalize(vector) {
         if(!(vector instanceof Vector4f) && Object.keys(vector).length === 4) {
-            return new Error('Vhod mora biti tipa Vector4f in more vsebovati koordinate x,y,z,w.')
+            throw new Error('Provided vector should be of type Vector4f and should include components x,y,z,w!')
         }
 
-        // vektorja z dolžino 0 ne moremo normalizirati
         if(this.length(vector) <= 0) {
-            return new Error('vektorja z dolžino 0 ne moremo normalizirati!');
+            throw new Error('Division by zero! Cannot normalize a vector with length of 0!');
         }
 
         return new Vector4f(...Object.values(vector).map(value => value /= this.length(vector)));
     };
 
-    // produkt s skalarjem * (skalarni produkt(vektor, vektor2) / dolžina prvega vektorja, vektor1)
     static project(vector1, vector2) {
-        // check za pravi tip in dolžino inputa
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 4) && Object.values(arguments).length === 2)) {
-            return new Error('Vhod morata biti dva vektorja tipa Vector4f in morata vsebovati koordinate x,y,z,w!');
+            throw new Error('Provided vectors should be of type Vector4f and should include components x,y,z,w!');
         }
 
         const dotProduct = this.dotProduct(vector1, vector2);
         const firstLength = this.length(vector1);
 
-        if(firstLength <= 0) {
-            return new Error('Vektorja z dolžino 0 ne moremo projecirati!');
+        if(firstLength(vector) <= 0) {
+            throw new Error('Division by zero! Cannot project a vector with length of 0!');
         }
 
+        // scalar product * (dot product(vector1, vector2) / vector1.length, vector1)
         const scalarProduct = this.scalarProduct(dotProduct / Math.pow(firstLength, 2), vector1);
 
         return scalarProduct;    
     };
 
-    // ||vector1|| * ||vector2|| * cos phi = skalarni produkt(vector1, vector2)
     static cosPhi(vector1, vector2) {
-        // check za pravi tip in dolžino inputa
         if(!(Object.values(arguments).every(vector => vector instanceof Vector4f && Object.keys(vector).length === 4) && Object.values(arguments).length === 2)) {
-            return new Error('Vhod morata biti dva vektorja tipa Vector4f in morata vsebovati koordinate x,y,z,w!');
+            throw new Error('Provided vectors should be of type Vector4f and should include components x,y,z,w!');
         }
 
         const dotProduct = this.dotProduct(vector1, vector2);
         const firstLength = this.length(vector1);
         const secondLength = this.length(vector2);
 
-        // preprečimo deljenje z 0
+        // division by zero protection
         if([dotProduct, firstLength, secondLength].includes(0)) {
             return 0;
         }
 
+        // ||vector1|| * ||vector2|| * cos phi = skalarni produkt(vector1, vector2)
         return dotProduct / firstLength / secondLength;
     };
 }
