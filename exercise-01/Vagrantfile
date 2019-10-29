@@ -1,23 +1,18 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 Vagrant.configure("2") do |config|
-
-  # network
-  config.vm.network "public_network", bridge: "Intel(R) Centrino(R) Wireless-N 2230"
 
   # script for ubuntu to install nginx
   $script = <<-SCRIPT
       apt-get update
       apt-get install -y nginx
-      mkdir /usr/share/nginx/html/demo
-      touch /usr/share/nginx/html/demo/index.html
-      echo "<html><head></head><body><p>This should work\!</p></body><html>" | sudo tee /usr/share/nginx/html/demo/index.html
+      mkdir /var/www/nginx/html/demo
+      touch /var/www/nginx/html/demo/index.html
+      echo "<html><head></head><body><p>This should work\!</p></body><html>" | sudo tee /var/www/nginx/html/demo/index.html
   SCRIPT
 
   # ubuntu machine
   config.vm.define "ubuntu" do |ubuntu|
    ubuntu.vm.box = "generic/ubuntu1804"
+   ubuntu.vm.network :private_network, ip: "192.168.27.100"
    ubuntu.vm.box_check_update = false
    ubuntu.vm.network "forwarded_port", guest: 80, host: 8080
    ubuntu.vm.provision "shell", inline: $script
@@ -30,6 +25,7 @@ Vagrant.configure("2") do |config|
   # debian machine
   config.vm.define "debian" do |debian|
     debian.vm.box = "debian/jessie64"
+    debian.vm.network :private_network, ip: "192.168.27.101"
     debian.vm.box_check_update = false
     debian.vm.provider "virtualbox" do |v|
       v.memory = 1024
