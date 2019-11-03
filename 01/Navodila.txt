@@ -1,0 +1,3 @@
+V poljbunem brskalniku odprite datoteko index.html. 
+Na zaslonu se bosta prikazali dve vnosni polji, v prvo polje vnesite točko ali več točk v obliki "v x y z", npr. "v 1 2 3" in v spodnjem vnosnem polju se bodo prikazale transformirane vrednosti.
+V konzoli se izpisujejo stanja matrik med vsako transformacijo in pa morebitne napake.
