@@ -3,6 +3,8 @@
 ## Pravila
 - uporablja se pravilo tankega konca
 - ukazu dodamo "s" da postavi zastavice
+- stevec povecuj za 1(byte), 2(hword), 4(word)
+
 ## Registri
 - R0 - R12
 - R13 (SP) - Stack Pointer
@@ -126,4 +128,57 @@ sub r2, r3, #1
 and r2, r3, r4
 sub r4, r3, r2
 mov r1, r4
+```
+
+## Zanka
+
+```
+
+adr r0, tabela @ v r0 nalozim tabelo (kaze na prvi naslov)
+
+zanka:  
+        ldrb r1, [r0] @ preberem element iz tabele v r1
+        add r0, r0, #1 @ povecam stevec da kaze na naslednji naslov v tabeli
+
+        cmp r2, r1 @ primerjam r2 in r1, ce nista enaka ponovim zanko
+
+        bne zanka
+
+```
+
+## Podprogram
+
+```
+    ...
+    nl podprogram
+
+podprogram:
+            ...
+            @ shrani lr nazaj v pc
+            mov r15, r14 @ ali mov pc, lr
+```
+
+## Sklad
+
+````
+
+- sp (stack pointer)
+- base
+
+- ED  (Empty Descending): širi se proti nižjim naslovom, SP kaže na prazen prostor
+- FD  (Full Descending): širi se proti nižjim naslovom, SP kaže na zadnji element
+- EA  (Empty Ascending): širi se proti višjim naslovom, SP kaže na prazen prostor
+- FA  (Full Ascending): širi se proti višjim naslovom, SP kaže na zadnji element na skladu
+
+```
+ldr r13, =0x100 @ initialize stack
+mov r0, #10     @ put parameter in r0
+bl func1         @ call subroutine
+
+func1:
+        stm(fd|ed|ea|fa) r13!, {r1-r3, lr} @ save work and link registers
+        ...                      @ inside func1 we use registers r1,r2,r3
+        bl func2                 @ call subroutine func2
+        ...
+        ldm(fd|ed|ea|fa) r13!, {r1-r3, pc}
 ```
