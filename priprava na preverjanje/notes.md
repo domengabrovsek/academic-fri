@@ -150,7 +150,7 @@ zanka:
 
 ```
     ...
-    nl podprogram
+    bl podprogram
 
 podprogram:
             ...
