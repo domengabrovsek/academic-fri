@@ -1,5 +1,5 @@
 # Funkcija za izracun Brierjeve mere
-brier.score <- function(observedMatrix, predictedMatrix)
+BrierScore <- function(observedMatrix, predictedMatrix)
 {
     sum((observedMatrix - predictedMatrix) ^ 2) / nrow(predictedMatrix)
 }
@@ -21,7 +21,7 @@ Specificity <- function(observed, predicted)
 }
 
 # Funkcija za izracun klasifikacijsko tocnost modela
-CA <- function(correct, predicted)
+ClassAcc <- function(correct, predicted)
 {
     t <- table(correct, predicted)
     sum(diag(t) / sum(t))
