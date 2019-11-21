@@ -6,6 +6,10 @@
 # nalozimo knjiznice, ki jih bomo potrebovali
 install.packages(c("ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet"))
 
+# nalozimo knjiznici za predelavo atributov
+library(dplyr)
+library(reshape2)
+
 # nalozimo knjiznico za precno preverjanje
 library(ipred)
 
@@ -20,4 +24,6 @@ source("funkcije.r")
 
 # nalozimo dataset
 data <- read.table("podatkiSem1.csv", header = T, sep = ",")
+
+data <- PredelavaAtributov (data)
 
