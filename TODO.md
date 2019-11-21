@@ -25,3 +25,12 @@
 ## 5. Evalvacija modelov
 
 ## 6. Poročilo
+
+
+
+DESCRIPTIVE STATISTICS
+1. Create new variables - DONE
+2. Create summary statistics - REDO in a nice way
+3. Number of records per each city - DONE
+4. Average values per month and per location (barplot) for all mean values
+5. Number of rainy days in a month per locations
