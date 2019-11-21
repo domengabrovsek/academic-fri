@@ -19,5 +19,5 @@ library(CORElearn)
 source("funkcije.r")
 
 # nalozimo dataset
-data <- read.table("podatkiSem1.txt", header = T, sep = ",")
+data <- read.table("podatkiSem1.csv", header = T, sep = ",")
 
