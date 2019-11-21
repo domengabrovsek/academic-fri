@@ -26,3 +26,20 @@ ClassAcc <- function(correct, predicted)
     t <- table(correct, predicted)
     sum(diag(t) / sum(t))
 }
+
+# Funkcija za predelavo atributov
+PredelavaAtributov <- function (my_data)
+{
+	# Dodajanje atributa leto
+	my_data$leto <-as.integer(format(as.Date(my_data$Datum, format="%Y-%m-%d"),"%Y"))
+
+	## Dodajanje atributa mesec
+	my_data$mesec <-as.integer(format(as.Date(my_data$Datum, format="%Y-%m-%d"),"%m"))
+
+	## dodajanje atributa letni cas na podlagi atributa mesec
+	my_data <- mutate(my_data, letni_cas = ifelse(mesec %in% 1:2, "zima",
+								ifelse(mesec %in% 3:5, "pomlad",
+								ifelse(mesec %in% 6:8, "poletje",
+								ifelse(mesec %in% 9:11, "jesen", 
+								"zima")))))
+}
