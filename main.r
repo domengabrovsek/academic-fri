@@ -18,7 +18,13 @@ data <- orgData
 # dodajanje in predelava atributov
 data <- AddAttributes (data)
 
-# vizualizacija atributov
+# analiza atributov
+summary(data) # summary statistika
+sum(is.na(data)) # analiza missing values
+Correlation (data) # analiza korelacije
+
+
+# vizualizacija atributov of the initial data set
 
 ## boxplot za vse integer atributi mesec vs postaja
 # BoxPlot(data)
@@ -27,10 +33,18 @@ data <- AddAttributes (data)
 # Histogram(data)
 
 ## scatterplot 
-# Scatterplot2(data) 
+Scatterplot(data) 
 
-# summary(data)
-# missingVariables <- is.na(data)
+# priprava koncnega dataseta
+#FinalData (data)
+
+# vizualizacija atributov finalnega dataseta
+## boxplot za vse integer atributi mesec vs postaja
+#BoxPlot(finaldata)
+## histograma za vse integer atributi postaja
+#Histogram(finaldata)
+## scatterplot 
+# Scatterplot(finaldata)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
