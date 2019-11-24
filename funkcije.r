@@ -89,8 +89,7 @@ AddAttributes <- function (data)
 
   # Dodajanje razredov NIZKA, SREDNJA, VISOKA, EKSTREMNA
   classes <- cut(data$O3, c(0, 60, 120, 180, Inf), c("NIZKA","SREDNJA","VISOKA","EKSTREMNA"))
-  data$O3 <- NULL
-  data[, "O3"] <- classes
+  data[, "O3_Class"] <- classes
 
 	# Dodajanje atributa leto
 	data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
