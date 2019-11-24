@@ -30,7 +30,10 @@
 
 DESCRIPTIVE STATISTICS
 1. Create new variables - DONE
-2. Create summary statistics - REDO in a nice way
+2. Create summary statistics - DONE
 3. Number of records per each city - DONE
-4. Average values per month and per location (barplot) for all mean values
-5. Number of rainy days in a month per locations
+4. Average values per month and per location (barplot) for all mean values - DONE
+5. Box plot for each var and run analysis for each var
+6. Histogram
+7. Histogram for every group fo rthe prediction model
+8. Remove outliers
