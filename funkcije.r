@@ -3,11 +3,17 @@
 InitLibs <- function()
 {
   # instaliramo knjiznice, ki jih bomo potrebovali
-  install.packages(c("ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet", "dplyr", "reshape2", "ggplot2"))
+  install.packages(c("ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet", "dplyr", "reshape2", "ggplot2", "Hmisc", "rio"))
 
   # nalozimo knjiznici za predelavo atributov
   library(dplyr)
   library(reshape2)
+  
+  # nalozimo knjiznivo za analizo atributov
+  library(Hmisc)
+  
+  # nalozimo knjiznivo za export podatkov
+  library(rio)
 
   # nalozimo knjiznico za vizualizacijo podatkov
   library(ggplot2)
@@ -49,6 +55,32 @@ ClassAcc <- function(correct, predicted)
 {
     t <- table(correct, predicted)
     sum(diag(t) / sum(t))
+}
+
+
+# Funkcija za analizo correlacije
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+  )
+}
+
+Correlation <- function (my_data)
+{
+  intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
+               "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+               "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+               "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+               "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+  )
+  intdata <- my_data[ , intlist] 
+  res2<-rcorr(as.matrix(intdata))
+  corrd <-flattenCorrMatrix(res2$r, res2$P)
+  export(corrd, "Correlation.csv")
 }
 
 # Funkcija za predelavo atributov
@@ -150,7 +182,7 @@ Histogram<- function (my_data)
 
 #Funkcija za scatterplot 
 
-Scatterplot2<- function (my_data)
+Scatterplot<- function (my_data)
 {  
 intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
                "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
@@ -177,4 +209,10 @@ for(ii in 1:(ncol(intdata)-1) )
         )
     }
   } 
+}
+
+# Funkcija za pripravo finanlnega dataseta
+FinalData <- function (data)
+{
+  finaldata
 }

@@ -15,14 +15,29 @@ data <- read.table("podatkiSem1.csv", header = T, sep = ",")
 # dodajanje in predelava atributov
 data <- PredelavaAtributov (data)
 
-# vizualizacija atributov
+# analiza atributov
+summary(data) # summary statistika
+sum(is.na(data)) # analiza missing values
+Correlation (data) # analiza korelacije
+
+
+# vizualizacija atributov of the initial data set 
 ## boxplot za vse integer atributi mesec vs postaja
 BoxPlot(data)
 ## histograma za vse integer atributi postaja
 Histogram(data)
 ## scatterplot 
-Scatterplot2(data) 
+Scatterplot(data) 
 
-summary(data)
-a <- is.na(data)
+# priprava koncnega dataseta
+FinalData (data)
+
+# vizualizacija atributov finalnega dataseta
+## boxplot za vse integer atributi mesec vs postaja
+BoxPlot(finaldata)
+## histograma za vse integer atributi postaja
+Histogram(finaldata)
+## scatterplot 
+Scatterplot(finaldata)
+
 
