@@ -41,3 +41,13 @@ selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace =
 train <- data[selection,]
 test <- data[-selection,]
 
+# dejanski rezultati na testni mnozici
+observed <- train$O3
+
+# vecinski razred
+majorityClass <- names(which.max(table(train$O3)))
+
+# tocnost napovedi vecinskega razreda
+majorityClassifier <- sum(train$O3 == majorityClass) / length(train$O3)
+
+
