@@ -40,8 +40,11 @@ data <- PredelavaAtributov (data)
 # vizualizacija atributov
 ## boxplot za vse integer atributi mesec vs postaja
 BoxPlot(data)
-## boxplot za vse integer atributi postaja
+## histograma za vse integer atributi postaja
 Histogram(data)
- 
+## scatterplot 
+Scatterplot2(data) 
 
+summary(data)
+a <- is.na(data)
 

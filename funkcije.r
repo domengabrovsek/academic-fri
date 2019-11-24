@@ -39,12 +39,16 @@ PredelavaAtributov <- function (my_data)
 	#stringi <- c("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-")
 	#for (i in 1:12) { my_data[,meseci[i]] <- assign(meseci[i],grepl(stringi[i],my_data$Datum))}
 
-	#months vector assuming 1st month is Jan.
-	mymonths <- c("Jan","Feb","Mar",
-	              "Apr","May","Jun",
-	              "Jul","Aug","Sep",
-	              "Oct","Nov","Dec")
+	
 	#add abbreviated month name
+	mymonths <- factor(c("Jan","Feb","Mar",
+	                     "Apr","May","Jun",
+	                     "Jul","Aug","Sep",
+	                     "Oct","Nov","Dec"), 
+	                   levels = c("Jan","Feb","Mar",
+	                              "Apr","May","Jun",
+	                              "Jul","Aug","Sep",
+	                              "Oct","Nov","Dec"));
 	my_data$Mesec_Abb <- mymonths[ my_data$mesec ]
 	
 	# Dodajanje atributa letni cas na podlagi atributa mesec
@@ -72,18 +76,19 @@ PredelavaAtributov <- function (my_data)
 # Funkcija za boxplot
 BoxPlot<- function (my_data)
 {
-  nonint <-my_data[ , unlist(lapply(my_data, is.numeric)) ]
-  nonibtlist <- colnames(nonint)
+  #code to automatically select all integer variables (will include year and month)
+  #intvar <-my_data[ , unlist(lapply(my_data, is.numeric)) ]
+  #intlist <- colnames(intvar)
   
   #manual and more precise creation of the var list 
-  #nonibtlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
-  #          "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
-  #          "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-  #          "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
-  #          "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
-  #                )
+  intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
+            "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+            "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+            "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+            "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+                  )
   
-  for (i in nonibtlist)
+  for (i in intlist)
     {
     print(
       ggplot(my_data, aes(x=my_data$Mesec_Abb, y=my_data[,i], fill=Postaja)) + 
@@ -98,18 +103,19 @@ BoxPlot<- function (my_data)
 # Funkcija za histogramo
 Histogram<- function (my_data)
 {
-  nonint <-my_data[ , unlist(lapply(my_data, is.numeric)) ]
-  nonibtlist <- colnames(nonint)
+  #code to automatically select all integer variables (will include year and month)
+  #intvar <-my_data[ , unlist(lapply(my_data, is.numeric)) ]
+  #intlist <- colnames(intvar)
   
   #manual and more precise creation of the var list 
-  #nonibtlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
-  #          "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
-  #          "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-  #          "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
-  #          "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
-  #                )
+  intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
+               "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+               "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+               "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+               "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+              )
   
-  for (i in nonibtlist)
+  for (i in intlist)
   {
     print(
       ggplot(my_data, aes(x = my_data[,i], fill = Postaja)) +
@@ -118,19 +124,33 @@ Histogram<- function (my_data)
   }
 }
 
+#Funkcija za scatterplot 
 
-
-#Funkcija za scatterplot
-ScatterPlot <- function (my_data, x, y)
+Scatterplot2<- function (my_data)
+{  
+intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
+               "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+               "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+               "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+               "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+            )
+intdata <-my_data[ , intlist]  
+for(ii in 1:(ncol(intdata)-1) )
   {
-
-gg <- ggplot(my_data, aes(x=x, y=y)) + 
-  geom_point(aes(col=Postaja)) + 
-  geom_smooth(method="loess", se=F) + 
-  xlim(c(0, max(x))) + 
-  ylim(c(0, max(y))) + 
-  labs(subtitle= paste(x, "vs" , y), 
-              title="Scatterplot")
-
-plot(gg)
-  }
+  begin <- ii + 1
+  for(i in begin:ncol(intdata))
+   {
+    print(
+      ggplot(my_data, aes(x=intdata[,ii], y=intdata[,i])) + 
+        geom_point(aes(col=Postaja)) + 
+        geom_smooth(method="loess", se=F) + 
+        xlim(c(0, max(intdata[,ii]))) + 
+        ylim(c(0, max(intdata[,i]))) + 
+        labs(
+          title="Scatterplot")
+          + xlab(intlist[ii])
+          + ylab(intlist[i])
+        )
+    }
+  } 
+}
