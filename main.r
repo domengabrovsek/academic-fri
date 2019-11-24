@@ -6,6 +6,9 @@
 # nalozimo svoje custom funkcije
 source("funkcije.r")
 
+# nalozimo funkcije za klasifikatorje
+source('klasifikatorji.r')
+
 # nalozimo vse knjiznice, ki jih bomo potrebovali
 InitLibs()
 
@@ -23,27 +26,26 @@ summary(data) # summary statistika
 sum(is.na(data)) # analiza missing values
 Correlation (data) # analiza korelacije
 
-
 # vizualizacija atributov of the initial data set
 
-## boxplot za vse integer atributi mesec vs postaja
+# boxplot za vse integer atributi mesec vs postaja
 # BoxPlot(data)
 
-## histograma za vse integer atributi postaja
+# histogram za vse integer atributi postaja
 # Histogram(data)
 
 ## scatterplot 
 Scatterplot(data) 
 
 # priprava koncnega dataseta
-#FinalData (data)
+# FinalData (data)
 
 # vizualizacija atributov finalnega dataseta
-## boxplot za vse integer atributi mesec vs postaja
-#BoxPlot(finaldata)
-## histograma za vse integer atributi postaja
-#Histogram(finaldata)
-## scatterplot 
+# boxplot za vse integer atributi mesec vs postaja
+# BoxPlot(finaldata)
+# histogram za vse integer atribute postaja
+# Histogram(finaldata)
+# scatterplot 
 # Scatterplot(finaldata)
 
 # random generator seed, da bomo imeli ponovljive rezultate
@@ -58,10 +60,5 @@ test <- data[-selection,]
 # dejanski rezultati na testni mnozici
 observed <- train$O3
 
-# vecinski razred
-majorityClass <- names(which.max(table(train$O3)))
-
-# tocnost napovedi vecinskega razreda
-majorityClassifier <- sum(train$O3 == majorityClass) / length(train$O3) # 0.6211073
-
-
+# Vecinski klasifikator - 0.6211073
+MajorityClassifier(train)
