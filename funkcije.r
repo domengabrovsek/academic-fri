@@ -1,3 +1,27 @@
+
+# Funkcija za inicializacijo knjiznic
+InitLibs <- function()
+{
+  # instaliramo knjiznice, ki jih bomo potrebovali
+  install.packages(c("ipred", "prodlim", "CORElearn", "e1071", "randomForest", "kernlab", "nnet", "dplyr", "reshape2", "ggplot2"))
+
+  # nalozimo knjiznici za predelavo atributov
+  library(dplyr)
+  library(reshape2)
+
+  # nalozimo knjiznico za vizualizacijo podatkov
+  library(ggplot2)
+
+  # nalozimo knjiznico za precno preverjanje
+  library(ipred)
+
+  # nalozimo knjiznico za grajenje odlocitvenih dreves
+  library(rpart)
+
+  # nalozimo knjiznico ki podpira grajenje razlicnih modelov
+  library(CORElearn)
+}
+
 # Funkcija za izracun Brierjeve mere
 BrierScore <- function(observedMatrix, predictedMatrix)
 {
