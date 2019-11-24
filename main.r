@@ -48,6 +48,6 @@ observed <- train$O3
 majorityClass <- names(which.max(table(train$O3)))
 
 # tocnost napovedi vecinskega razreda
-majorityClassifier <- sum(train$O3 == majorityClass) / length(train$O3)
+majorityClassifier <- sum(train$O3 == majorityClass) / length(train$O3) # 0.6211073
 
 
