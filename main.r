@@ -1,7 +1,7 @@
 # glavna skripta za seminarsko
 
 # predvidevamo da imamo nastavljen "working directory" in da so vse potrebne datoteke v isti mapi
-# oz uporabimo setwd(pot)
+# oz. setwd("C:/git/fri-ai-assignment")
 
 # nalozimo svoje custom funkcije
 source("funkcije.r")
@@ -10,19 +10,34 @@ source("funkcije.r")
 InitLibs()
 
 # nalozimo dataset
-data <- read.table("podatkiSem1.csv", header = T, sep = ",")
+orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
+
+# kopija originalnih podatkov
+data <- orgData
 
 # dodajanje in predelava atributov
-data <- PredelavaAtributov (data)
+data <- AddAttributes (data)
 
 # vizualizacija atributov
-## boxplot za vse integer atributi mesec vs postaja
-BoxPlot(data)
-## histograma za vse integer atributi postaja
-Histogram(data)
-## scatterplot 
-Scatterplot2(data) 
 
-summary(data)
-a <- is.na(data)
+## boxplot za vse integer atributi mesec vs postaja
+# BoxPlot(data)
+
+## histograma za vse integer atributi postaja
+# Histogram(data)
+
+## scatterplot 
+# Scatterplot2(data) 
+
+# summary(data)
+# missingVariables <- is.na(data)
+
+# random generator seed, da bomo imeli ponovljive rezultate
+set.seed(12345)
+
+# razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
+selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
+
+train <- data[selection,]
+test <- data[-selection,]
 
