@@ -51,13 +51,13 @@ Specificity <- function(observed, predicted)
 }
 
 # Funkcija za izracun klasifikacijsko tocnost modela
-ClassAcc <- function(correct, predicted)
+ClassAcc <- function(observed, predicted)
 {
-    t <- table(correct, predicted)
+    t <- table(observed, predicted)
     sum(diag(t) / sum(t))
 }
 
-# Funkcija za analizo correlacije
+# Funkcija za analizo korelacije
 flattenCorrMatrix <- function(cormat, pmat) {
   ut <- upper.tri(cormat)
   data.frame(
@@ -82,10 +82,20 @@ Correlation <- function (my_data)
   export(corrd, "Correlation.csv")
 }
 
-# Funkcija za dodajanje novih atributov
-AddAttributes <- function (data)
+# Funkcija za odstranjevanje atributov
+RemoveAttributes <- function(data)
 {
+  data$Datum <- NULL
+  data$Glob_sevanje_min <- NULL
+  data$O3 <- data$O3_Class
+  data$O3_Class <- NULL
 
+  return (data)
+}
+
+# Funkcija za dodajanje in spreminjanje atributov
+ModifyAttributes <- function (data)
+{
   # Dodajanje razredov NIZKA, SREDNJA, VISOKA, EKSTREMNA
   classes <- cut(data$O3, c(0, 60, 120, 180, Inf), c("NIZKA","SREDNJA","VISOKA","EKSTREMNA"))
   data[, "O3_Class"] <- classes

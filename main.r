@@ -10,7 +10,7 @@ source("funkcije.r")
 source('klasifikatorji.r')
 
 # nalozimo vse knjiznice, ki jih bomo potrebovali
-InitLibs()
+# InitLibs()
 
 # nalozimo dataset
 orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
@@ -18,13 +18,13 @@ orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
 # kopija originalnih podatkov
 data <- orgData
 
-# dodajanje in predelava atributov
-data <- AddAttributes (data)
+# dodajanje, odstranjevanje in predelava atributov
+data <- ModifyAttributes (data)
 
 # analiza atributov
-summary(data) # summary statistika
-sum(is.na(data)) # analiza missing values
-Correlation (data) # analiza korelacije
+# summary(data) # summary statistika
+# sum(is.na(data)) # analiza missing values
+# Correlation (data) # analiza korelacije
 
 # vizualizacija atributov of the initial data set
 
@@ -35,7 +35,7 @@ Correlation (data) # analiza korelacije
 # Histogram(data)
 
 ## scatterplot 
-Scatterplot(data) 
+# Scatterplot(data) 
 
 # priprava koncnega dataseta
 # FinalData (data)
@@ -51,14 +51,82 @@ Scatterplot(data)
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
+# odstrani nepotrebne atribute
+data <- RemoveAttributes(data)
+
 # razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
 selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
 
 train <- data[selection,]
 test <- data[-selection,]
 
-# dejanski rezultati na testni mnozici
-observed <- train$O3
+# ciljna spremenljivka je O3
+observed <- test$O3
+observedMatrix <- model.matrix(~O3 - 1, test)
 
 # Vecinski klasifikator - 0.6211073
-MajorityClassifier(train)
+mcCA <- MajorityClassifier(train)
+
+
+# ------------ ODLOCITVENO DREVO ------------ #
+
+# 10-kratno precno preverjanje
+crossValidationTree <- CrossValidation(train, "tree")
+
+# zgradimo odlocitveno drevo
+dt <- CoreModel(O3 ~ ., data = train, model = "tree")
+predicted <- predict(dt, test, type = "class")
+predictedMatrix <- predict(dt, test, type = "prob")
+
+# klasifikacijska tocnost
+dtCA <- ClassAcc(observed, predicted)
+
+# brierjeva mera
+dtBS <- BrierScore(observedMatrix, predictedMatrix)
+
+
+# ------------ NAIVNI BAYES ------------ #
+
+# 10-kratno precno preverjanje
+crossValidationBayes <- CrossValidation(train, "bayes")
+
+# zgradimo naivni bayesov model
+nb <- CoreModel(O3 ~ ., data = train, model = "bayes")
+predicted <- predict(nb, test, type = "class")
+predictedMatrix <- predict(nb, test, type = "prob")
+
+# klasifikacijska tocnost
+nbCA <- ClassAcc(observed, predicted)
+
+# brierjeva mera
+nbBS <- BrierScore(observedMatrix, predictedMatrix)
+
+# -------------- KNN ----------------- #
+
+# 10-kratno precno preverjanje
+crossValidationKNN <- CrossValidation(train, "knn")
+
+knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5)
+predicted <- predict(knn, test, type = "class")
+predictedMatrix <- predict(knn, test, type = "prob")
+
+# klasifikacijska tocnost
+knnCA <- ClassAcc(observed, predicted)
+
+# brierjeva mera
+knnBS <- BrierScore(observedMatrix, predictedMatrix)
+
+# -------------- Nakljucni gozd ----------------- #
+
+# 10-kratno precno preverjanje
+crossValidationRF <- CrossValidation(train, "rf")
+
+knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5)
+predicted <- predict(knn, test, type = "class")
+predictedMatrix <- predict(knn, test, type = "prob")
+
+# klasifikacijska tocnost
+knnCA <- ClassAcc(observed, predicted)
+
+# brierjeva mera
+knnBS <- BrierScore(observedMatrix, predictedMatrix)
