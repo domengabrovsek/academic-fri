@@ -51,14 +51,13 @@ Specificity <- function(observed, predicted)
 }
 
 # Funkcija za izracun klasifikacijsko tocnost modela
-ClassAcc <- function(correct, predicted)
+ClassAcc <- function(observed, predicted)
 {
-    t <- table(correct, predicted)
+    t <- table(observed, predicted)
     sum(diag(t) / sum(t))
 }
 
-
-# Funkcija za analizo correlacije
+# Funkcija za analizo korelacije
 flattenCorrMatrix <- function(cormat, pmat) {
   ut <- upper.tri(cormat)
   data.frame(
@@ -72,10 +71,10 @@ flattenCorrMatrix <- function(cormat, pmat) {
 Correlation <- function (my_data)
 {
   intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
-               "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
-               "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-               "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
-               "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+              "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+              "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+              "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+              "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
   )
   intdata <- my_data[ , intlist] 
   res2<-rcorr(as.matrix(intdata))
@@ -83,14 +82,23 @@ Correlation <- function (my_data)
   export(corrd, "Correlation.csv")
 }
 
-# Funkcija za dodajanje novih atributov
-AddAttributes <- function (data)
+# Funkcija za odstranjevanje atributov
+RemoveAttributes <- function(data)
 {
+  data$Datum <- NULL
+  data$Glob_sevanje_min <- NULL
+  data$O3 <- data$O3_Class
+  data$O3_Class <- NULL
 
+  return (data)
+}
+
+# Funkcija za dodajanje in spreminjanje atributov
+ModifyAttributes <- function (data)
+{
   # Dodajanje razredov NIZKA, SREDNJA, VISOKA, EKSTREMNA
   classes <- cut(data$O3, c(0, 60, 120, 180, Inf), c("NIZKA","SREDNJA","VISOKA","EKSTREMNA"))
-  data$O3 <- NULL
-  data[, "O3"] <- classes
+  data[, "O3_Class"] <- classes
 
 	# Dodajanje atributa leto
 	data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
