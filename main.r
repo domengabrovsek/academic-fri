@@ -10,7 +10,7 @@ source("funkcije.r")
 source('klasifikatorji.r')
 
 # nalozimo vse knjiznice, ki jih bomo potrebovali
-# InitLibs()
+InitLibs()
 
 # nalozimo dataset
 orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
@@ -21,33 +21,59 @@ data <- orgData
 # dodajanje, odstranjevanje in predelava atributov
 data <- ModifyAttributes (data)
 
+# export novega dataseta z dodatnimi atributi
+# export(data, "data.csv")
+
 # analiza atributov
-# summary(data) # summary statistika
-# sum(is.na(data)) # analiza missing values
-# Correlation (data) # analiza korelacije
+summary(data)
+sum(is.na(data)) # analiza missing values
+export(psych::describe(data), "SummaryAll.csv") # summary statistika exported
+psych::describeBy(data, data$Postaja) #summary statistika za Postajo
+Correlation(data) # analiza korelacije
 
 # vizualizacija atributov of the initial data set
+## boxlot za en atribut
+ BoxPlotV (data)
 
-# boxplot za vse integer atributi mesec vs postaja
-# BoxPlot(data)
+## boxplot za mesec
+ BoxPlotM(data)
+
+## boxplot za vse integer atributi mesec vs postaja
+ BoxPlotMP(data)
 
 # histogram za vse integer atributi postaja
-# Histogram(data)
-
+ HistogramPost(data)
+ HistogramO3 (data)
+ HistogramPM10 (data)
 ## scatterplot 
-# Scatterplot(data) 
+#Scatterplot(data) 
+
+# analiza stevila podatkov za mesec
+PodatkiZaMesec (data)
+
+# analiza of number of data per preduction group
+BarChartPCount (data)
+BarChartPM10P (data) 
+BarChartPM10M (data) 
+BarChartO3P (data)
+BarChartO3M (data)
+ 
+# tempdir() #retrieving all png files from temp directory
+
+
+
+## boxplot za vse integer atributi mesec vs postaja
+#BoxPlot(finaldata)
+## histograma za vse integer atributi postaja
+ Histogram(data)
+## scatterplot 
+ ScatterplotP(data)
+ ScatterplotO3(data)
 
 # priprava koncnega dataseta
-# FinalData (data)
-
+FinalData <- FinalData (data)
 # vizualizacija atributov finalnega dataseta
-# boxplot za vse integer atributi mesec vs postaja
-# BoxPlot(finaldata)
-# histogram za vse integer atribute postaja
-# Histogram(finaldata)
-# scatterplot 
-# Scatterplot(finaldata)
-
+ 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
