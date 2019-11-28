@@ -19,7 +19,7 @@ orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
 data <- orgData
 
 # dodajanje, odstranjevanje in predelava atributov
-data <- ModifyAttributes (data)
+data <- PrepareAttributes (data)
 
 # export novega dataseta z dodatnimi atributi
 # export(data, "data.csv")
@@ -77,9 +77,6 @@ FinalData <- FinalData (data)
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
-# odstrani nepotrebne atribute
-data <- RemoveAttributes(data)
-
 # razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
 selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
 
@@ -94,10 +91,12 @@ observedMatrix <- model.matrix(~O3 - 1, test)
 mcCA <- MajorityClassifier(train)
 
 
+sort(attrEval(O3 ~ ., train, "Relief"), decreasing = TRUE)
+
 # ------------ ODLOCITVENO DREVO ------------ #
 
 # 10-kratno precno preverjanje
-crossValidationTree <- CrossValidation(train, "tree")
+dtCV <- CrossValidation(train, "tree")
 
 # zgradimo odlocitveno drevo
 dt <- CoreModel(O3 ~ ., data = train, model = "tree")
@@ -147,12 +146,35 @@ knnBS <- BrierScore(observedMatrix, predictedMatrix)
 # 10-kratno precno preverjanje
 crossValidationRF <- CrossValidation(train, "rf")
 
-knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5)
-predicted <- predict(knn, test, type = "class")
-predictedMatrix <- predict(knn, test, type = "prob")
+rf <- CoreModel(O3 ~ ., data = train, model = "rf")
+predicted <- predict(rf, test, type = "class")
+predictedMatrix <- predict(rf, test, type = "prob")
 
 # klasifikacijska tocnost
-knnCA <- ClassAcc(observed, predicted)
+rfCA <- ClassAcc(observed, predicted)
 
 # brierjeva mera
-knnBS <- BrierScore(observedMatrix, predictedMatrix)
+rfBS <- BrierScore(observedMatrix, predictedMatrix)
+
+
+# -------------- SVM ----------------- #
+# mypredict.generic <- function(object, newdata){predict(object, newdata, type = "class")}
+# errorest(O3~., data = train, model = svm, predict = mypredict.generic)
+
+sm <- svm(O3 ~ ., data = train, probability = T)
+predicted <- predict(sm, test, type = "class")
+
+svmCA <- ClassAcc(observed, predicted)
+
+sm <- svm(O3 ~ ., learn, probability = T)
+pred <- predict(sm, test, probability = T)
+predictedMatrix <- attr(pred, "probabilities")
+
+# v tem konkretnem primeru, vrstni red razredov (stolpcev) v matriki predMat je 
+# obraten kot v matriki obsMat. 
+colnames(observedMatrix)
+colnames(predictedMatrix)
+
+# Iz tega razloga zamenjemo vrstni red stolpcev v matriki predMat
+smBS <- BrierScore(observedMatrix, predictedMatrix[,c(2,1)])
+

@@ -16,3 +16,4 @@ CrossValidation <- function(myData, targetModel)
     result <- errorest(O3~., data = myData, model = mymodel.coremodel, predict = mypredict.coremodel, target.model = targetModel)
     result <- 1 - result$error
 }
+
