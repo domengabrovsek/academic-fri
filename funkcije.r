@@ -102,7 +102,7 @@ ModifyAttributes <- function (data)
   data[, "O3_Class"] <- classes
 
     # Dodajanje razredov NIZKA, VISOKA za PM10
-  classesPM10 <- cut(data$PM10, c(0, 35,  Inf), c("NIZKA", "VISOKA"))
+  classesPM10 <- cut(data$PM10, c(-1, 35,  Inf), c("NIZKA", "VISOKA"))
   data[, "PM10_Class"] <- classesPM10
 
 	# Dodajanje atributa leto
@@ -303,9 +303,8 @@ HistogramPM10 <- function (my_data)
   }
 }
 
-#Funkcija za scatterplot 
-
-Scatterplot<- function (my_data)
+#Funkcija za scatterplot za POstajo
+ScatterplotP<- function (my_data)
 {  
   intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
                 "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
@@ -334,6 +333,38 @@ Scatterplot<- function (my_data)
     } 
 }
 
+
+#Funkcija za scatterplot za O3
+ScatterplotO3 <- function (my_data)
+{  
+  intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min","Hitrost_vetra_max","Hitrost_vetra_mean", 
+               "Hitrost_vetra_min", "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  "Padavine_mean", 
+               "Padavine_sum", "Pritisk_max", "Pritisk_mean", "Pritisk_min", "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+               "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", "PM10", "O3", 
+               "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+  )
+  intdata <-my_data[ , intlist]  
+  for(ii in 1:(ncol(intdata)-1) )
+  {
+    begin <- ii + 1
+    for(i in begin:ncol(intdata))
+    {
+      print(
+        ggplot(my_data, aes(x=intdata[,ii], y=intdata[,i])) + 
+          geom_point(aes(col=O3_Class)) + 
+          geom_smooth(method="loess", se=F) + 
+          xlim(c(0, max(intdata[,ii]))) + 
+          ylim(c(0, max(intdata[,i]))) + 
+          labs(
+            title="Scatterplot")
+        + xlab(intlist[ii])
+        + ylab(intlist[i])
+      )
+    }
+  } 
+}
+
+
 # Funkcija za analizo stevila podatkov za vsak mesec
 PodatkiZaMesec <- function (My_data)
 {
@@ -347,8 +378,8 @@ ggplot(data = datacount,
                position="dodge") 
 }
 
-# Barchart za analizo stevila podatkov za vsako grupo PM10
-BarChartPM10 <- function (my_data)
+# Barchart za analizo stevila podatkov za vsako grupo PM10 in mesec
+BarChartPM10M <- function (my_data)
 {
   datacount <- my_data %>% count(Mesec_Abb, PM10_Class)
   
@@ -358,12 +389,28 @@ BarChartPM10 <- function (my_data)
            aes(x = Mesec_Abb, y = n, fill = PM10_Class)) +
       stat_summary(fun.y = sum, # adds up all observations for the month
                    geom = "bar",
-                   position=position_dodge(0.9)) 
+                   position=position_dodge2(width = 0.9, preserve = "single")) 
   )
 }
 
-# Barchart za analizo stevila podatkov za vsako grupo O3
-BarChartO3 <- function (my_data)
+
+# Barchart za analizo stevila podatkov za vsako grupo PM10 in Postajo
+BarChartPM10P <- function (my_data)
+{
+  datacount <- my_data %>% count(Postaja, PM10_Class)
+  
+  # graph by month:
+  print (
+    ggplot(data = datacount,
+           aes(x = Postaja, y = n, fill = PM10_Class)) +
+      stat_summary(fun.y = sum, # adds up all observations for the month
+                   geom = "bar",
+                   position=position_dodge2(width = 0.9, preserve = "single")) 
+  )
+}
+
+# Barchart za analizo stevila podatkov za vsako grupo O3 in Mesec
+BarChartO3M <- function (my_data)
 {
   datacount <- my_data %>% count(Mesec_Abb, O3_Class)
   
@@ -373,7 +420,34 @@ BarChartO3 <- function (my_data)
            aes(x = Mesec_Abb, y = n, fill = O3_Class)) +
       stat_summary(fun.y = sum, # adds up all observations for the month
                    geom = "bar",
-                   position=position_dodge(0.9)) 
+                   position=position_dodge2(width = 0.9, preserve = "single")) 
+  )
+}
+
+
+# Barchart za stevilo atributov Postaja
+BarChartPCount <- function(my_data)
+{
+  print (
+    ggplot(my_data, aes(x=Postaja))+
+      geom_bar(stat="count", width=0.7, fill="steelblue")+
+      geom_text( stat='count',aes(label=..count..), vjust=1.6, color="white", size=5.5)+
+      theme_minimal()
+  )
+}
+
+# Barchart za analizo stevila podatkov za vsako grupo O3 in postajo
+BarChartO3P <- function (my_data)
+{
+  datacount <- my_data %>% count(Postaja, O3_Class)
+  
+  # graph by month:
+  print (
+    ggplot(data = datacount,
+           aes(x = Postaja, y = n, fill = O3_Class)) +
+      stat_summary(fun.y = sum, # adds up all observations for the month
+                   geom = "bar",
+                   position=position_dodge2(width = 0.9, preserve = "single")) 
   )
 }
 
@@ -390,14 +464,16 @@ FinalData <- function (my_data)
   
   for (i in intlist)
   {
+    outlierUp <- NULL
+    outlierLow <- NULL
+    index_outlier <- NULL
     outlierUp=quantile(my_data[,i],0.75, na.rm = TRUE)+1.5*IQR(my_data[,i],na.rm = TRUE)
     outlierLow=quantile(my_data[,i],0.25, na.rm = TRUE)-1.5*IQR(my_data[,i],na.rm = TRUE)
-    index_outlier= which(my_data[,i]> outlierUp || my_data[,i] < outlierLow)
-    if (length(index_outlier) == 0) 
+    index_outlier= which(my_data[,i] > outlierUp | my_data[,i] < outlierLow)
+    if (length(index_outlier) != 0) 
     {
-      my_data = my_data
-    } else {
-      my_data=my_data[-index_outlier, ]
-    }
+      my_data = my_data[-index_outlier, ]
+    } 
   }
+  return (my_data)
 }

@@ -10,7 +10,7 @@ source("funkcije.r")
 source('klasifikatorji.r')
 
 # nalozimo vse knjiznice, ki jih bomo potrebovali
-# InitLibs()
+InitLibs()
 
 # nalozimo dataset
 orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
@@ -20,6 +20,9 @@ data <- orgData
 
 # dodajanje, odstranjevanje in predelava atributov
 data <- ModifyAttributes (data)
+
+# export novega dataseta z dodatnimi atributi
+# export(data, "data.csv")
 
 # analiza atributov
 summary(data)
@@ -38,7 +41,6 @@ Correlation(data) # analiza korelacije
 ## boxplot za vse integer atributi mesec vs postaja
  BoxPlotMP(data)
 
-
 # histogram za vse integer atributi postaja
  HistogramPost(data)
  HistogramO3 (data)
@@ -50,24 +52,28 @@ Correlation(data) # analiza korelacije
 PodatkiZaMesec (data)
 
 # analiza of number of data per preduction group
-BarChartPM10 (data) 
-BarChartO3 (data)
+BarChartPCount (data)
+BarChartPM10P (data) 
+BarChartPM10M (data) 
+BarChartO3P (data)
+BarChartO3M (data)
  
 # tempdir() #retrieving all png files from temp directory
 
-# priprava koncnega dataseta
-FinalData (data)
-
-# vizualizacija atributov finalnega dataseta
 
 
 ## boxplot za vse integer atributi mesec vs postaja
 #BoxPlot(finaldata)
 ## histograma za vse integer atributi postaja
-#Histogram(finaldata)
+ Histogram(data)
 ## scatterplot 
-# Scatterplot(finaldata)
+ ScatterplotP(data)
+ ScatterplotO3(data)
 
+# priprava koncnega dataseta
+FinalData <- FinalData (data)
+# vizualizacija atributov finalnega dataseta
+ 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
