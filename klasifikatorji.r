@@ -123,24 +123,3 @@ CrossValidation <- function(myData, targetModel)
 
     return (data)
 }
-
-CrossValidation10 <- function(myData, targetModel)
-{
-    mymodel.coremodel <- function(formula, data, target.model){CoreModel(formula, data, model=target.model)}
-    mypredict.coremodel <- function(object, newdata) {pred <- predict(object, newdata)$class; destroyModels(object); pred}
-
-    table <- c()
-
-    # pozenemo 10x 
-    for(i in 1:10)
-    {
-        result <- errorest(O3~leto+mesec+Vlaga_min+Vlaga_mean+Vlaga_max+Glob_sevanje_mean+Glob_sevanje_max+Glob_sevanje_spr+Temperatura_Krvavec_min+Temperatura_Krvavec_max+Sunki_vetra_max+Temperatura_lokacija_spr, data = myData, model = mymodel.coremodel, predict = mypredict.coremodel, target.model = targetModel)
-        result <- 1 - result$error
-        table[i] <- result
-    }
-
-    # vrnemo min, max in povprecno vrednost vseh preverjanj
-    data <- c(min(table), max(table), mean(table))
-
-    return (data)
-}
