@@ -18,8 +18,8 @@ orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 # kopija originalnih podatkov
 data <- orgData
 
-# pripravimo podatke
-data <- PrepareAttributesPM10 (data)
+# pripravimo nove podatke
+data <- PrepareAttributes ("PM10", data)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
@@ -35,7 +35,7 @@ observed <- test$PM10
 observedMatrix <- model.matrix(~PM10 - 1, test)
 
 # preverjanje koliko posamezni atribut prispeva
-# sort(attrEval(PM10 ~ ., train, "Relief"), decreasing = TRUE)
+sort(attrEval(PM10 ~ ., train, "Relief"), decreasing = TRUE)
 
 # Vecinski klasifikator - 0.8765147
 mc <- MajorityClassifier("PM10", train)

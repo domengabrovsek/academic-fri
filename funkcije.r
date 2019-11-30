@@ -64,207 +64,249 @@ ClassAcc <- function(observed, predicted)
 # priprava atributov
 PrepareAttributes <- function(data)
 {
-  # odstranimo negativne vrednosti
-  index <- which(data[, "PM10"] < 0)
-  data <- data[-index, ]
+    ## Manual and more precise creation of the var list 
+    intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
+            "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
+            "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
+            "Padavine_mean", "Padavine_sum", 
+            "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
+            "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+            "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
+            "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", 
+            "PM10", "O3", 
+            "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+          )
 
-  # disktretizacija PM10
-  classes <- cut(data$PM10, c(0, 35, Inf), c("NIZKA", "VISOKA"))
-  data[, "PM10"] <- classes
+    outlierlist <- c()
+    for (i in intlist)
+    {
+      outlierUp <- NULL
+      outlierLow <- NULL
+      outlierUp=quantile(my_data[,i],0.75, na.rm = TRUE)+1.5*IQR(my_data[,i],na.rm = TRUE)
+      outlierLow=quantile(my_data[,i],0.25, na.rm = TRUE)-1.5*IQR(my_data[,i],na.rm = TRUE)
+      index_outlier_list= which(my_data[,i] > outlierUp | my_data[,i] < outlierLow)
+      if (length(index_outlier_list) != 0) 
+      {
+        outlierlist <- append(outlierlist, index_outlier_list, length(outlierlist) )
+      } 
+    }
+    my_data <- my_data[-outlierlist, ]
+    
+    PMindex_outlier= which(my_data[,"PM10"] < 0)
+    my_data = my_data[-PMindex_outlier, ]
+    my_data$Glob_Sevanje_min <- NULL
 
-  # # Dodamo atribut leto
-  # data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
-
-	# # Dodajanje atributa mesec
-	# data$mesec <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%m"))
-	
-	# # Dodajanje novih atributov
-	# data <- transform(data,
-  #                     #Glob_sevanje_spr (sprememba globalnega sevanja na datum)
-  #                     Glob_sevanje_spr = Glob_sevanje_max - Glob_sevanje_min,
-  #                     #Pritisk_spr (sprememba pritiska na datum)
-  #                     Pritisk_spr = Pritisk_max - Pritisk_min,
-  #                     #Vlaga_spr (sprememba vlage na datum)
-  #                     Vlaga_spr = Vlaga_max -  Vlaga_min,
-  #                     #Temperatura_Krvavec_spr (sprememba temperature v Krvavcu na datum)
-  #                     Temperatura_Krvavec_spr = Temperatura_Krvavec_max -  Temperatura_Krvavec_min,
-  #                     #Temperatura_lokacija_spr (sprememba temperature v lokaciji na datum)
-  #                     Temperatura_lokacija_spr = Temperatura_lokacija_max - Temperatura_lokacija_min
-  #                     )
-
-  # meseci <- c("Januar","Februar","Marec","April","Maj","Junij","Julij","Avgust","September","Oktober","November","December")
-  # stringi <- c("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-")
-  # for (i in 1:12) { data[,meseci[i]] <- assign(meseci[i],grepl(stringi[i], data$Datum))}
-
-  # data$Pomlad <- data$Marec + data$April + data$Maj
-  # data$Poletje <- data$Junij + data$Julij + data$Avgust
-  # data$Jesen <- data$September + data$Oktober + data$November
-  # data$Zima <- data$December + data$Januar + data$Februar
-
-  # # Odstranimo nepotrebne atribute
-  # data$Januar<-NULL
-  # data$Februar<-NULL
-  # data$Marec<-NULL
-  # data$April<-NULL
-  # data$Maj<-NULL
-  # data$Junij<-NULL
-  # data$Julij<-NULL
-  # data$Avgust<-NULL
-  # data$September<-NULL
-  # data$Oktober<-NULL
-  # data$November<-NULL
-  # data$December<-NULL
-
-  # remove letni časi
-  # data$Poletje <- NULL
-  # data$Pomlad <- NULL
-  # data$Jesen <- NULL
-  # data$Zima <- NULL
-
-  # data$Datum <- NULL
-  # data$leto <- NULL
-  data$O3 <- NULL
-
-  # remove padavine
-  # data$Padavine_sum <- NULL
-  # data$Padavine_mean <- NULL
-
-  # remove krvavec
-  # data$Temperatura_Krvavec_min <- NULL
-  # data$Temperatura_Krvavec_max <- NULL
-  # data$Temperatura_Krvavec_mean <- NULL
-  # data$Temperatura_Krvavec_spr <- NULL
-
-  # remove Temperatura_lokacija (max has best corelation)
-  # data$Temperatura_lokacija_min <- NULL
-  # data$Temperatura_lokacija_mean <- NULL
-
-  # remove pritisk
-  # data$Pritisk_spr <- NULL
-  # data$Pritisk_min <- NULL
-  # data$Pritisk_max <- NULL
-  # data$Pritisk_mean <- NULL
-
-  # remove postaja
-  # data$Postaja <- NULL
-
-  # remove glob_sevanje
-  # data$Glob_sevanje_max <- NULL
-  data$Glob_sevanje_min <- NULL
-  
-  # remove vlaga
-  # data$Vlaga_min <- NULL
-
-  # remove sunki vetra
-  # data$Sunki_vetra_min <- NULL
-  # data$Sunki_vetra_max <- NULL
-  # data$Sunki_vetra_mean <- NULL
-  # data$Sunki_vetra_spr <- NULL
-
-  # remove hitrost vetra
-  # data$Hitrost_vetra_min <- NULL
-  # data$Hitrost_vetra_spr <- NULL
-
-  return (data)
+    return (my_data)
 }
 
-# priprava atributov za O3
-PrepareAttributesO3 <- function(data)
+# priprava atributov
+PrepareAttributes <- function(variable, data)
 {
-  classes <- cut(data$O3, c(0, 60, 120, 180, Inf), c("NIZKA","SREDNJA","VISOKA","EKSTREMNA"))
-  data[, "O3"] <- classes
+  if(variable == "O3")
+  {
+    classes <- cut(data$O3, c(0, 60, 120, 180, Inf), c("NIZKA","SREDNJA","VISOKA","EKSTREMNA"))
+    data[, "O3"] <- classes
 
-  # data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
+    data$PM10 <- NULL
 
-	# # Dodajanje atributa mesec
-	# data$mesec <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%m"))
-	
-	# # Dodajanje novih atributov
-	# data <- transform(data,
-  #                     #Glob_sevanje_spr (sprememba globalnega sevanja na datum)
-  #                     Glob_sevanje_spr = Glob_sevanje_max - Glob_sevanje_min,
-  #                     #Pritisk_spr (sprememba pritiska na datum)
-  #                     Pritisk_spr = Pritisk_max - Pritisk_min,
-  #                     #Vlaga_spr (sprememba vlage na datum)
-  #                     Vlaga_spr = Vlaga_max -  Vlaga_min,
-  #                     #Temperatura_Krvavec_spr (sprememba temperature v Krvavcu na datum)
-  #                     Temperatura_Krvavec_spr = Temperatura_Krvavec_max -  Temperatura_Krvavec_min,
-  #                     #Temperatura_lokacija_spr (sprememba temperature v lokaciji na datum)
-  #                     Temperatura_lokacija_spr = Temperatura_lokacija_max - Temperatura_lokacija_min
-  #                     )
+    data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
 
-  # meseci <- c("Januar","Februar","Marec","April","Maj","Junij","Julij","Avgust","September","Oktober","November","December")
-  # stringi <- c("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-")
-  # for (i in 1:12) { data[,meseci[i]] <- assign(meseci[i],grepl(stringi[i], data$Datum))}
+    # Dodajanje atributa mesec
+    data$mesec <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%m"))
+    
+    # Dodajanje novih atributov
+    data <- transform(data,
+                        #Glob_sevanje_spr (sprememba globalnega sevanja na datum)
+                        Glob_sevanje_spr = Glob_sevanje_max - Glob_sevanje_min,
+                        #Pritisk_spr (sprememba pritiska na datum)
+                        Pritisk_spr = Pritisk_max - Pritisk_min,
+                        #Vlaga_spr (sprememba vlage na datum)
+                        Vlaga_spr = Vlaga_max -  Vlaga_min,
+                        #Temperatura_Krvavec_spr (sprememba temperature v Krvavcu na datum)
+                        Temperatura_Krvavec_spr = Temperatura_Krvavec_max -  Temperatura_Krvavec_min,
+                        #Temperatura_lokacija_spr (sprememba temperature v lokaciji na datum)
+                        Temperatura_lokacija_spr = Temperatura_lokacija_max - Temperatura_lokacija_min
+                        )
 
-  # data$Pomlad <- data$Marec + data$April + data$Maj
-  # data$Poletje <- data$Junij + data$Julij + data$Avgust
-  # data$Jesen <- data$September + data$Oktober + data$November
-  # data$Zima <- data$December + data$Januar + data$Februar
+    meseci <- c("Januar","Februar","Marec","April","Maj","Junij","Julij","Avgust","September","Oktober","November","December")
+    stringi <- c("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-")
+    for (i in 1:12) { data[,meseci[i]] <- assign(meseci[i],grepl(stringi[i], data$Datum))}
 
-  # # Odstranimo nepotrebne atribute
-  # data$Januar<-NULL
-  # data$Februar<-NULL
-  # data$Marec<-NULL
-  # data$April<-NULL
-  # data$Maj<-NULL
-  # data$Junij<-NULL
-  # data$Julij<-NULL
-  # data$Avgust<-NULL
-  # data$September<-NULL
-  # data$Oktober<-NULL
-  # data$November<-NULL
-  # data$December<-NULL
+    data$Pomlad <- data$Marec + data$April + data$Maj
+    data$Poletje <- data$Junij + data$Julij + data$Avgust
+    data$Jesen <- data$September + data$Oktober + data$November
+    data$Zima <- data$December + data$Januar + data$Februar
 
-  # # remove letni časi
-  # data$Poletje <- NULL
-  # data$Pomlad <- NULL
-  # data$Jesen <- NULL
-  # data$Zima <- NULL
+    # Odstranimo nepotrebne atribute
+    data$Januar<-NULL
+    data$Februar<-NULL
+    data$Marec<-NULL
+    data$April<-NULL
+    data$Maj<-NULL
+    data$Junij<-NULL
+    data$Julij<-NULL
+    data$Avgust<-NULL
+    data$September<-NULL
+    data$Oktober<-NULL
+    data$November<-NULL
+    data$December<-NULL
 
-  # data$Datum <- NULL
-  # data$leto <- NULL
-  data$PM10 <- NULL
+    # remove letni časi
+    data$Poletje <- NULL
+    data$Pomlad <- NULL
+    data$Jesen <- NULL
+    data$Zima <- NULL
 
-  # # remove padavine
-  # data$Padavine_sum <- NULL
-  # data$Padavine_mean <- NULL
+    data$Datum <- NULL
+    data$leto <- NULL
 
-  # # remove krvavec
-  # data$Temperatura_Krvavec_min <- NULL
-  # data$Temperatura_Krvavec_max <- NULL
-  # data$Temperatura_Krvavec_mean <- NULL
-  # data$Temperatura_Krvavec_spr <- NULL
+    # remove padavine
+    data$Padavine_sum <- NULL
+    data$Padavine_mean <- NULL
 
-  # # remove Temperatura_lokacija (max has best corelation)
-  # data$Temperatura_lokacija_min <- NULL
-  # data$Temperatura_lokacija_mean <- NULL
+    # remove krvavec
+    data$Temperatura_Krvavec_min <- NULL
+    data$Temperatura_Krvavec_max <- NULL
+    data$Temperatura_Krvavec_mean <- NULL
+    data$Temperatura_Krvavec_spr <- NULL
 
-  # # remove pritisk
-  # data$Pritisk_spr <- NULL
-  # data$Pritisk_min <- NULL
-  # data$Pritisk_max <- NULL
-  # data$Pritisk_mean <- NULL
+    # remove Temperatura_lokacija (max has best corelation)
+    data$Temperatura_lokacija_min <- NULL
+    data$Temperatura_lokacija_mean <- NULL
 
-  # # remove postaja
-  # data$Postaja <- NULL
+    # remove pritisk
+    data$Pritisk_spr <- NULL
+    data$Pritisk_min <- NULL
+    data$Pritisk_max <- NULL
+    data$Pritisk_mean <- NULL
 
-  # # remove glob_sevanje
-  # data$Glob_sevanje_max <- NULL
-  data$Glob_sevanje_min <- NULL
-  
-  # # remove vlaga
-  # data$Vlaga_min <- NULL
+    # remove postaja
+    data$Postaja <- NULL
 
-  # # remove sunki vetra
-  # data$Sunki_vetra_min <- NULL
-  # data$Sunki_vetra_max <- NULL
-  # data$Sunki_vetra_mean <- NULL
-  # data$Sunki_vetra_spr <- NULL
+    # remove glob_sevanje
+    data$Glob_sevanje_max <- NULL
+    data$Glob_sevanje_min <- NULL
+    
+    # remove vlaga
+    data$Vlaga_min <- NULL
 
-  # # remove hitrost vetra
-  # data$Hitrost_vetra_min <- NULL
-  # data$Hitrost_vetra_spr <- NULL
+    # remove sunki vetra
+    data$Sunki_vetra_min <- NULL
+    data$Sunki_vetra_max <- NULL
+    data$Sunki_vetra_mean <- NULL
+    data$Sunki_vetra_spr <- NULL
+
+    # remove hitrost vetra
+    data$Hitrost_vetra_min <- NULL
+    data$Hitrost_vetra_spr <- NULL
+  }
+  else 
+  {
+    # odstranimo O3, ker ga napovedujemo posebej 
+    orgData$O3 <- NULL
+
+    # odstranimo negativne vrednosti PM10 (min je 0)
+    index <- which(orgData[, "PM10"] < 0)
+    orgData <- orgData[-index, ]
+
+    # diskretizacija PM10
+    classes <- cut(orgData$PM10, c(0, 35, Inf), c("NIZKA", "VISOKA"))
+    orgData[, "PM10"] <- classes
+
+    # # Dodamo atribut leto
+    # data$leto <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%Y"))
+
+    # # Dodajanje atributa mesec
+    # data$mesec <-as.integer(format(as.Date(data$Datum, format="%Y-%m-%d"),"%m"))
+    
+    # # Dodajanje novih atributov
+    # data <- transform(data,
+    #                     #Glob_sevanje_spr (sprememba globalnega sevanja na datum)
+    #                     Glob_sevanje_spr = Glob_sevanje_max - Glob_sevanje_min,
+    #                     #Pritisk_spr (sprememba pritiska na datum)
+    #                     Pritisk_spr = Pritisk_max - Pritisk_min,
+    #                     #Vlaga_spr (sprememba vlage na datum)
+    #                     Vlaga_spr = Vlaga_max -  Vlaga_min,
+    #                     #Temperatura_Krvavec_spr (sprememba temperature v Krvavcu na datum)
+    #                     Temperatura_Krvavec_spr = Temperatura_Krvavec_max -  Temperatura_Krvavec_min,
+    #                     #Temperatura_lokacija_spr (sprememba temperature v lokaciji na datum)
+    #                     Temperatura_lokacija_spr = Temperatura_lokacija_max - Temperatura_lokacija_min
+    #                     )
+
+    # meseci <- c("Januar","Februar","Marec","April","Maj","Junij","Julij","Avgust","September","Oktober","November","December")
+    # stringi <- c("-01-","-02-","-03-","-04-","-05-","-06-","-07-","-08-","-09-","-10-","-11-","-12-")
+    # for (i in 1:12) { data[,meseci[i]] <- assign(meseci[i],grepl(stringi[i], data$Datum))}
+
+    # data$Pomlad <- data$Marec + data$April + data$Maj
+    # data$Poletje <- data$Junij + data$Julij + data$Avgust
+    # data$Jesen <- data$September + data$Oktober + data$November
+    # data$Zima <- data$December + data$Januar + data$Februar
+
+    # # Odstranimo nepotrebne atribute
+    # data$Januar<-NULL
+    # data$Februar<-NULL
+    # data$Marec<-NULL
+    # data$April<-NULL
+    # data$Maj<-NULL
+    # data$Junij<-NULL
+    # data$Julij<-NULL
+    # data$Avgust<-NULL
+    # data$September<-NULL
+    # data$Oktober<-NULL
+    # data$November<-NULL
+    # data$December<-NULL
+
+    # # remove letni časi
+    # data$Poletje <- NULL
+    # data$Pomlad <- NULL
+    # data$Jesen <- NULL
+    # data$Zima <- NULL
+
+    # data$Datum <- NULL
+    # data$leto <- NULL
+
+    # # remove padavine
+    # data$Padavine_sum <- NULL
+    # data$Padavine_mean <- NULL
+
+    # # remove krvavec
+    # # data$Temperatura_Krvavec_min <- NULL
+    # # data$Temperatura_Krvavec_max <- NULL
+    # # data$Temperatura_Krvavec_mean <- NULL
+    # data$Temperatura_Krvavec_spr <- NULL
+
+    # # # remove Temperatura_lokacija (max has best corelation)
+    # # data$Temperatura_lokacija_min <- NULL
+    # # data$Temperatura_lokacija_mean <- NULL
+    # # data$Temperatura_lokacija_spr <- NULL
+
+    # # # remove pritisk
+    # data$Pritisk_spr <- NULL
+    # # data$Pritisk_min <- NULL
+    # # data$Pritisk_max <- NULL
+    # # data$Pritisk_mean <- NULL
+
+    # # remove postaja
+    # # data$Postaja <- NULL
+
+    # # remove glob_sevanje
+    # data$Glob_sevanje_min <- NULL
+    
+    # # remove vlaga
+    # # data$Vlaga_min <- NULL
+
+    # # remove sunki vetra
+    # data$Sunki_vetra_min <- NULL
+    # data$Sunki_vetra_max <- NULL
+    # data$Sunki_vetra_mean <- NULL
+    # data$Sunki_vetra_spr <- NULL
+
+    # # remove hitrost vetra
+    # data$Hitrost_vetra_min <- NULL
+    # data$Hitrost_vetra_max <- NULL
+    # data$Hitrost_vetra_mean <- NULL
+    # data$Hitrost_vetra_spr <- NULL
+  }
 
   return (data)
 }

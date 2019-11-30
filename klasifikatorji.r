@@ -65,13 +65,37 @@ NaiveBayes <- function(variable, train, test)
     return (data)
 }
 
-KNearestNeighbours <- function(variable, train, test)
+KnnPlot <- function (my_data)
+{
+  print(
+    ggplot(data= my_data, aes(x = kList, y = knn)) + 
+    geom_line()
+  )
+}
+
+KNNTest <- function(variable, train, test, k)
+{
+    knn <- c()
+    kList <- c()
+
+    for(i in 1:k)
+    {
+        kList[i] <- i
+        knn[i] <- KNearestNeighbours(variable, train, test, i)[1]
+    }
+
+    data <- data.frame(knn, kList)
+
+    return (data)
+}
+
+KNearestNeighbours <- function(variable, train, test, k)
 {
     # zgradimo model k najblizjih sosedov
 
     # O3 ali PM10
-    if(variable == "O3") { knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5) }
-    else { knn <- CoreModel(PM10 ~ ., data = train, model = "knn", kInNN = 5) }
+    if(variable == "O3") { knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = k) }
+    else { knn <- CoreModel(PM10 ~ ., data = train, model = "knn", kInNN = k) }
 
     predicted <- predict(knn, test, type = "class")
     predictedMatrix <- predict(knn, test, type = "prob")

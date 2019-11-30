@@ -18,8 +18,11 @@ orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 # kopija originalnih podatkov
 data <- orgData
 
-# pripravimo podatke
-data <- PrepareAttributesO3 (data)
+# podatki za IQR
+# data <- FinalData(data)
+
+# pripravimo nove podatke
+# data <- PrepareAttributes ("O3", data)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
@@ -50,7 +53,7 @@ nb <- NaiveBayes("O3", train, test)
 
 # k najblizjih sosedov
 # knnCV <- CrossValidation("O3", train, "knn") # 10-kratno precno preverjanje
-knn <- KNearestNeighbours("O3", train, test)
+knn <- KNearestNeighbours("O3", train, test, 5)
 
 # nakljucni gozd
 # rfCV <- CrossValidation("O3", train, "rf") # 10-kratno precno preverjanje
