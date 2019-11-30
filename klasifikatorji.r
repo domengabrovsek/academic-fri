@@ -1,10 +1,23 @@
-MajorityClassifier <- function(trainSet) 
+MajorityClassifier <- function(variable, trainSet) 
 {
-    # vecinski razred
-    majorityClass <- names(which.max(table(trainSet$O3)))
 
-    # tocnost napovedi vecinskega klasifikatorja - 0.6211073
-    majorityClassifier <- sum(trainSet$O3 == majorityClass) / length(trainSet$O3) 
+    if(variable == "O3")
+    {
+        # vecinski razred
+        majorityClass <- names(which.max(table(trainSet$O3)))
+
+        # tocnost napovedi vecinskega klasifikatorja - 0.6211073
+        majorityClassifier <- sum(trainSet$O3 == majorityClass) / length(trainSet$O3) 
+
+    }
+    else 
+    {
+        # vecinski razred
+        majorityClass <- names(which.max(table(trainSet$PM10)))
+
+        # tocnost napovedi vecinskega klasifikatorja - 0.6211073
+        majorityClassifier <- sum(trainSet$PM10 == majorityClass) / length(trainSet$PM10) 
+    }
 }
 
 DecisionTree <- function(variable, train, test)

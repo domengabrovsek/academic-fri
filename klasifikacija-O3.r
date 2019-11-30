@@ -18,8 +18,8 @@ orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 # kopija originalnih podatkov
 data <- orgData
 
-# dodajanje, odstranjevanje in predelava atributov
-data <- PrepareAttributes (data)
+# pripravimo podatke
+data <- PrepareAttributesO3 (data)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
@@ -34,42 +34,27 @@ test <- data[-selection,]
 observed <- test$O3
 observedMatrix <- model.matrix(~O3 - 1, test)
 
-# Vecinski klasifikator - 0.6211073
-mcCA <- MajorityClassifier(train)
-
 # preverjanje koliko posamezni atribut prispeva
 # sort(attrEval(O3 ~ ., train, "Relief"), decreasing = TRUE)
 
-# ------------ ODLOCITVENO DREVO ------------ #
+# Vecinski klasifikator - 0.6211073
+mc <- MajorityClassifier("O3", train)
 
-# 10-kratno precno preverjanje vsi elementi
-dtCV <- CrossValidation("O3", train, "tree")
-
-# decision tree
+# odlocitveno drevo
+# dtCV <- CrossValidation("O3", train, "tree") # 10-kratno precno preverjanje
 dt <- DecisionTree("O3", train, test)
 
-# ------------ NAIVNI BAYES ------------ #
-
-# 10-kratno precno preverjanje
-nbCV <- CrossValidation("O3", train, "bayes")
-
-# naive bayes
+# naivni bayesov klasifikator
+# nbCV <- CrossValidation("O3", train, "bayes") # 10-kratno precno preverjanje
 nb <- NaiveBayes("O3", train, test)
 
-# -------------- KNN ----------------- #
-
-# 10-kratno precno preverjanje
-knnCV <- CrossValidation("O3", train, "knn")
-
+# k najblizjih sosedov
+# knnCV <- CrossValidation("O3", train, "knn") # 10-kratno precno preverjanje
 knn <- KNearestNeighbours("O3", train, test)
 
-
-# -------------- Nakljucni gozd ----------------- #
-
-# 10-kratno precno preverjanje
-rfCV <- CrossValidation("O3", train, "rf")
-
+# nakljucni gozd
+# rfCV <- CrossValidation("O3", train, "rf") # 10-kratno precno preverjanje
 rf <- RandomForest("O3", train, test)
 
-# -------------- SVM ----------------- #
+# podporni vektorji
 svm <- SupportVectors("O3", train, test)
