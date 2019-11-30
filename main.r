@@ -1,4 +1,4 @@
-# glavna skripta za seminarsko
+# klasifikacija za ciljno spremenljivko O3
 
 # predvidevamo da imamo nastavljen "working directory" in da so vse potrebne datoteke v isti mapi
 # oz. setwd("C:/git/fri-ai-assignment")
@@ -10,10 +10,10 @@ source("funkcije.r")
 source('klasifikatorji.r')
 
 # nalozimo vse knjiznice, ki jih bomo potrebovali
-InitLibs()
+# InitLibs()
 
 # nalozimo dataset
-orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
+orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 
 # kopija originalnih podatkov
 data <- orgData
@@ -43,33 +43,33 @@ mcCA <- MajorityClassifier(train)
 # ------------ ODLOCITVENO DREVO ------------ #
 
 # 10-kratno precno preverjanje vsi elementi
-dtCV <- CrossValidation(train, "tree")
+dtCV <- CrossValidation("O3", train, "tree")
 
 # decision tree
-dt <- DecisionTree(train, test)
+dt <- DecisionTree("O3", train, test)
 
 # ------------ NAIVNI BAYES ------------ #
 
 # 10-kratno precno preverjanje
-nbCV <- CrossValidation(train, "bayes")
+nbCV <- CrossValidation("O3", train, "bayes")
 
 # naive bayes
-nb <- NaiveBayes(train, test)
+nb <- NaiveBayes("O3", train, test)
 
 # -------------- KNN ----------------- #
 
 # 10-kratno precno preverjanje
-knnCV <- CrossValidation(train, "knn")
+knnCV <- CrossValidation("O3", train, "knn")
 
-knn <- KNearestNeighbours(train, test)
+knn <- KNearestNeighbours("O3", train, test)
 
 
 # -------------- Nakljucni gozd ----------------- #
 
 # 10-kratno precno preverjanje
-rfCV <- CrossValidation(train, "rf")
+rfCV <- CrossValidation("O3", train, "rf")
 
-rf <- RandomForest(train, test)
+rf <- RandomForest("O3", train, test)
 
 # -------------- SVM ----------------- #
-svm <- SupportVectors(train, test)
+svm <- SupportVectors("O3", train, test)

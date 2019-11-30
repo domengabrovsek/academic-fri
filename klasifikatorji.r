@@ -7,10 +7,14 @@ MajorityClassifier <- function(trainSet)
     majorityClassifier <- sum(trainSet$O3 == majorityClass) / length(trainSet$O3) 
 }
 
-DecisionTree <- function(train, test)
+DecisionTree <- function(variable, train, test)
 {
     # zgradimo odlocitveno drevo
-    dt <- CoreModel(O3 ~ ., data = train, model = "tree")
+
+    # O3 ali PM10
+    if(variable == "O3") { dt <- CoreModel(O3 ~ ., data = train, model = "tree") }
+    else { dt <- CoreModel(PM10 ~ ., data = train, model = "tree") }
+
     predicted <- predict(dt, test, type = "class")
     predictedMatrix <- predict(dt, test, type = "prob")
 
@@ -26,10 +30,14 @@ DecisionTree <- function(train, test)
     return (data)
 }
 
-NaiveBayes <- function(train, test)
+NaiveBayes <- function(variable, train, test)
 {
     # zgradimo naivni bayesov model
-    nb <- CoreModel(O3 ~ ., data = train, model = "bayes")
+
+    # O3 ali PM10
+    if(variable == "O3") { nb <- CoreModel(O3 ~ ., data = train, model = "bayes") }
+    else { nb <- CoreModel(PM10 ~ ., data = train, model = "bayes") }
+
     predicted <- predict(nb, test, type = "class")
     predictedMatrix <- predict(nb, test, type = "prob")
 
@@ -44,9 +52,14 @@ NaiveBayes <- function(train, test)
     return (data)
 }
 
-KNearestNeighbours <- function(train, test)
+KNearestNeighbours <- function(variable, train, test)
 {
-    knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5)
+    # zgradimo model k najblizjih sosedov
+
+    # O3 ali PM10
+    if(variable == "O3") { knn <- CoreModel(O3 ~ ., data = train, model = "knn", kInNN = 5) }
+    else { knn <- CoreModel(PM10 ~ ., data = train, model = "knn", kInNN = 5) }
+
     predicted <- predict(knn, test, type = "class")
     predictedMatrix <- predict(knn, test, type = "prob")
 
@@ -61,9 +74,14 @@ KNearestNeighbours <- function(train, test)
     return (data)
 }
 
-RandomForest <- function(train, test)
+RandomForest <- function(variable, train, test)
 {
-    rf <- CoreModel(O3 ~ ., data = train, model = "rf")
+    # zgradimo model nakljucnega gozda
+
+    # O3 ali PM10
+    if(variable == "O3") { rf <- CoreModel(O3 ~ ., data = train, model = "rf") }
+    else { rf <- CoreModel(PM10 ~ ., data = train, model = "rf") }
+
     predicted <- predict(rf, test, type = "class")
     predictedMatrix <- predict(rf, test, type = "prob")
 
@@ -78,32 +96,33 @@ RandomForest <- function(train, test)
     return (data)
 }
 
-SupportVectors <- function(train, test)
+SupportVectors <- function(variable, train, test)
 {
-    sm <- svm(O3 ~ ., data = train, probability = T)
-    predicted <- predict(sm, test, type = "class")
+    # zgradimo model podpornih vektorjev
 
+    # O3 ali PM10
+    if(variable == "O3") { sm <- svm(O3 ~ ., data = train) }
+    else { sm <- svm(PM10 ~ ., data = train) }
+
+    predicted <- predict(sm, test, type = "class")
     svmCA <- ClassAcc(observed, predicted)
 
-    sm <- svm(O3 ~ ., learn, probability = T)
+    if(variable == "O3") { sm <- svm(O3 ~ ., data = train, probability = T) }
+    else { sm <- svm(PM10 ~ ., data = train, probability = T) }
+
     pred <- predict(sm, test, probability = T)
     predictedMatrix <- attr(pred, "probabilities")
 
-    # v tem konkretnem primeru, vrstni red razredov (stolpcev) v matriki predMat je 
-    # obraten kot v matriki obsMat. 
-    colnames(observedMatrix)
-    colnames(predictedMatrix)
+    # svmBS <- BrierScore(observedMatrix, predictedMatrix[,c(2,1)])
 
-    # Iz tega razloga zamenjemo vrstni red stolpcev v matriki predMat
-    svmBS <- BrierScore(observedMatrix, predictedMatrix[,c(2,1)])
-
-    data <- c(svmCA, svmBS)
+    # TODO svmBS doesn't work for some reason, check if time
+    data <- c(svmCA)
 
     return (data)
 }
 
 # 10x precno preverjanje
-CrossValidation <- function(myData, targetModel)
+CrossValidation <- function(variable, myData, targetModel)
 {
     mymodel.coremodel <- function(formula, data, target.model){CoreModel(formula, data, model=target.model)}
     mypredict.coremodel <- function(object, newdata) {pred <- predict(object, newdata)$class; destroyModels(object); pred}
@@ -113,7 +132,9 @@ CrossValidation <- function(myData, targetModel)
     # pozenemo 10x 
     for(i in 1:10)
     {
-        result <- errorest(O3~., data = myData, model = mymodel.coremodel, predict = mypredict.coremodel, target.model = targetModel)
+        if(variable == "O3") { result <- errorest(O3~., data = myData, model = mymodel.coremodel, predict = mypredict.coremodel, target.model = targetModel) }
+        else { result <- errorest(PM10~., data = myData, model = mymodel.coremodel, predict = mypredict.coremodel, target.model = targetModel) }
+
         result <- 1 - result$error
         table[i] <- result
     }
