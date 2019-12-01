@@ -22,7 +22,19 @@ InitLibsViz <- function()
 ###   return (intlist)
 ### }
 
-## Manual and more precise creation of the var list 
+## Manual and more precise creation of the var list for th einitial dataset
+intlistinit <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
+                 "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
+                 "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
+                 "Padavine_mean", "Padavine_sum", 
+                 "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
+                 "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+                 "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
+                 "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", 
+                 "PM10", "O3"
+                 )
+
+## Manual and more precise creation of the complete var list for the modified dataset
 intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
             "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
             "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
@@ -134,6 +146,34 @@ BoxPlotM <- function (my_data)
   }
 }
 
+## Funkcija za boxplot letnega casa
+BoxPlotLC <- function (my_data)
+{
+  for (i in intlist)
+  {
+    print(
+      ggplot(my_data, aes(x=my_data$letni_cas, y=my_data[,i])) + 
+        geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2) +
+        xlab("Letni cas") +
+        ylab(i)
+    )
+  }
+}
+
+## Funkcija za boxplot leta
+BoxPlotL <- function (my_data)
+{
+  for (i in intlist)
+  {
+    print(
+      ggplot(my_data, aes(x=as.factor(my_data$leto), y=my_data[,i])) + 
+        geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2) +
+        xlab("Leto") +
+        ylab(i)
+    )
+  }
+}
+
 ## Funkcija za boxplot mesec in postaja
 BoxPlotMP <- function (my_data)
 {  
@@ -166,6 +206,48 @@ BoxPlotO3Class <- function (my_data)
 BoxPlotPM10Class <- function (my_data)
 {  
   for (i in intlist)
+  {
+    print(
+      ggplot(my_data, aes(x=my_data$PM10_Class, y=my_data[,i])) + 
+        geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2) +
+        xlab("PM10_Class") +
+        ylab(i)
+    )
+  }
+}
+
+## Funkcija za boxplot mesec in postaja
+BoxPlotMPIn <- function (my_data)
+{  
+  for (i in intlistinit)
+  {
+    print(
+      ggplot(my_data, aes(x=my_data$Mesec_Abb, y=my_data[,i], fill=Postaja)) + 
+        geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2) +
+        xlab("Mesec") +
+        ylab(i)
+    )
+  }
+}
+
+## Funkcija za boxplot klassa O3
+BoxPlotO3ClassIn <- function (my_data)
+{  
+  for (i in intlistinit)
+  {
+    print(
+      ggplot(my_data, aes(x=my_data$O3_Class, y=my_data[,i])) + 
+        geom_boxplot(outlier.colour="red", outlier.shape=8,outlier.size=2) +
+        xlab("O3_Class") +
+        ylab(i)
+    )
+  }
+}
+
+## Funkcija za boxplot klassa PM10
+BoxPlotPM10ClassIn <- function (my_data)
+{  
+  for (i in intlistinit)
   {
     print(
       ggplot(my_data, aes(x=my_data$PM10_Class, y=my_data[,i])) + 
@@ -233,7 +315,7 @@ HistogramPM10 <- function (my_data)
 }
 
 # Scattreplot
-## Funkcija za scatterplot za Postajo
+## Funkcija za scatterplot za vse atribute in za Postajo
 ScatterplotP<- function (my_data)
 {  
   intdata <- my_data[ , intlist]  
@@ -256,8 +338,29 @@ ScatterplotP<- function (my_data)
   } 
 }
 
+## Funkcija za scatterplot za vse atribute in za skupino O3
+ScatterplotO3ClassAll<- function (my_data)
+{  
+  intdata <- my_data[ , intlist]  
+  for(ii in 1:(ncol(intdata)-1))
+  {
+    begin <- ii + 1
+    for(i in begin:ncol(intdata))
+    {
+      print(
+          ggplot(my_data, aes(x=intdata[,ii], y=intdata[,i])) + 
+          geom_point(aes(col=O3_Class)) + 
+          geom_smooth(method="loess", se=F) + 
+          xlim(c(0, max(intdata[,ii]))) + 
+          ylim(c(0, max(intdata[,i]))) + 
+          xlab(intlist[ii]) +
+          ylab(intlist[i])
+      )
+    }
+  } 
+}
 
-## Funkcija za scatterplot za skupine O3
+## Funkcija za scatterplot atributa O3 in za skupine O3
 ScatterplotO3Class <- function (my_data)
 { 
   for (i in intlist)
@@ -274,7 +377,7 @@ ScatterplotO3Class <- function (my_data)
   }
 }
 
-## Funkcija za scatterplot za skupine PM10
+## Funkcija za scatterplot atributa PM10 in za skupine PM10
 ScatterplotPM10Class <- function (my_data)
 {  
   for (i in intlist)
@@ -291,7 +394,43 @@ ScatterplotPM10Class <- function (my_data)
   }
 }
 
+## Funkcija za scatterplot za vse atribute in za skupino )3
+ScatterplotPM10ClassAll<- function (my_data)
+{  
+  intdata <- my_data[ , intlist]  
+  for(ii in 1:(ncol(intdata)-1))
+  {
+    begin <- ii + 1
+    for(i in begin:ncol(intdata))
+    {
+      print(
+        ggplot(my_data, aes(x=intdata[,ii], y=intdata[,i])) + 
+          geom_point(aes(col=PM10_Class)) + 
+          geom_smooth(method="loess", se=F) + 
+          xlim(c(0, max(intdata[,ii]))) + 
+          ylim(c(0, max(intdata[,i]))) + 
+          xlab(intlist[ii]) +
+          ylab(intlist[i])
+      )
+    }
+  } 
+}
+
 # Barcharts
+## Barchart za analizo stevila podatkov za vsako grupo PM10 in mesec
+BarChartPM10 <- function (my_data)
+{
+  datacount <- my_data %>% count(PM10_Class)
+  print (
+    ggplot(data = datacount, aes(x = PM10_Class, y = n)) +
+      stat_summary(
+        fun.y = sum, # adds up all observations for the month
+        geom = "bar",
+        position=position_dodge2(width = 0.9, preserve = "single")
+      ) 
+  )
+}
+
 ## Barchart za analizo stevila podatkov za vsako grupo PM10 in mesec
 BarChartPM10M <- function (my_data)
 {
@@ -320,6 +459,20 @@ BarChartPM10P <- function (my_data)
                     ) 
           )
 }
+
+## Barchart za analizo stevila podatkov za vsako grupo O3 
+BarChartO3 <- function (my_data)
+{
+  datacount <- my_data %>% count(O3_Class)
+  print (
+    ggplot(data = datacount, aes(x = O3_Class, y = n)) +
+      stat_summary(
+        fun.y = sum, # adds up all observations for the month
+        geom = "bar",
+        position=position_dodge2(width = 0.9, preserve = "single")
+      ) 
+  )
+} 
 
 ## Barchart za analizo stevila podatkov za vsako grupo O3 in Mesec
 BarChartO3M <- function (my_data)
