@@ -31,6 +31,8 @@ InitLibs <- function()
   library(e1071)
   library(randomForest)
   library(kknn)
+  library(nnet)
+ 
 }
 
 # Funkcija za izracun Brierjeve mere

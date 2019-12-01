@@ -112,3 +112,23 @@ SvmRegression <-function(variable,train,test)
   }
   return(rmae)
 }
+#Fit Neural Networks 
+nnetRegression <-function(variable, train,test)
+{
+  if(variable == "O3")
+  {
+    nn.model <- nnet(O3 ~ ., train, size = 5, decay = 0.0001, maxit = 10000, linout = T)
+    predicted <- predict(nn.model, test)
+    observed <-test$O3
+    rmae<-rmae(observed, predicted, mean(train$O3))
+    
+  }
+  else 
+  {
+    nn.model <- nnet(PM10 ~ ., train, size = 5, decay = 0.0001, maxit = 10000, linout = T)
+    predicted <- predict(nn.model, test)
+    observed <-test$PM10
+    rmae<-rmae(observed, predicted, mean(train$PM10))
+  }
+  return(rmae)
+}
