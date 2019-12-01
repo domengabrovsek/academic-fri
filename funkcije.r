@@ -1,4 +1,3 @@
-setwd("C:/git/fri-ai-assignment")
 # Funkcija za inicializacijo knjiznic
 InitLibs <- function()
 {
@@ -59,44 +58,6 @@ ClassAcc <- function(observed, predicted)
 {
     t <- table(observed, predicted)
     sum(diag(t) / sum(t))
-}
-
-# priprava atributov
-PrepareAttributes <- function(data)
-{
-    ## Manual and more precise creation of the var list 
-    intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
-            "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
-            "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
-            "Padavine_mean", "Padavine_sum", 
-            "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
-            "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-            "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
-            "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", 
-            "PM10", "O3", 
-            "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
-          )
-
-    outlierlist <- c()
-    for (i in intlist)
-    {
-      outlierUp <- NULL
-      outlierLow <- NULL
-      outlierUp=quantile(my_data[,i],0.75, na.rm = TRUE)+1.5*IQR(my_data[,i],na.rm = TRUE)
-      outlierLow=quantile(my_data[,i],0.25, na.rm = TRUE)-1.5*IQR(my_data[,i],na.rm = TRUE)
-      index_outlier_list= which(my_data[,i] > outlierUp | my_data[,i] < outlierLow)
-      if (length(index_outlier_list) != 0) 
-      {
-        outlierlist <- append(outlierlist, index_outlier_list, length(outlierlist) )
-      } 
-    }
-    my_data <- my_data[-outlierlist, ]
-    
-    PMindex_outlier= which(my_data[,"PM10"] < 0)
-    my_data = my_data[-PMindex_outlier, ]
-    my_data$Glob_Sevanje_min <- NULL
-
-    return (my_data)
 }
 
 # priprava atributov
@@ -310,4 +271,3 @@ PrepareAttributes <- function(variable, data)
 
   return (data)
 }
-
