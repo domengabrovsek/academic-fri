@@ -10,7 +10,7 @@ source("funkcijeViz.r")
 InitLibsViz()
 
 # nalozimo dataset
-orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
+orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 
 # kopija originalnih podatkov
 data <- orgData
@@ -34,45 +34,45 @@ Correlation(data) # analiza korelacije
 tempdir() # mapa, v katero bodo shranjeni vsi grafi 
 
 # analiza stevila podatkov 
-CountMesPos (data)  # stevilo podatkov za vsak mesec in postajo
-CountPos (data)     # Stevilo podatkov za vsako postajo
-CountMes (data)     # stevilo podatkov za vsak mesec 
+CountMesPos (data)     # stevilo podatkov za vsak mesec in postajo
+CountPos (data)        # Stevilo podatkov za vsako postajo
+CountMes (data)        # stevilo podatkov za vsak mesec 
+# BarChartPM10 (data)  # stevilo podatkov za PM klass
+# BarChartPM10P (data) # stevilo podatkov za PM klass in postajo 
+# BarChartPM10M (data) # stevilo podatkov za PM klass in mesec
+# BarChartO3 (data)    # stevilo podatkov za O3 klass 
+# BarChartO3P (data)   # stevilo podatkov za O3 klass in postajo 
+# BarChartO3M (data)   # stevilo podatkov za O3 klass in mesec
 
 ## Boxplots 
-BoxPlotV (data)  # boxlot za en atribut
-BoxPlotM (data)  # boxplot za mesec
-BoxPlotMP (data) # boxplot za vse integer atributi mesec vs postaja
+BoxPlotV(data)  # boxlot za en atribut
+BoxPlotM(data)  # boxplot za mesec
+BoxPlotMP(data) # boxplot za vse integer atributi mesec vs postaja
+BoxPlotLC(data) # boxplot za vse integer atributi mesec vs letni cas
+BoxPlotL(data)  # boxplot za vse integer atributi mesec vs leto
 
 # Histogram
-HistogramV (data)     # histogram za en atribut
-#HistogramPost (data) # histogram za atribut in postajo
-HistogramO3 (data)    # histogram za skupine O3
-HistogramPM10 (data)  # histogram za skupine P10
+HistogramV(data)     # histogram za en atribut
+#HistogramPost(data) # histogram za atribut in postajo
+HistogramO3(data)    # histogram za skupine O3
+HistogramPM10(data)  # histogram za skupine P10
 
 # Scatterplot
-ScatterplotP(data)          # scatterplot za postaje  
-ScatterplotO3Class(data)    # Scatterplot za skupine O3
-ScatterplotPM10Class(data)  # Scatterplot za skupine PM10
-
-# Analiza of number of data per preduction group
-BarChartPM10P (data) 
-BarChartPM10M (data) 
-BarChartO3P (data)
-BarChartO3M (data)
-BarChartO3L (data)
+ScatterplotP(data)            # scatterplot za vse pari atributov in postaje  
+ScatterplotO3Class(data)      # scatterplot za atribut O3 in skupine O3
+ScatterplotO3ClassAll(data)   # scatterplot za vse atribute in skupine O3    
+ScatterplotPM10Class(data)    # scatterplot za skupine PM10
+ScatterplotPM10ClassAll(data) # scatterplot za vse atribute in skupine PM10
 
 # Vizualizacija klassov
-BoxPlotO3Class (data)
-BoxPlotPM10Class (data)
+BoxPlotO3Class(data)
+BoxPlotPM10Class(data)
 
-# tempdir() #retrieving all png files from temp directory
-
-
-
-
-
-
-warnings()
 # priprava koncnega dataseta
-FinalData <- FinalData (data)
+FinalDataIQR <- FinalDataIQR (data)
+export(FinalDataIQR, "FinalDataIQR.csv")
+
 # vizualizacija atributov finalnega dataseta
+BoxPlotPM10ClassIn(FinalDataIQR)
+BoxPlotO3ClassIn(FinalDataIQR)
+BoxPlotMPIn(FinalDataIQR)
