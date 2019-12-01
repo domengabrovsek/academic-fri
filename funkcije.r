@@ -297,3 +297,99 @@ mse <- function(observed, predicted)
   mean((observed - predicted)^2)
 }
 ##########################################
+prepareDataRegression<-function(variable,data)
+{
+  
+  data$Datum <-as.Date(data$Datum, format="%Y-%m-%d")
+  data$Glob_sevanje_min <- NULL
+  if(variable =="O3"){
+    
+    
+    #ocenimo atribute
+    #data<-head(sort(attrEval(O3 ~ ., data, "ReliefFequalK"), decreasing = TRUE))
+    #odstrnimo vse atribute, le prvih sest najbolje ocenjenih
+    #Glob_sevanje_max, Glob_sevanje_mean, Temperatura_lokacija_max, Temperatura_lokacija_mean ,Temperatura_lokacija_min, Datum 
+    
+    data$Padavine_sum <- NULL
+    data$Padavine_mean <- NULL
+    
+    # # remove krvavec
+    data$Temperatura_Krvavec_min <- NULL
+    data$Temperatura_Krvavec_max <- NULL
+    data$Temperatura_Krvavec_mean <- NULL
+    data$Temperatura_Krvavec_spr <- NULL
+    
+    # # # remove pritisk
+    data$Pritisk_spr <- NULL
+    data$Pritisk_min <- NULL
+    data$Pritisk_max <- NULL
+    data$Pritisk_mean <- NULL
+    
+    # # remove postaja
+    data$Postaja <- NULL
+    data$PM10 <-NULL
+    
+    # # remove vlaga
+    data$Vlaga_min <- NULL
+    data$Vlaga_max  <-NULL
+    data$Vlaga_mean <-NULL
+    
+    # # remove sunki vetra
+    data$Sunki_vetra_min <- NULL
+    data$Sunki_vetra_max <- NULL
+    data$Sunki_vetra_mean <- NULL
+    data$Sunki_vetra_spr <- NULL
+    
+    # # remove hitrost vetra
+    data$Hitrost_vetra_min <- NULL
+    data$Hitrost_vetra_max <- NULL
+    data$Hitrost_vetra_mean <- NULL
+    data$Hitrost_vetra_spr <- NULL
+    return(data)
+  }else{
+    #ocenimo atribute
+    #data<-head(sort(attrEval(O3 ~ ., data, "ReliefFequalK"), decreasing = TRUE))
+    #odstrnimo vse atribute, le prvih sest najbolje ocenjenih
+    #head(sort(attrEval(PM10 ~ ., data, "GainRatio"), decreasing = TRUE))
+    # Temperatura_lokacija_max, Temperatura_lokacija_mean,Temperatura_lokacija_min ,O3, Padavine_sum,Padavine_mean 
+    
+    data$Padavine_min<-NULL
+    
+    # # remove krvavec
+    data$Temperatura_Krvavec_min <- NULL
+    data$Temperatura_Krvavec_max <- NULL
+    data$Temperatura_Krvavec_mean <- NULL
+    data$Temperatura_Krvavec_spr <- NULL
+    
+    # # # remove pritisk
+    data$Pritisk_spr <- NULL
+    data$Pritisk_min <- NULL
+    data$Pritisk_max <- NULL
+    data$Pritisk_mean <- NULL
+    
+    # # remove postaja
+    data$Postaja <- NULL
+
+    
+    # # remove vlaga
+    data$Vlaga_min <- NULL
+    data$Vlaga_max  <-NULL
+    data$Vlaga_mean <-NULL
+    
+    # # remove sunki vetra
+    data$Sunki_vetra_min <- NULL
+    data$Sunki_vetra_max <- NULL
+    data$Sunki_vetra_mean <- NULL
+    data$Sunki_vetra_spr <- NULL
+    
+    # # remove hitrost vetra
+    data$Hitrost_vetra_min <- NULL
+    data$Hitrost_vetra_max <- NULL
+    data$Hitrost_vetra_mean <- NULL
+    data$Hitrost_vetra_spr <- NULL
+    return(data)
+    
+    }
+  
+  
+}
