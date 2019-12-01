@@ -1,0 +1,34 @@
+# Boxplot
+
+## Funkcija za boxplot enega atributa
+BoxPlotV
+
+## Funkcija za boxplot samo meseca
+BoxPlotM
+
+## Funkcija za boxplot mesec in postaja
+BoxPlotMP 
+
+
+
+# Histogram
+
+## Funkcija za histogram Postaja
+HistogramPost
+
+## Funkcija za histogram O3
+HistogramO3 
+
+
+## Funkcija za histogram PM10
+HistogramPM10
+
+
+
+
+# Scattreplot
+## Funkcija za scatterplot za POstajo
+ScatterplotP
+
+#Funkcija za scatterplot za O3
+ScatterplotO3
