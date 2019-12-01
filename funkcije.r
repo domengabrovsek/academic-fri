@@ -26,9 +26,11 @@ InitLibs <- function()
 
   # nalozimo knjiznico ki podpira grajenje razlicnih modelov
   library(CORElearn)
-
-  # nalozimo knjiznico za svm
+  
+  #nalozimo knjiznice za gradjo regresijskih modelov
   library(e1071)
+  library(randomForest)
+  library(kknn)
 }
 
 # Funkcija za izracun Brierjeve mere
