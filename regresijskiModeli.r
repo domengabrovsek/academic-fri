@@ -32,22 +32,22 @@ linearRegression <-function(variable,train,test)
   return(data)
 }
 #2. REGRESIJSKO DREVO###################
-regressionTree <-function(variable,train,test)
+regressionTree <-function(variable,train,test,split)
 {
   if(variable == "O3")
   {
-    rt.model <- rpart(O3 ~ ., train, minsplit = 100)
+    rt.model <- rpart(O3 ~ ., train, minsplit = split)
     predicted <- predict(rt.model, test)
     observed <- test$O3
-    rmae(observed, predicted, mean(train$O3))
+    rmae <-rmae(observed, predicted, mean(train$O3))
   
   }
   else 
   {
-    rt.model <- rpart(PM10 ~ ., train, minsplit = 100)
+    rt.model <- rpart(PM10 ~ ., train, minsplit = split)
     predicted <- predict(rt.model, test)
     observed <- test$PM10
-    rmae(observed, predicted, mean(train$PM10))
+    rmae <-rmae(observed, predicted, mean(train$PM10))
   }
   
   #izrise nam drevo
@@ -62,14 +62,14 @@ randomForestRegression<-function(variable, train,test)
     rf.model <- randomForest(O3 ~ ., train)
     predicted <- predict(rf.model, train)
     observed <- test$O3
-    rmae(observed, predicted, mean(train$O3))
+    rmae <-rmae(observed, predicted, mean(train$O3))
   }
   else 
   {
     rf.model <- randomForest(PM10 ~ ., train)
     predicted <- predict(rf.model, train)
     observed <- test$PM10
-    rmae(observed, predicted, mean(train$PM10))
+    rmae <-rmae(observed, predicted, mean(train$PM10))
   }
   return(rmae)
 }
@@ -79,17 +79,17 @@ KNNRegression<-function(variable, train,test,k)
 {
   if(variable == "O3")
   {
-    knn.model <- kknn(O3 ~ ., train, test, knn = k)
+    knn.model <- kknn(O3 ~ ., train, test, k)
     predicted <- fitted(knn.model)
     observed <- test$O3
-    rmae(observed, predicted, mean(train$O3)) 
+    rmae <-rmae(observed, predicted, mean(train$O3)) 
   }
   else 
   {
-    knn.model <- kknn(PM10 ~ ., train, test, knn = k)
+    knn.model <- kknn(PM10 ~ ., train, test, k)
     predicted <- fitted(knn.model)
     observed <- test$PM10
-    rmae(observed, predicted, mean(train$PM10))
+    rmae <-rmae(observed, predicted, mean(train$PM10))
   }
   return(rmae)
 }
@@ -101,14 +101,14 @@ SvmRegression <-function(variable,train,test)
     svm.model <- svm(O3 ~ ., train)
     predicted <- predict(svm.model, test)
     observed <- test$O3
-    rmae(observed, predicted, mean(train$O3))
+    rmae <-rmae(observed, predicted, mean(train$O3))
   }
   else 
   {
     svm.model <- svm(PM10 ~ ., train)
     predicted <- predict(svm.model, test)
     observed <- test$PM10
-    rmae(observed, predicted, mean(train$PM10))
+    rmae <-rmae(observed, predicted, mean(train$PM10))
   }
   return(rmae)
 }
