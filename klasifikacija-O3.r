@@ -24,8 +24,8 @@ data <- orgData
 # pripravimo nove podatke
 data <- PrepareAttributes ("O3", data)
 
-# podatki za IQR
-data <- FinalData(data)
+# podatki brez osamelcev
+data <- FinalDataManOut(data)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)

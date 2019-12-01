@@ -6,6 +6,9 @@
 # nalozimo svoje custom funkcije
 source("funkcije.r")
 
+# nalozimo funkcije za vizualizacijo
+# source('funkcijeViz.r')
+
 # nalozimo funkcije za klasifikatorje
 source('klasifikatorji.r')
 
@@ -24,7 +27,7 @@ data <- PrepareAttributes ("PM10", data)
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
-# razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
+# razdelimo dataset na učno in testno množico
 selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
 
 train <- data[selection,]
@@ -35,12 +38,15 @@ observed <- test$PM10
 observedMatrix <- model.matrix(~PM10 - 1, test)
 
 # preverjanje koliko posamezni atribut prispeva
-sort(attrEval(PM10 ~ ., train, "Relief"), decreasing = TRUE)
+# sort(attrEval(PM10 ~ ., train, "Relief"), decreasing = TRUE)
 
 # Vecinski klasifikator - 0.8765147
 mc <- MajorityClassifier("PM10", train)
 dt <- DecisionTree("PM10", train, test)
 nb <- NaiveBayes("PM10", train, test)
-knn <- KNearestNeighbours("PM10", train, test)
+knn <- KNearestNeighbours("PM10", train, test, 5)
 rf <- RandomForest("PM10", train, test)
 svm <- SupportVectors("PM10", train, test)
+
+# knnTest <- KNNTest("PM10", train, test, 200)
+# KnnPlot(knnTest)

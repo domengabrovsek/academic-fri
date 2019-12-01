@@ -1,5 +1,5 @@
 # Funkcija za inicializacijo knjiznic
-InitLibs <- function()
+InitLibsViz <- function()
 {
   # instaliramo knjiznice, ki jih bomo potrebovali
   install.packages(c("dplyr", "reshape2", "ggplot2", "Hmisc", "rio", "psych"))
@@ -385,6 +385,29 @@ CountMesPos <- function (My_data)
       ) 
   )
 }
+
+# Funkcija za pripravo finanlnega dataseta
+FinalDataManOut <- function (my_data)
+{
+  
+  man_out_list= which(my_data[,"Glob_sevanje_max"] > 550 | 
+                      my_data[,"Hitrost_vetra_max"] > 10 |
+                      my_data[,"Sunki_vetra_max"] >20 |
+                      my_data[,"Padavine_mean"] >2 |
+                      my_data[,"Padavine_sum"] > 10|
+                      my_data[,"Vlaga_max"]<50 & my_data[,"Postaja"] == "Ljubljana"|
+                        my_data[,"Vlaga_max"]<35 & my_data[,"Postaja"] == "Koper"|
+                      my_data[,"Temperatura_Krvavec_max"] > 40 |
+                      my_data[,"Glob_sevanje_spr"] > 600|
+                        my_data[,"Temperatura_lokacija_spr"] > 50|
+                        my_data[,"Vlaga_spr"] > 50|
+                        my_data[,"Temperatura_Krvavec_spr"] > 7.5 |
+                        my_data[,"Temperatura_lokacija_spr"] > 9 |
+                        my_data[,"Pritisk_spr"] > 7.5 
+                      )
+  my_data <- my_data[-man_out_list,]
+  return (my_data)
+  }
 
 # Funkcija za pripravo finanlnega dataseta
 FinalData <- function (my_data)
