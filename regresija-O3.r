@@ -26,35 +26,17 @@ test <- data[-selection,]
 #MODELI
 #ne dela
 lm <-linearRegression("O3",train,test)
+lm
 rg <-regressionTree("O3",train,test,300)
+rg
 #ne dela
 rf <-randomForestRegression("O3",train,test)
+rf
 knn<-KNNRegression("O3",train,test,5)
+knn
 #dela-ampak warning
 svm <-SvmRegression("O3",train,test)
-
-
-#za PM10###########################################
-data <- PrepareAttributes ("PM10", data)
-
-# random generator seed, da bomo imeli ponovljive rezultate
-set.seed(12345)
-# razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
-selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
-
-train <- data[selection,]
-test <- data[-selection,]
-
-#MODELI
-#ne dela
-lm <-linearRegression("PM10",train,test)
-
-rg <-regressionTree("PM10",train,test,300)
-#ne dela
-rf <-randomForestRegression("PM10",train,test)
-
-knn<-KNNRegression("PM10",train,test,5)
-
-#dela-ampak warning
-svm <-SvmRegression("PM10",train,test)
 svm
+nnet<-nnetRegression("O3",train,test)
+nnet
+
