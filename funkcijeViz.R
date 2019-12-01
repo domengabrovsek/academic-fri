@@ -24,15 +24,13 @@ InitLibs <- function()
 
 ## Manual and more precise creation of the var list 
 intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
-             "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
-             "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
-             "Padavine_mean", "Padavine_sum", 
-             "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
-             "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-             "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
-             "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", 
-             "PM10", "O3", 
-             "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+            "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
+            "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
+            "Padavine_mean", "Padavine_sum", 
+            "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
+            "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+            "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
+            "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min"
             )
 
 # Funkcija za pripravo tabele korelacij
