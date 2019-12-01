@@ -281,6 +281,7 @@ mae <- function(observed, predicted)
 {
   mean(abs(observed - predicted))
 }
+#relavitva povprecna absolutna napaka
 rmae <- function(observed, predicted, mean.val) 
 {  
   sum(abs(observed - predicted)) / sum(abs(observed - mean.val))
