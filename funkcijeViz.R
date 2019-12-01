@@ -1,5 +1,5 @@
 # Funkcija za inicializacijo knjiznic
-InitLibs <- function()
+InitLibsViz <- function()
 {
   # instaliramo knjiznice, ki jih bomo potrebovali
   install.packages(c("dplyr", "reshape2", "ggplot2", "Hmisc", "rio", "psych"))
@@ -24,15 +24,13 @@ InitLibs <- function()
 
 ## Manual and more precise creation of the var list 
 intlist <- c("Glob_sevanje_max","Glob_sevanje_mean","Glob_sevanje_min",
-             "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
-             "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
-             "Padavine_mean", "Padavine_sum", 
-             "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
-             "Vlaga_max", "Vlaga_mean", "Vlaga_min",
-             "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
-             "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min", 
-             "PM10", "O3", 
-             "Glob_sevanje_spr", "Pritisk_spr", "Vlaga_spr", "Temperatura_Krvavec_spr", "Temperatura_lokacija_spr"
+            "Hitrost_vetra_max","Hitrost_vetra_mean", "Hitrost_vetra_min", 
+            "Sunki_vetra_max",  "Sunki_vetra_mean", "Sunki_vetra_min",  
+            "Padavine_mean", "Padavine_sum", 
+            "Pritisk_max", "Pritisk_mean", "Pritisk_min", 
+            "Vlaga_max", "Vlaga_mean", "Vlaga_min",
+            "Temperatura_Krvavec_max", "Temperatura_Krvavec_mean","Temperatura_Krvavec_min",
+            "Temperatura_lokacija_max", "Temperatura_lokacija_mean","Temperatura_lokacija_min"
             )
 
 # Funkcija za pripravo tabele korelacij
@@ -387,6 +385,29 @@ CountMesPos <- function (My_data)
       ) 
   )
 }
+
+# Funkcija za pripravo finanlnega dataseta
+FinalDataManOut <- function (my_data)
+{
+  
+  man_out_list= which(my_data[,"Glob_sevanje_max"] > 550 | 
+                      my_data[,"Hitrost_vetra_max"] > 10 |
+                      my_data[,"Sunki_vetra_max"] >20 |
+                      my_data[,"Padavine_mean"] >2 |
+                      my_data[,"Padavine_sum"] > 10|
+                      my_data[,"Vlaga_max"]<50 & my_data[,"Postaja"] == "Ljubljana"|
+                        my_data[,"Vlaga_max"]<35 & my_data[,"Postaja"] == "Koper"|
+                      my_data[,"Temperatura_Krvavec_max"] > 40 |
+                      my_data[,"Glob_sevanje_spr"] > 600|
+                        my_data[,"Temperatura_lokacija_spr"] > 50|
+                        my_data[,"Vlaga_spr"] > 50|
+                        my_data[,"Temperatura_Krvavec_spr"] > 7.5 |
+                        my_data[,"Temperatura_lokacija_spr"] > 9 |
+                        my_data[,"Pritisk_spr"] > 7.5 
+                      )
+  my_data <- my_data[-man_out_list,]
+  return (my_data)
+  }
 
 # Funkcija za pripravo finanlnega dataseta
 FinalData <- function (my_data)

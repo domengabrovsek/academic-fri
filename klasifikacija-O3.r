@@ -6,6 +6,9 @@
 # nalozimo svoje custom funkcije
 source("funkcije.r")
 
+# nalozimo funkcije za vizualizacijo
+source('funkcijeViz.r')
+
 # nalozimo funkcije za klasifikatorje
 source('klasifikatorji.r')
 
@@ -18,16 +21,16 @@ orgData <- read.table("podatkiSem1.txt", header = T, sep = ",")
 # kopija originalnih podatkov
 data <- orgData
 
-# podatki za IQR
-# data <- FinalData(data)
-
 # pripravimo nove podatke
-# data <- PrepareAttributes ("O3", data)
+data <- PrepareAttributes ("O3", data)
+
+# podatki brez osamelcev
+data <- FinalDataManOut(data)
 
 # random generator seed, da bomo imeli ponovljive rezultate
 set.seed(12345)
 
-# razdelimo dataset na učno in testno množico (mogoče rabimo še validacijsko?)
+# razdelimo dataset na učno in testno množico 
 selection <- sample(1:nrow(data), size = as.integer(nrow(data) * 0.7), replace = F)
 
 train <- data[selection,]
@@ -40,7 +43,7 @@ observedMatrix <- model.matrix(~O3 - 1, test)
 # preverjanje koliko posamezni atribut prispeva
 # sort(attrEval(O3 ~ ., train, "Relief"), decreasing = TRUE)
 
-# Vecinski klasifikator - 0.6211073
+# Vecinski klasifikator
 mc <- MajorityClassifier("O3", train)
 
 # odlocitveno drevo
@@ -54,6 +57,9 @@ nb <- NaiveBayes("O3", train, test)
 # k najblizjih sosedov
 # knnCV <- CrossValidation("O3", train, "knn") # 10-kratno precno preverjanje
 knn <- KNearestNeighbours("O3", train, test, 5)
+
+# knnTest <- KNNTest("O3", train, test, 200)
+# KnnPlot(knnTest)
 
 # nakljucni gozd
 # rfCV <- CrossValidation("O3", train, "rf") # 10-kratno precno preverjanje

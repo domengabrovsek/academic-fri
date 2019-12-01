@@ -1,6 +1,5 @@
 MajorityClassifier <- function(variable, trainSet) 
 {
-
     if(variable == "O3")
     {
         # vecinski razred

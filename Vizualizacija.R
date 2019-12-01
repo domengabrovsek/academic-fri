@@ -7,7 +7,7 @@
 source("funkcijeViz.r")
 
 # nalozimo vse knjiznice, ki jih bomo potrebovali
-InitLibs()
+InitLibsViz()
 
 # nalozimo dataset
 orgData <- read.table("podatkiSem1.csv", header = T, sep = ",")
