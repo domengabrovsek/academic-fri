@@ -271,3 +271,24 @@ PrepareAttributes <- function(variable, data)
 
   return (data)
 }
+
+# ZA OCENJEVANJE REGRESIJSKIH MODELOV ################
+
+#povprecna absolutna napaka
+mae <- function(observed, predicted)
+{
+  mean(abs(observed - predicted))
+}
+rmae <- function(observed, predicted, mean.val) 
+{  
+  sum(abs(observed - predicted)) / sum(abs(observed - mean.val))
+}
+
+
+#srednja kvadratno napako
+
+mse <- function(observed, predicted)
+{
+  mean((observed - predicted)^2)
+}
+##########################################
