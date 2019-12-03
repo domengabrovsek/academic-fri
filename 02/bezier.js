@@ -1,15 +1,11 @@
 'use strict';
 
-class Point {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+// global variables
 
-/* -------------------------------------------------------------------- */
+let circles = [];
+let canvas, context;
 
-function drawGrid (context, width, height) {
+function drawGrid (width, height) {
 
     const squareSize = 6;
     context.lineWidth = 0.3;
@@ -29,11 +25,10 @@ function drawGrid (context, width, height) {
 }
 
 function init () {
-    const canvas = document.getElementById('BezierCanvas');
-    const context = canvas.getContext('2d')
-    let drawing = false;
+    canvas = document.getElementById('BezierCanvas');
+    context = canvas.getContext('2d')
 
-    drawGrid(context, canvas.width, canvas.height);
+    drawGrid(canvas.width, canvas.height);
 
     context.lineWidth = 1;
     context.strokeStyle = "#000000'";
@@ -62,27 +57,57 @@ function init () {
     });
 
     canvas.addEventListener('click', e => {
-        drawCircle({ context, x: e.clientX, y: e.clientY, size: 3, fillColor: 'orange', borderColor: 'black'});
-        // drawSquare({ context, x: e.clientX + 50, y: e.clientY + 50, size: 8, fillColor: 'black', borderColor: 'black' });
+        drawCircle({ x: e.clientX, y: e.clientY, size: 3, fillColor: 'orange', borderColor: 'black'});
+
+        console.log(circles);
+
+        // drawSquare({ x: e.clientX + 50, y: e.clientY + 50, size: 8, fillColor: 'black', borderColor: 'black' });
     });
 }
 
+function isInCircle(x, y) {
+
+}
+
+function clear() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function draw() {
+    clear();
+
+    for(let circle of circles) {
+        
+    }
+
+}
+
 function drawSquare(properties) {
-    const { x, y, size, fillColor, borderColor, context } = properties;
+    const { x, y, size, fillColor, borderColor } = properties;
     context.fillStyle = fillColor;
     context.strokeStyle = borderColor;
-    context.fillRect(x -10, y - 10, size, size);
+    context.rect(x -10, y - 10, size, size);
+    context.closePath();
+    context.fill();
 }
 
 function drawCircle(properties) {
-    const { x, y, size, fillColor, borderColor, context } = properties;
+    const { x, y, size, fillColor, borderColor } = properties;
+    context.fillStyle = fillColor;
+    context.strokeStyle = borderColor;
+    context.lineWidth = 1;
     context.beginPath();
     context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false);
-    context.fillStyle = fillColor;
     context.fill();
-    context.lineWidth = 1;
-    context.strokeStyle = borderColor;
     context.stroke();
+
+    // add circle to array of objects to track
+    circles.push({
+        x,
+        y,
+        radius: size,
+        isDragging: false
+    })
 }
 
 function bezier(t, p0, p1, p2, p3){
