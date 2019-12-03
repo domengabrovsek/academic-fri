@@ -1,126 +1,219 @@
 'use strict';
 
-// global variables
-
-let circles = [];
+let circles = []; // array of drawn objects
 let canvas, context;
 
-function drawGrid (width, height) {
+let drawing = true;
+let dragOk = false;
 
-    const squareSize = 6;
-    context.lineWidth = 0.3;
+// variables to save starting mouse position before dragging
+let startMouseX, startMouseY;
 
-    for(let i = 0; i <= width; i += squareSize) {
-        context.moveTo(0.5 + i, 0)
-        context.lineTo(0.5 + i, height)
-    }
+// function to draw initial coordinate system grid
+function drawGrid(width, height) {
 
-    for(let i = 0; i <= height; i += squareSize) {
-        context.moveTo(0, 0.5 + i);
-        context.lineTo(width, 0.5 + i);
-    }
+  const squareSize = 10;
+  context.lineWidth = 0.3;
 
-    context.strokeStyle = "gray";
-    context.stroke();
+  for (let i = 0; i <= width; i += squareSize) {
+    context.moveTo(0.5 + i, 0)
+    context.lineTo(0.5 + i, height)
+  }
+
+  for (let i = 0; i <= height; i += squareSize) {
+    context.moveTo(0, 0.5 + i);
+    context.lineTo(width, 0.5 + i);
+  }
+
+  context.strokeStyle = "#c7ccd1"; // grid color
+  context.stroke();
+
+  context.lineWidth = 1;
+  context.strokeStyle = "#000000";
+  context.strokeRect(0, 0, canvas.width, canvas.height);
 }
 
-function init () {
-    canvas = document.getElementById('BezierCanvas');
-    context = canvas.getContext('2d')
+function init() {
+  canvas = document.getElementById('BezierCanvas');
+  context = canvas.getContext('2d')
 
-    drawGrid(canvas.width, canvas.height);
+  // draw coordinate system like grid
+  drawGrid(canvas.width, canvas.height);
 
-    context.lineWidth = 1;
-    context.strokeStyle = "#000000'";
-    context.strokeRect(0, 0, canvas.width, canvas.height);
+  // draw all elements in object array
+  draw();
 
-    // event listeners
+  // mousemove
+  canvas.addEventListener('mousemove', e => {
 
-    // mousemove
-    canvas.addEventListener('mousemove', e => {
-        document.getElementById('x').textContent = `x: ${e.clientX}`;
-        document.getElementById('y').textContent = `y: ${e.clientY}`;
-    })
+    // save current mouse position
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
 
-    // mousedown
-    canvas.addEventListener('mousedown', e => {
-        // context.beginPath();
-        // context.moveTo(e.clientX, e.clientY);
-        // console.log(`Starting point: x:${e.clientX}, y:${e.clientY}`);
-    });
+    // output current mouse x,y to screen
+    document.getElementById('x').textContent = mouseX;
+    document.getElementById('y').textContent = mouseY;
 
-    // mouseup
-    canvas.addEventListener('mouseup', e => {
-        // context.lineTo(e.clientX, e.clientY);
-        // context.stroke();
-        // console.log(`Ending point: x:${e.clientX}, y:${e.clientY}`);
-    });
+    // change cursor type and disable drawing if mouse is inside circle
+    if(circles.some(circle => isInCircle(circle, mouseX, mouseY))) {
+      drawing = false;
+      document.body.style.cursor = 'pointer';
+    } else {
+      drawing = true;
+      document.body.style.cursor = 'default';
+    }
 
-    canvas.addEventListener('click', e => {
-        drawCircle({ x: e.clientX, y: e.clientY, size: 3, fillColor: 'orange', borderColor: 'black'});
+    // if dragging an object
+    if(dragOk) {
+    
+      // mouse distance from start to end
+      let mouseDistanceX = mouseX - startMouseX;
+      let mouseDistanceY = mouseY - startMouseY;
 
-        console.log(circles);
+      // move circles to new location
+      for(let circle of circles) {
+        if(circle.isDragging) {
+          circle.x += mouseDistanceX;
+          circle.y += mouseDistanceY;
+        }
+      }
 
-        // drawSquare({ x: e.clientX + 50, y: e.clientY + 50, size: 8, fillColor: 'black', borderColor: 'black' });
-    });
+      // redraw the whole canvas
+      draw();
+
+      // save mouse position for next move
+      startMouseX = mouseX;
+      startMouseY = mouseY;
+    }
+  })
+
+  // mousedown
+  canvas.addEventListener('mousedown', e => {
+
+    // save current mouse position
+    let mouseX = e.clientX;
+    let mouseY = e.clientY;
+
+    dragOk = false;
+
+    for(let circle of circles) {
+      if(isInCircle(circle, mouseX, mouseY)) {
+        dragOk = true;
+        circle.isDragging = true;
+      }
+    }
+
+    startMouseX = mouseX;
+    startMouseY = mouseY;
+
+    // add new circle to object array (redraw on mouseup)
+    if(drawing) {
+      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red' })
+    }
+  });
+
+  // mouseup
+  canvas.addEventListener('mouseup', e => {
+
+    dragOk = false;
+
+    // disable dragging on all circles
+    circles.forEach(circle => circle.isDragging = false);
+
+    // redraw everything
+    draw();
+  });
+
+  // double click (clear everything, used for testing purposes)
+  canvas.addEventListener('dblclick', e => {
+    // clear canvas
+    clear();
+
+    // remove all saved objects
+    circles = [];
+
+    // update number of points currently drawn
+    document.getElementById("numberOfPoints").textContent = circles.length;
+  }); 
 }
 
-function isInCircle(x, y) {
+function isInCircle(circle, x, y) {
 
+  const isInCircle = circle && !(circle.x - circle.size >= x || 
+    circle.x + circle.size <= x || 
+    circle.y - circle.size >= y || 
+    circle.y + circle.size <= y);
+
+  return isInCircle;
 }
 
 function clear() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // clear whole canvas
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // redraw the grid
+  drawGrid(canvas.width, canvas.height);
+
 }
 
 function draw() {
-    clear();
+  clear();
 
-    for(let circle of circles) {
-        
-    }
+  for (let circle of circles) {
+    drawCircle(circle);
+  }
 
+  // update number of points currently drawn
+  document.getElementById("numberOfPoints").textContent = circles.length;
 }
 
 function drawSquare(properties) {
-    const { x, y, size, fillColor, borderColor } = properties;
-    context.fillStyle = fillColor;
-    context.strokeStyle = borderColor;
-    context.rect(x -10, y - 10, size, size);
-    context.closePath();
-    context.fill();
+  const {
+    x,
+    y,
+    size,
+    fillColor,
+    borderColor
+  } = properties;
+  context.fillStyle = fillColor;
+  context.strokeStyle = borderColor;
+  context.rect(x - 10, y - 10, size, size);
+  context.closePath();
+  context.fill();
 }
 
 function drawCircle(properties) {
-    const { x, y, size, fillColor, borderColor } = properties;
-    context.fillStyle = fillColor;
-    context.strokeStyle = borderColor;
-    context.lineWidth = 1;
-    context.beginPath();
-    context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false);
-    context.fill();
-    context.stroke();
-
-    // add circle to array of objects to track
-    circles.push({
-        x,
-        y,
-        radius: size,
-        isDragging: false
-    })
+  const {
+    x,
+    y,
+    size,
+    fillColor,
+    borderColor
+  } = properties;
+  context.fillStyle = fillColor;
+  context.strokeStyle = borderColor;
+  context.lineWidth = 1;
+  context.beginPath();
+  context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false);
+  context.fill();
+  context.stroke();
 }
 
-function bezier(t, p0, p1, p2, p3){
-    var cX = 3 * (p1.x - p0.x),
-        bX = 3 * (p2.x - p1.x) - cX,
-        aX = p3.x - p0.x - cX - bX;
-  
-    var cY = 3 * (p1.y - p0.y),
-        bY = 3 * (p2.y - p1.y) - cY,
-        aY = p3.y - p0.y - cY - bY;
-  
-    var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
-    var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
-  
-    return {x: x, y: y};
-  }
+function bezier(t, p0, p1, p2, p3) {
+  var cX = 3 * (p1.x - p0.x),
+    bX = 3 * (p2.x - p1.x) - cX,
+    aX = p3.x - p0.x - cX - bX;
+
+  var cY = 3 * (p1.y - p0.y),
+    bY = 3 * (p2.y - p1.y) - cY,
+    aY = p3.y - p0.y - cY - bY;
+
+  var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
+  var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
+
+  return {
+    x: x,
+    y: y
+  };
+}
