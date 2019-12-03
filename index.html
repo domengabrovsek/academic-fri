@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CG - project</title>
+    <title>Game example - ES6/WebGL 2.0 Examples</title>
 
     <link rel="stylesheet" type="text/css" href="./index.css">
 
-    <script type="text/javascript" src="./scripts/Main.js"></script>
+    <script type="text/javascript" src="./scripts/lib/gl-matrix-min.js"></script>
+    <script type="text/javascript" src="./scripts/lib/dat.gui.min.js"></script>
+    <script type="module" src="./scripts/Main.js"></script>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <div class="overlay">
+        <a class="back" href="../../index.html">Back</a>
+    </div>
+    <div class="fullscreen">
+        <canvas></canvas>
+    </div>
 </body>
 </html>
-

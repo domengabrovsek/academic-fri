@@ -1,83 +1,97 @@
-class Application {
+import Application from './Application.js';
 
-    constructor(canvas) {
-        this._update = this._update.bind(this);
+import Renderer from './Renderer.js';
+import Physics from './Physics.js';
+import Camera from './Camera.js';
+import SceneLoader from './SceneLoader.js';
+import SceneBuilder from './SceneBuilder.js';
 
-        this.canvas = canvas;
-        this._initGL();
-        this.start();
-
-        requestAnimationFrame(this._update);
-    }
-
-    _initGL() {
-        // Try to create a WebGL 2.0 context.
-        // We need both a try-catch and a null check.
-        this.gl = null;
-        try {
-            this.gl = this.canvas.getContext('webgl2', {
-                // options, such as disabling the depth buffer
-            });
-        } catch (error) {
-        }
-
-        if (!this.gl) {
-            console.log('Cannot create WebGL 2.0 context');
-        }
-    }
-
-    _update() {
-        this._resize();
-        this.update();
-        this.render();
-        requestAnimationFrame(this._update);
-    }
-
-    _resize() {
-        // Check for resize on RAF, because elements do not
-        // trigger a resize event. Windows do, but it might
-        // not change the size of the canvas.
-        const canvas = this.canvas;
-        const gl = this.gl;
-
-        if (canvas.width !== canvas.clientWidth ||
-            canvas.height !== canvas.clientHeight)
-        {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-
-            // Change the drawing region to reflect the canvas size.
-            gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-
-            this.resize();
-        }
-    }
+class App extends Application {
 
     start() {
-        // initialization code (including event handler binding)
+        const gl = this.gl;
+
+        this.renderer = new Renderer(gl);
+        this.time = Date.now();
+        this.startTime = this.time;
+        this.aspect = 1;
+
+        this.pointerlockchangeHandler = this.pointerlockchangeHandler.bind(this);
+        document.addEventListener('pointerlockchange', this.pointerlockchangeHandler);
+
+        this.load('./scripts/scene.json');
+    }
+
+    async load(uri) {
+        const scene = await new SceneLoader().loadScene('./scripts/scene.json');
+        const builder = new SceneBuilder(scene);
+        this.scene = builder.build();
+        this.physics = new Physics(this.scene);
+
+        // Find first camera.
+        this.camera = null;
+        this.scene.traverse(node => {
+            if (node instanceof Camera) {
+                this.camera = node;
+            }
+        });
+
+        this.camera.aspect = this.aspect;
+        this.camera.updateProjection();
+        this.renderer.prepare(this.scene);
+    }
+
+    enableCamera() {
+        this.canvas.requestPointerLock();
+    }
+
+    pointerlockchangeHandler() {
+        if (!this.camera) {
+            return;
+        }
+
+        if (document.pointerLockElement === this.canvas) {
+            this.camera.enable();
+        } else {
+            this.camera.disable();
+        }
     }
 
     update() {
-        // update code (input, animations, AI ...)
+        const t = this.time = Date.now();
+        const dt = (this.time - this.startTime) * 0.001;
+        this.startTime = this.time;
+
+        if (this.camera) {
+            this.camera.update(dt);
+        }
+
+        if (this.physics) {
+            this.physics.update(dt);
+        }
     }
 
     render() {
-        // render code (gl API calls)
-
-        const gl = this.gl;
-        gl.clearColor(0.3, 0.4, 0.9, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        if (this.scene) {
+            this.renderer.render(this.scene, this.camera);
+        }
     }
 
     resize() {
-        // resize code (e.g. update projection matrix)
+        const w = this.canvas.clientWidth;
+        const h = this.canvas.clientHeight;
+        this.aspect = w / h;
+        if (this.camera) {
+            this.camera.aspect = this.aspect;
+            this.camera.updateProjection();
+        }
     }
 
 }
 
-// Create a new Application only after the body
-// and the canvas element are created.
 document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('canvas');
-    const app = new Application(canvas);
+    const canvas = document.querySelector('canvas');
+    const app = new App(canvas);
+    const gui = new dat.GUI();
+    gui.add(app, 'enableCamera');
 });
