@@ -1,17 +1,12 @@
 'use strict';
 
 let circles = []; // array of drawn points
-
 let lines = []; // array of drawn lines
 
-let canvas, context;
+let canvas, context, colorPicker, curveColor;
 
 let drawing = true;
 let dragOk = false;
-
-// variable for line drawing
-let lastPoint;
-
 
 // variables to save starting mouse position before dragging
 let startMouseX, startMouseY;
@@ -19,30 +14,34 @@ let startMouseX, startMouseY;
 // function to draw initial coordinate system grid
 function drawGrid(width, height) {
 
-  context.strokeStyle = "blue"; // grid color
+  context.strokeStyle = "gray"; // grid color
 
   const squareSize = 10;
   context.lineWidth = 0.3;
 
-  // for (let i = 0; i <= width; i += squareSize) {
-  //   context.moveTo(0.5 + i, 0)
-  //   context.lineTo(0.5 + i, height)
-  // }
+  for (let i = 0; i <= width; i += squareSize) {
+    context.moveTo(0.5 + i, 0)
+    context.lineTo(0.5 + i, height)
+  }
 
-  // for (let i = 0; i <= height; i += squareSize) {
-  //   context.moveTo(0, 0.5 + i);
-  //   context.lineTo(width, 0.5 + i);
-  // }
+  for (let i = 0; i <= height; i += squareSize) {
+    context.moveTo(0, 0.5 + i);
+    context.lineTo(width, 0.5 + i);
+  }
 
-  // context.stroke();
+  context.stroke();
 
   // draw black border around canvas
   context.lineWidth = 1;
-  context.strokeStyle = "red";
+  context.strokeStyle = "black";
   context.strokeRect(0, 0, canvas.width, canvas.height);
 }
 
+// initialize canvas with all its event handlers
 function init() {
+  colorPicker = document.getElementById('curveColor');
+  curveColor = colorPicker.value;
+
   canvas = document.getElementById('BezierCanvas');
   context = canvas.getContext('2d')
 
@@ -112,34 +111,37 @@ function init() {
       }
     }
 
+    // save mouse position for next move
     startMouseX = mouseX;
     startMouseY = mouseY;
 
-    // add new circle to object array (redraw on mouseup)
+    // if we're allowed to draw (mouse not on existing object)
     if(drawing) {
-      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red' })
 
-      const endPoint = {
-        x: circles[circles.length - 1].x - 10,
-        y: circles[circles.length - 1].y - 10
-      };
-
-      
-      if(circles.length > 1) {
-        const startPoint = {
-          x: circles[circles.length - 2].x - 10,
-          y: circles[circles.length - 2].y - 10
-        }
-
-        lines.push({ a: startPoint, b: endPoint });
-
-      }
+      // add new circle to object array (redraw on mouseup)
+      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red', number: circles.length + 1 })
     }
   });
 
   // mouseup
   canvas.addEventListener('mouseup', e => {
 
+    // test bezier
+    if(circles.length === 4) {
+
+      let points = circles.map(circle => ({ x: circle.x - 10, y: circle.y - 10 }));
+
+      context.moveTo(points[0].x, points[0].y);
+
+      for(let t = 0; t < 1; t+= 0.01) {
+        let p = bezier(points[0], points[1], points[2], points[3], t);
+    
+        context.lineTo(p.x, p.y);
+      }
+      context.strokeStyle = curveColor;
+      context.stroke();
+    }  
+  
     dragOk = false;
 
     // disable dragging on all circles
@@ -161,8 +163,19 @@ function init() {
     // update number of points currently drawn
     document.getElementById("numberOfPoints").textContent = circles.length;
   }); 
+
+  // update color
+  colorPicker.addEventListener('input', e => {
+
+    console.log(`Curve color changed from: ${curveColor} to ${e.target.value}`);
+    curveColor = e.target.value;
+
+  });
 }
 
+/* -------------- helper functions -------------- */
+
+// returns true if given point is inside given circle on canvas
 function isInCircle(circle, x, y) {
 
   const isInCircle = circle && !(circle.x - circle.size >= x || 
@@ -178,25 +191,25 @@ function clear() {
   // clear whole canvas
   context.clearRect(0, 0, canvas.width, canvas.height);
 
-  // use default comp. mode
-  context.globalCompositeOperation = "source-over";
-
-  // reset alpha
-  context.globalAlpha = 1;
-
-  context.fillStyle = "rgba(255, 255, 255, 1)";
-
   // redraw the grid
   drawGrid(canvas.width, canvas.height);
 }
 
+// clear canvas and redraw all saved objects
 function draw() {
   clear();
 
-  for(let line of lines) {
-    drawLine(line)
-  }
+  // draw lines
+  if(circles.length > 1) {
+    for(let i = 0; i < circles.length - 1; i++) {
+      const startPoint = { x: circles[i].x - 10, y: circles[i].y - 10};
+      const endPoint = { x: circles[i + 1].x - 10, y: circles[i + 1].y - 10};
 
+      drawLine(startPoint, endPoint);
+    }
+  }
+    
+  // draw points
   for (let circle of circles) {
     drawCircle(circle);
   }
@@ -206,13 +219,7 @@ function draw() {
 }
 
 function drawSquare(properties) {
-  const {
-    x,
-    y,
-    size,
-    fillColor,
-    borderColor
-  } = properties;
+  const { x, y, size, fillColor, borderColor } = properties;
   context.fillStyle = fillColor;
   context.strokeStyle = borderColor;
   context.rect(x - 10, y - 10, size, size);
@@ -221,20 +228,20 @@ function drawSquare(properties) {
 }
 
 function drawCircle(properties) {
-  const { x, y, size, fillColor, borderColor } = properties;
+  const { x, y, size, fillColor, borderColor, number } = properties;
   context.fillStyle = fillColor;
   context.strokeStyle = borderColor;
   context.lineWidth = 1;
   context.beginPath();
-  context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false);
+  context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false); // draw circle
   context.fill();
+  context.fillStyle = 'black'; // text color for point
+  context.font = "bold 12pt Arial"; // font for point
+  context.fillText(number, x - 25, y - 20); // add text to point
   context.stroke();
 }
 
-function drawLine(line) {
-
-  const { a, b } = line;
-
+function drawLine(a, b) {
   context.beginPath();
   context.moveTo(a.x, a.y);
   context.lineTo(b.x, b.y);
@@ -242,20 +249,22 @@ function drawLine(line) {
   context.stroke()
 }
 
-function bezier(t, p0, p1, p2, p3) {
-  var cX = 3 * (p1.x - p0.x),
-    bX = 3 * (p2.x - p1.x) - cX,
-    aX = p3.x - p0.x - cX - bX;
+function bezier(p0, p1, p2, p3, t) {
 
-  var cY = 3 * (p1.y - p0.y),
-    bY = 3 * (p2.y - p1.y) - cY,
-    aY = p3.y - p0.y - cY - bY;
+  // formula
+  // P = (1−t)^3*P0 + 3(1−t)^2*t*P1 + 3(1−t)t^2*P2 + t^3*P3
+  
+  // x = (1−t)^3*x0 + 3(1−t)^2*t*x1 + 3(1−t)t^2*x2 + t^3*x3
+  let x = Math.pow(1 - t, 3) * p0.x + 
+  Math.pow(1 - t, 2) * 3 * t * p1.x + 
+  (1 - t) * 3 * t * t * p2.x + 
+  Math.pow(t, 3) * p3.x;
 
-  var x = (aX * Math.pow(t, 3)) + (bX * Math.pow(t, 2)) + (cX * t) + p0.x;
-  var y = (aY * Math.pow(t, 3)) + (bY * Math.pow(t, 2)) + (cY * t) + p0.y;
+  // y = (1−t)^3*y0 + 3(1−t)^2*t*y1 + 3(1−t)t^2*y2 + t^3*y3
+  let y = Math.pow(1 - t, 3) * p0.y + 
+  Math.pow(1 - t, 2) * 3 * t * p1.y + 
+  (1 - t) * 3 * t * t * p2.y + 
+  Math.pow(t, 3) * p3.y;
 
-  return {
-    x: x,
-    y: y
-  };
+  return { x, y };
 }
