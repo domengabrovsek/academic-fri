@@ -1,10 +1,17 @@
 'use strict';
 
-let circles = []; // array of drawn objects
+let circles = []; // array of drawn points
+
+let lines = []; // array of drawn lines
+
 let canvas, context;
 
 let drawing = true;
 let dragOk = false;
+
+// variable for line drawing
+let lastPoint;
+
 
 // variables to save starting mouse position before dragging
 let startMouseX, startMouseY;
@@ -12,24 +19,26 @@ let startMouseX, startMouseY;
 // function to draw initial coordinate system grid
 function drawGrid(width, height) {
 
+  context.strokeStyle = "blue"; // grid color
+
   const squareSize = 10;
   context.lineWidth = 0.3;
 
-  for (let i = 0; i <= width; i += squareSize) {
-    context.moveTo(0.5 + i, 0)
-    context.lineTo(0.5 + i, height)
-  }
+  // for (let i = 0; i <= width; i += squareSize) {
+  //   context.moveTo(0.5 + i, 0)
+  //   context.lineTo(0.5 + i, height)
+  // }
 
-  for (let i = 0; i <= height; i += squareSize) {
-    context.moveTo(0, 0.5 + i);
-    context.lineTo(width, 0.5 + i);
-  }
+  // for (let i = 0; i <= height; i += squareSize) {
+  //   context.moveTo(0, 0.5 + i);
+  //   context.lineTo(width, 0.5 + i);
+  // }
 
-  context.strokeStyle = "#c7ccd1"; // grid color
-  context.stroke();
+  // context.stroke();
 
+  // draw black border around canvas
   context.lineWidth = 1;
-  context.strokeStyle = "#000000";
+  context.strokeStyle = "red";
   context.strokeRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -109,6 +118,22 @@ function init() {
     // add new circle to object array (redraw on mouseup)
     if(drawing) {
       circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red' })
+
+      const endPoint = {
+        x: circles[circles.length - 1].x - 10,
+        y: circles[circles.length - 1].y - 10
+      };
+
+      
+      if(circles.length > 1) {
+        const startPoint = {
+          x: circles[circles.length - 2].x - 10,
+          y: circles[circles.length - 2].y - 10
+        }
+
+        lines.push({ a: startPoint, b: endPoint });
+
+      }
     }
   });
 
@@ -131,6 +156,7 @@ function init() {
 
     // remove all saved objects
     circles = [];
+    lines = [];
 
     // update number of points currently drawn
     document.getElementById("numberOfPoints").textContent = circles.length;
@@ -152,13 +178,24 @@ function clear() {
   // clear whole canvas
   context.clearRect(0, 0, canvas.width, canvas.height);
 
+  // use default comp. mode
+  context.globalCompositeOperation = "source-over";
+
+  // reset alpha
+  context.globalAlpha = 1;
+
+  context.fillStyle = "rgba(255, 255, 255, 1)";
+
   // redraw the grid
   drawGrid(canvas.width, canvas.height);
-
 }
 
 function draw() {
   clear();
+
+  for(let line of lines) {
+    drawLine(line)
+  }
 
   for (let circle of circles) {
     drawCircle(circle);
@@ -184,13 +221,7 @@ function drawSquare(properties) {
 }
 
 function drawCircle(properties) {
-  const {
-    x,
-    y,
-    size,
-    fillColor,
-    borderColor
-  } = properties;
+  const { x, y, size, fillColor, borderColor } = properties;
   context.fillStyle = fillColor;
   context.strokeStyle = borderColor;
   context.lineWidth = 1;
@@ -198,6 +229,17 @@ function drawCircle(properties) {
   context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false);
   context.fill();
   context.stroke();
+}
+
+function drawLine(line) {
+
+  const { a, b } = line;
+
+  context.beginPath();
+  context.moveTo(a.x, a.y);
+  context.lineTo(b.x, b.y);
+  context.strokeStyle = 'black';
+  context.stroke()
 }
 
 function bezier(t, p0, p1, p2, p3) {
