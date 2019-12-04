@@ -2,9 +2,9 @@
 
 let circles = []; // array of drawn points
 let lines = []; // array of drawn lines
-let bezierCurves = []; // array of drawn bezier curves
 
 let canvas, context, colorPicker, curveColor;
+let numberOfCurves = 0
 
 let drawing = true;
 let dragOk = false;
@@ -143,10 +143,14 @@ function init() {
     // remove all saved objects
     circles = [];
     lines = [];
-    bezierCurves = [];
+    numberOfCurves = 0;
 
     // update number of points currently drawn
     document.getElementById("numberOfPoints").textContent = circles.length;
+
+    // update number of curves currently drawn
+    document.getElementById("numberOfCurves").textContent = 3;
+
   }); 
 
   // update color
@@ -155,6 +159,9 @@ function init() {
     console.log(`Curve color changed from: ${curveColor} to ${e.target.value}`);
     curveColor = e.target.value;
 
+    // redraw to update color of curve
+    draw();
+    
   });
 }
 
@@ -196,6 +203,9 @@ function draw() {
     
   // draw bezier curves
   if(circles.length >= 4 && (circles.length - 4) % 3 === 0) {
+
+    numberOfCurves = 0;
+
     for(let i = 0; i < circles.length - 1; i += 3) {
     
       let p0 = circles[i];
@@ -206,8 +216,20 @@ function draw() {
       let points = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
 
       drawBezierCurve(points[0], points[1], points[2], points[3]);
+      numberOfCurves += 1;
     }
   }
+
+  // draw lines again (this is a hack because last line was always same color as curve if this isn't called)
+  if(circles.length > 1) {
+    for(let i = 0; i < circles.length - 1; i++) {
+      const startPoint = { x: circles[i].x - 10, y: circles[i].y - 10};
+      const endPoint = { x: circles[i + 1].x - 10, y: circles[i + 1].y - 10};
+
+      drawLine(startPoint, endPoint);
+    }
+  }
+
 
   // draw points
   for (let circle of circles) {
@@ -216,6 +238,8 @@ function draw() {
 
   // update number of points currently drawn
   document.getElementById("numberOfPoints").textContent = circles.length;
+
+  document.getElementById("numberOfCurves").textContent = numberOfCurves;
 }
 
 function drawSquare(properties) {
