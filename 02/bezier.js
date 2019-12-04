@@ -2,6 +2,7 @@
 
 let circles = []; // array of drawn points
 let lines = []; // array of drawn lines
+let bezierCurves = []; // array of drawn bezier curves
 
 let canvas, context, colorPicker, curveColor;
 
@@ -119,29 +120,12 @@ function init() {
     if(drawing) {
 
       // add new circle to object array (redraw on mouseup)
-      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red', number: circles.length + 1 })
+      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red', number: circles.length + 1 });
     }
   });
 
   // mouseup
-  canvas.addEventListener('mouseup', e => {
-
-    // test bezier
-    if(circles.length === 4) {
-
-      let points = circles.map(circle => ({ x: circle.x - 10, y: circle.y - 10 }));
-
-      context.moveTo(points[0].x, points[0].y);
-
-      for(let t = 0; t < 1; t+= 0.01) {
-        let p = bezier(points[0], points[1], points[2], points[3], t);
-    
-        context.lineTo(p.x, p.y);
-      }
-      context.strokeStyle = curveColor;
-      context.stroke();
-    }  
-  
+  canvas.addEventListener('mouseup', e => {  
     dragOk = false;
 
     // disable dragging on all circles
@@ -159,6 +143,7 @@ function init() {
     // remove all saved objects
     circles = [];
     lines = [];
+    bezierCurves = [];
 
     // update number of points currently drawn
     document.getElementById("numberOfPoints").textContent = circles.length;
@@ -209,6 +194,21 @@ function draw() {
     }
   }
     
+  // draw bezier curves
+  if(circles.length >= 4 && (circles.length - 4) % 3 === 0) {
+    for(let i = 0; i < circles.length - 1; i += 3) {
+    
+      let p0 = circles[i];
+      let p1 = circles[i + 1];
+      let p2 = circles[i + 2];
+      let p3 = circles[i + 3];
+
+      let points = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
+
+      drawBezierCurve(points[0], points[1], points[2], points[3]);
+    }
+  }
+
   // draw points
   for (let circle of circles) {
     drawCircle(circle);
@@ -243,28 +243,35 @@ function drawCircle(properties) {
 
 function drawLine(a, b) {
   context.beginPath();
+  context.strokeStyle = 'black';
   context.moveTo(a.x, a.y);
   context.lineTo(b.x, b.y);
-  context.strokeStyle = 'black';
   context.stroke()
 }
 
-function bezier(p0, p1, p2, p3, t) {
+function drawBezierCurve(p0, p1, p2, p3) {
 
   // formula
   // P = (1−t)^3*P0 + 3(1−t)^2*t*P1 + 3(1−t)t^2*P2 + t^3*P3
-  
-  // x = (1−t)^3*x0 + 3(1−t)^2*t*x1 + 3(1−t)t^2*x2 + t^3*x3
-  let x = Math.pow(1 - t, 3) * p0.x + 
-  Math.pow(1 - t, 2) * 3 * t * p1.x + 
-  (1 - t) * 3 * t * t * p2.x + 
-  Math.pow(t, 3) * p3.x;
 
-  // y = (1−t)^3*y0 + 3(1−t)^2*t*y1 + 3(1−t)t^2*y2 + t^3*y3
-  let y = Math.pow(1 - t, 3) * p0.y + 
-  Math.pow(1 - t, 2) * 3 * t * p1.y + 
-  (1 - t) * 3 * t * t * p2.y + 
-  Math.pow(t, 3) * p3.y;
+  context.moveTo(p0.x, p0.y);
 
-  return { x, y };
+  for(let t = 0; t < 1; t+= 0.01) {
+    // x = (1−t)^3*x0 + 3(1−t)^2*t*x1 + 3(1−t)t^2*x2 + t^3*x3
+    let x = Math.pow(1 - t, 3) * p0.x + 
+    Math.pow(1 - t, 2) * 3 * t * p1.x + 
+    (1 - t) * 3 * t * t * p2.x + 
+    Math.pow(t, 3) * p3.x;
+
+    // y = (1−t)^3*y0 + 3(1−t)^2*t*y1 + 3(1−t)t^2*y2 + t^3*y3
+    let y = Math.pow(1 - t, 3) * p0.y + 
+    Math.pow(1 - t, 2) * 3 * t * p1.y + 
+    (1 - t) * 3 * t * t * p2.y + 
+    Math.pow(t, 3) * p3.y;
+
+    context.lineTo(x, y);
+  }
+
+  context.strokeStyle = curveColor;
+  context.stroke();
 }
