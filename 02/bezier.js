@@ -201,10 +201,18 @@ function draw() {
     }
   }
     
-  // draw bezier curves
+  // draw bezier curves, need at least 4 points for first one and then 3 for next ones
   if(circles.length >= 4 && (circles.length - 4) % 3 === 0) {
 
+    // need to reset counter everytime otherwise it increments it in every iteration
     numberOfCurves = 0;
+
+    /* pattern for picking points to draw:
+      curve 1:  0 1 2 3
+      curve 2:  3 4 5 6
+      curve 3:  6 7 8 9
+      curve 4:  9 10 11 12 
+    */
 
     for(let i = 0; i < circles.length - 1; i += 3) {
     
@@ -213,6 +221,7 @@ function draw() {
       let p2 = circles[i + 2];
       let p3 = circles[i + 3];
 
+      // - 10 is used to move point to the pointing point of cursor
       let points = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
 
       drawBezierCurve(points[0], points[1], points[2], points[3]);
@@ -223,6 +232,8 @@ function draw() {
   // draw lines again (this is a hack because last line was always same color as curve if this isn't called)
   if(circles.length > 1) {
     for(let i = 0; i < circles.length - 1; i++) {
+
+      // - 10 is used to move point to the pointing point of cursor
       const startPoint = { x: circles[i].x - 10, y: circles[i].y - 10};
       const endPoint = { x: circles[i + 1].x - 10, y: circles[i + 1].y - 10};
 
