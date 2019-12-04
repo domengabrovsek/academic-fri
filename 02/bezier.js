@@ -1,6 +1,6 @@
 'use strict';
 
-let circles = []; // array of drawn points
+let points = []; // array of drawn points
 let lines = []; // array of drawn lines
 
 let canvas, context, colorPicker, curveColor;
@@ -63,8 +63,8 @@ function init() {
     document.getElementById('x').textContent = mouseX;
     document.getElementById('y').textContent = mouseY;
 
-    // change cursor type and disable drawing if mouse is inside circle
-    if(circles.some(circle => isInCircle(circle, mouseX, mouseY))) {
+    // change cursor type and disable drawing if mouse is inside point
+    if(points.some(point => isInpoint(point, mouseX, mouseY))) {
       drawing = false;
       document.body.style.cursor = 'pointer';
     } else {
@@ -79,11 +79,11 @@ function init() {
       let mouseDistanceX = mouseX - startMouseX;
       let mouseDistanceY = mouseY - startMouseY;
 
-      // move circles to new location
-      for(let circle of circles) {
-        if(circle.isDragging) {
-          circle.x += mouseDistanceX;
-          circle.y += mouseDistanceY;
+      // move points to new location
+      for(let point of points) {
+        if(point.isDragging) {
+          point.x += mouseDistanceX;
+          point.y += mouseDistanceY;
         }
       }
 
@@ -105,10 +105,10 @@ function init() {
 
     dragOk = false;
 
-    for(let circle of circles) {
-      if(isInCircle(circle, mouseX, mouseY)) {
+    for(let point of points) {
+      if(isInpoint(point, mouseX, mouseY)) {
         dragOk = true;
-        circle.isDragging = true;
+        point.isDragging = true;
       }
     }
 
@@ -119,8 +119,8 @@ function init() {
     // if we're allowed to draw (mouse not on existing object)
     if(drawing) {
 
-      // add new circle to object array (redraw on mouseup)
-      circles.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red', number: circles.length + 1 });
+      // add new point to object array (redraw on mouseup)
+      points.push({ x: e.clientX, y: e.clientY, size: 5, fillColor: 'white', borderColor: 'red', number: points.length + 1 });
     }
   });
 
@@ -128,8 +128,8 @@ function init() {
   canvas.addEventListener('mouseup', e => {  
     dragOk = false;
 
-    // disable dragging on all circles
-    circles.forEach(circle => circle.isDragging = false);
+    // disable dragging on all points
+    points.forEach(point => point.isDragging = false);
 
     // redraw everything
     draw();
@@ -141,12 +141,12 @@ function init() {
     clear();
 
     // remove all saved objects
-    circles = [];
+    points = [];
     lines = [];
     numberOfCurves = 0;
 
     // update number of points currently drawn
-    document.getElementById("numberOfPoints").textContent = circles.length;
+    document.getElementById("numberOfPoints").textContent = points.length;
 
     // update number of curves currently drawn
     document.getElementById("numberOfCurves").textContent = 3;
@@ -167,15 +167,15 @@ function init() {
 
 /* -------------- helper functions -------------- */
 
-// returns true if given point is inside given circle on canvas
-function isInCircle(circle, x, y) {
+// returns true if given point is inside given point on canvas
+function isInpoint(point, x, y) {
 
-  const isInCircle = circle && !(circle.x - circle.size >= x || 
-    circle.x + circle.size <= x || 
-    circle.y - circle.size >= y || 
-    circle.y + circle.size <= y);
+  const isInpoint = point && !(point.x - point.size >= x || 
+    point.x + point.size <= x || 
+    point.y - point.size >= y || 
+    point.y + point.size <= y);
 
-  return isInCircle;
+  return isInpoint;
 }
 
 function clear() {
@@ -192,17 +192,17 @@ function draw() {
   clear();
 
   // draw lines
-  if(circles.length > 1) {
-    for(let i = 0; i < circles.length - 1; i++) {
-      const startPoint = { x: circles[i].x - 10, y: circles[i].y - 10};
-      const endPoint = { x: circles[i + 1].x - 10, y: circles[i + 1].y - 10};
+  if(points.length > 1) {
+    for(let i = 0; i < points.length - 1; i++) {
+      const startPoint = { x: points[i].x - 10, y: points[i].y - 10};
+      const endPoint = { x: points[i + 1].x - 10, y: points[i + 1].y - 10};
 
       drawLine(startPoint, endPoint);
     }
   }
     
   // draw bezier curves, need at least 4 points for first one and then 3 for next ones
-  if(circles.length >= 4 && (circles.length - 4) % 3 === 0) {
+  if(points.length >= 4 && (points.length - 4) % 3 === 0) {
 
     // need to reset counter everytime otherwise it increments it in every iteration
     numberOfCurves = 0;
@@ -214,28 +214,28 @@ function draw() {
       curve 4:  9 10 11 12 
     */
 
-    for(let i = 0; i < circles.length - 1; i += 3) {
+    for(let i = 0; i < points.length - 1; i += 3) {
     
-      let p0 = circles[i];
-      let p1 = circles[i + 1];
-      let p2 = circles[i + 2];
-      let p3 = circles[i + 3];
+      let p0 = points[i];
+      let p1 = points[i + 1];
+      let p2 = points[i + 2];
+      let p3 = points[i + 3];
 
       // - 10 is used to move point to the pointing point of cursor
-      let points = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
+      let pointsToDraw = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
 
-      drawBezierCurve(points[0], points[1], points[2], points[3]);
+      drawBezierCurve(pointsToDraw[0], pointsToDraw[1], pointsToDraw[2], pointsToDraw[3]);
       numberOfCurves += 1;
     }
   }
 
   // draw lines again (this is a hack because last line was always same color as curve if this isn't called)
-  if(circles.length > 1) {
-    for(let i = 0; i < circles.length - 1; i++) {
+  if(points.length > 1) {
+    for(let i = 0; i < points.length - 1; i++) {
 
       // - 10 is used to move point to the pointing point of cursor
-      const startPoint = { x: circles[i].x - 10, y: circles[i].y - 10};
-      const endPoint = { x: circles[i + 1].x - 10, y: circles[i + 1].y - 10};
+      const startPoint = { x: points[i].x - 10, y: points[i].y - 10};
+      const endPoint = { x: points[i + 1].x - 10, y: points[i + 1].y - 10};
 
       drawLine(startPoint, endPoint);
     }
@@ -243,13 +243,14 @@ function draw() {
 
 
   // draw points
-  for (let circle of circles) {
-    drawCircle(circle);
+  for (let point of points) {
+    drawpoint(point);
   }
 
   // update number of points currently drawn
-  document.getElementById("numberOfPoints").textContent = circles.length;
+  document.getElementById("numberOfPoints").textContent = points.length;
 
+  // update number of curves currently drawn
   document.getElementById("numberOfCurves").textContent = numberOfCurves;
 }
 
@@ -262,13 +263,13 @@ function drawSquare(properties) {
   context.fill();
 }
 
-function drawCircle(properties) {
+function drawpoint(properties) {
   const { x, y, size, fillColor, borderColor, number } = properties;
   context.fillStyle = fillColor;
   context.strokeStyle = borderColor;
   context.lineWidth = 1;
   context.beginPath();
-  context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false); // draw circle
+  context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false); // draw point
   context.fill();
   context.fillStyle = 'black'; // text color for point
   context.font = "bold 12pt Arial"; // font for point
