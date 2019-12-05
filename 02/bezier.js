@@ -48,9 +48,6 @@ function init() {
   canvas = document.getElementById('BezierCanvas');
   context = canvas.getContext('2d')
 
-  // draw coordinate system like grid
-  drawGrid(canvas.width, canvas.height);
-
   // draw all elements in object array
   draw();
 
@@ -66,7 +63,7 @@ function init() {
     document.getElementById('y').textContent = mouseY;
 
     // change cursor type and disable drawing if mouse is inside point
-    if(points.some(point => isInpoint(point, mouseX, mouseY))) {
+    if(points.some(point => isInPoint(point, mouseX, mouseY))) {
       drawing = false;
       document.body.style.cursor = 'pointer';
     } else {
@@ -108,7 +105,7 @@ function init() {
     dragging = false;
 
     for(let point of points) {
-      if(isInpoint(point, mouseX, mouseY)) {
+      if(isInPoint(point, mouseX, mouseY)) {
         dragging = true;
         point.isDragging = true;
       }
@@ -151,9 +148,8 @@ function init() {
     document.getElementById("numberOfPoints").textContent = points.length;
 
     // update number of curves currently drawn
-    document.getElementById("numberOfCurves").textContent = 3;
-
-  }); 
+    document.getElementById("numberOfCurves").textContent = numberOfCurves;
+  });
 
   // update color
   colorPicker.addEventListener('input', e => {
@@ -163,21 +159,42 @@ function init() {
 
     // redraw to update color of curve
     draw();
-    
   });
+
+
+  document.addEventListener('keyup', e => {
+    // if delete was pressed then remove last bezier curve
+    if(e.key === 'Delete') {
+
+      if(points.length >= 4 && (points.length - 4) % 3 === 0) {
+
+        // if only 4 points remove all of them
+        if(points.length === 4) {
+          points = [];
+        // else remove the last curve
+        } else {
+          points.splice(points.length - 3)
+        }
+          
+        draw();
+      } else {
+        console.log('Please add enough points to draw a curve before trying to delete one.')
+      }
+    }
+  })
 }
 
 /* -------------- helper functions -------------- */
 
 // returns true if given point is inside given point on canvas
-function isInpoint(point, x, y) {
+function isInPoint(point, x, y) {
 
-  const isInpoint = point && !(point.x - point.size >= x || 
+  const isInPoint = point && !(point.x - point.size >= x || 
     point.x + point.size <= x || 
     point.y - point.size >= y || 
     point.y + point.size <= y);
 
-  return isInpoint;
+  return isInPoint;
 }
 
 function clear() {
@@ -189,7 +206,7 @@ function clear() {
   drawGrid(canvas.width, canvas.height);
 }
 
-// clear canvas and redraw all saved objects
+// clear canvas and redraw all objects
 function draw() {
   clear();
 
@@ -213,11 +230,14 @@ function draw() {
 }
 
 function drawSquare(properties) {
-  const { x, y } = properties;
+  const { x, y, number } = properties;
   context.fillStyle = 'red';
   context.rect(x - 15, y - 15, 10, 10);
   context.closePath();
   context.fill();
+  context.fillStyle = 'black'; // text color for point
+  context.font = "bold 12pt Arial"; // font for point
+  context.fillText(number, x - 25, y - 20); // add text to point
 }
 
 function drawPoints() {
@@ -291,6 +311,7 @@ function drawBezierCurves() {
       // - 10 is used to move point to the pointing point of cursor
       let pointsToDraw = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
 
+      // draw curve and increase its count
       drawBezierCurve(pointsToDraw[0], pointsToDraw[1], pointsToDraw[2], pointsToDraw[3]);
       numberOfCurves += 1;
     }
