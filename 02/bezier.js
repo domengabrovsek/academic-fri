@@ -1,13 +1,13 @@
 'use strict';
 
-let points = []; // array of drawn points
-let lines = []; // array of drawn lines
+// array of drawn points
+let points = []; 
 
-let canvas, context, colorPicker, curveColor;
-let numberOfCurves = 0
+// array of drawn lines
+let lines = []; 
 
-let drawing = true;
-let dragOk = false;
+// global variables needed for everything to work
+let canvas, context, colorPicker, curveColor, numberOfCurves = 0, drawing = true, dragging = false;
 
 // variables to save starting mouse position before dragging
 let startMouseX, startMouseY;
@@ -15,8 +15,10 @@ let startMouseX, startMouseY;
 // function to draw initial coordinate system grid
 function drawGrid(width, height) {
 
-  context.strokeStyle = "gray"; // grid color
+  // grid color
+  context.strokeStyle = "gray"; 
 
+  // size of square in grid
   const squareSize = 10;
   context.lineWidth = 0.3;
 
@@ -73,7 +75,7 @@ function init() {
     }
 
     // if dragging an object
-    if(dragOk) {
+    if(dragging) {
     
       // mouse distance from start to end
       let mouseDistanceX = mouseX - startMouseX;
@@ -103,11 +105,11 @@ function init() {
     let mouseX = e.clientX;
     let mouseY = e.clientY;
 
-    dragOk = false;
+    dragging = false;
 
     for(let point of points) {
       if(isInpoint(point, mouseX, mouseY)) {
-        dragOk = true;
+        dragging = true;
         point.isDragging = true;
       }
     }
@@ -126,7 +128,7 @@ function init() {
 
   // mouseup
   canvas.addEventListener('mouseup', e => {  
-    dragOk = false;
+    dragging = false;
 
     // disable dragging on all points
     points.forEach(point => point.isDragging = false);
@@ -192,60 +194,16 @@ function draw() {
   clear();
 
   // draw lines
-  if(points.length > 1) {
-    for(let i = 0; i < points.length - 1; i++) {
-      const startPoint = { x: points[i].x - 10, y: points[i].y - 10};
-      const endPoint = { x: points[i + 1].x - 10, y: points[i + 1].y - 10};
-
-      drawLine(startPoint, endPoint);
-    }
-  }
+  drawLines();
     
-  // draw bezier curves, need at least 4 points for first one and then 3 for next ones
-  if(points.length >= 4 && (points.length - 4) % 3 === 0) {
+  // draw bezier curves
+  drawBezierCurves();
 
-    // need to reset counter everytime otherwise it increments it in every iteration
-    numberOfCurves = 0;
-
-    /* pattern for picking points to draw:
-      curve 1:  0 1 2 3
-      curve 2:  3 4 5 6
-      curve 3:  6 7 8 9
-      curve 4:  9 10 11 12 
-    */
-
-    for(let i = 0; i < points.length - 1; i += 3) {
-    
-      let p0 = points[i];
-      let p1 = points[i + 1];
-      let p2 = points[i + 2];
-      let p3 = points[i + 3];
-
-      // - 10 is used to move point to the pointing point of cursor
-      let pointsToDraw = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
-
-      drawBezierCurve(pointsToDraw[0], pointsToDraw[1], pointsToDraw[2], pointsToDraw[3]);
-      numberOfCurves += 1;
-    }
-  }
-
-  // draw lines again (this is a hack because last line was always same color as curve if this isn't called)
-  if(points.length > 1) {
-    for(let i = 0; i < points.length - 1; i++) {
-
-      // - 10 is used to move point to the pointing point of cursor
-      const startPoint = { x: points[i].x - 10, y: points[i].y - 10};
-      const endPoint = { x: points[i + 1].x - 10, y: points[i + 1].y - 10};
-
-      drawLine(startPoint, endPoint);
-    }
-  }
-
+  // draw lines again because of some problems with colors
+  drawLines();
 
   // draw points
-  for (let point of points) {
-    drawpoint(point);
-  }
+  drawPoints();
 
   // update number of points currently drawn
   document.getElementById("numberOfPoints").textContent = points.length;
@@ -255,18 +213,31 @@ function draw() {
 }
 
 function drawSquare(properties) {
-  const { x, y, size, fillColor, borderColor } = properties;
-  context.fillStyle = fillColor;
-  context.strokeStyle = borderColor;
-  context.rect(x - 10, y - 10, size, size);
+  const { x, y } = properties;
+  context.fillStyle = 'red';
+  context.rect(x - 15, y - 15, 10, 10);
   context.closePath();
   context.fill();
 }
 
-function drawpoint(properties) {
-  const { x, y, size, fillColor, borderColor, number } = properties;
-  context.fillStyle = fillColor;
-  context.strokeStyle = borderColor;
+function drawPoints() {
+  for(let i = 0; i < points.length; i++) {
+
+    // interpolated 
+    if(i % 3 === 0) {
+      drawSquare(points[i])
+    } 
+    // aproximated
+    else {
+      drawPoint(points[i]);
+    }
+  }
+}
+
+function drawPoint(properties) {
+  const { x, y, size, number } = properties;
+  context.fillStyle = 'red';
+  context.strokeStyle = 'red';
   context.lineWidth = 1;
   context.beginPath();
   context.arc(x - 10, y - 10, size, 0, 2 * Math.PI, false); // draw point
@@ -277,12 +248,53 @@ function drawpoint(properties) {
   context.stroke();
 }
 
+function drawLines() {
+  if(points.length > 1) {
+    for(let i = 0; i < points.length - 1; i++) {
+      const startPoint = { x: points[i].x - 10, y: points[i].y - 10};
+      const endPoint = { x: points[i + 1].x - 10, y: points[i + 1].y - 10};
+
+      drawLine(startPoint, endPoint);
+    }
+  }
+}
+
 function drawLine(a, b) {
   context.beginPath();
   context.strokeStyle = 'black';
   context.moveTo(a.x, a.y);
   context.lineTo(b.x, b.y);
   context.stroke()
+}
+
+function drawBezierCurves() {
+
+  // need to reset counter everytime otherwise it increments too much it in every iteration
+  numberOfCurves = 0;
+
+  /* pattern for picking points to draw:
+    curve 1:  0 1 2 3
+    curve 2:  3 4 5 6
+    curve 3:  6 7 8 9
+    curve 4:  9 10 11 12 
+  */
+
+  for(let i = 0; i < points.length - 1; i += 3) {
+
+    let p0 = points[i];
+    let p1 = points[i + 1];
+    let p2 = points[i + 2];
+    let p3 = points[i + 3];
+
+    // check if all four points are available, if not then don't draw anything
+    if(p0 && p1 && p2 && p3) {
+      // - 10 is used to move point to the pointing point of cursor
+      let pointsToDraw = [p0, p1, p2, p3].map(p => ({ x: p.x - 10, y: p.y - 10 }));
+
+      drawBezierCurve(pointsToDraw[0], pointsToDraw[1], pointsToDraw[2], pointsToDraw[3]);
+      numberOfCurves += 1;
+    }
+  }
 }
 
 function drawBezierCurve(p0, p1, p2, p3) {
