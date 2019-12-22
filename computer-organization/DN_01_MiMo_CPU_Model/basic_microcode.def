@@ -1,0 +1,111 @@
+# A small set of microinstructions for the CPU
+# (c) GPL3 Warren Toomey, 2012
+#
+
+fetch:	addrsel=pc irload=1 		# Address=PC, Load IR register
+pcload=1  pcsel=pc, opcode_jump		# PC=PC+1, jump to 2+OPC
+
+#############################################################################
+#
+# ALU operations on Rd,Rs,Rt
+#
+# add Rd,Rs,Rt
+0: aluop=add  op2sel=treg  dwrite=1  regsrc=aluout, goto fetch
+
+# sub Rd,Rs,Rt
+# Rd <- Rs - Rt		PC <- PC + 1
+1: aluop=sub op2sel=treg dwrite=1 regsrc=aluout, goto fetch 
+
+# mul Rd,Rs,Rt 
+# Rd <- Rs * Rt		PC <- PC + 1
+2: aluop=mul op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# div Rd,Rs,Rt 
+# Rd <- Rs / Rt		PC <- PC + 1
+3: aluop=div op2sel=treg dwrite=1 regsrc=aluout, goto fetch 
+
+# rem Rd,Rs,Rt 
+# Rd <- Rs % Rt		PC <- PC + 1
+4: aluop=rem op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# and Rd,Rs,Rt (5)
+# Rd <- Rs AND Rt		PC <- PC + 1
+5: aluop=and op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# or Rd,Rs,Rt (6)
+# Rd <- Rs OR Rt		PC <- PC + 1
+6: aluop=or op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# xor Rd,Rs,Rt (7)
+# Rd <- Rs XOR Rt		PC <- PC + 1
+7: aluop=xor op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# nand Rd,Rs,Rt (8)
+# Rd <- Rs NAND Rt	PC <- PC + 1
+8: aluop=nand op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# nor Rd,Rs,Rt (9)
+# Rd <- Rs NOR Rt		PC <- PC + 1
+9: aluop=nor op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# not Rd,Rs (10)
+# Rd <- NOT Rs		PC <- PC + 1
+10: aluop=not op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# lsl Rd,Rs,Rt (11)
+# Rd <- Rs << Rt		PC <- PC + 1
+11: aluop=lsl op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# lsr Rd,Rs,Rt (12)
+# Rd <- Rs >> Rt		PC <- PC + 1
+12: aluop=lsr op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# asr Rd,Rs,Rt (13)
+# Rd <- Rs >> Rt (filled bits are the sign bit)	PC <- PC + 1
+13: aluop=asr op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# rol Rd,Rs,Rt (14)
+# Rd <- Rs rolled left by Rt bits	PC <- PC + 1
+14: aluop=rol op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+# ror Rd,Rs,Rt (15)
+# Rd <- Rs rolled right by Rt bits	PC <- PC + 1
+15: aluop=ror op2sel=treg dwrite=1 regsrc=aluout, goto fetch
+
+#############################################################################
+#
+# Jump compared to zero operations
+#
+# jeqz Rs,immed 
+# if Rs == 0, PC <- immed else  PC <- PC + 2
+39: addrsel=pc imload=1
+	aluop=sub op2sel=const0, if z then jump else pcincr
+
+# jnez Rs,immed  ; If Rs != 0, PC <- immed else  PC <- PC + 2
+40:	addrsel=pc  imload=1								            # Read Immediate operand -> IMRegister
+	aluop=sub  op2sel=const0, if z then pcincr else jump		    # If z then pcincr else jump to immed; opsel=0 means value of 2 (constant 0 is selected!!!)
+
+#
+# li Rd,Immed    ; Load immediate Rd, immed   
+63:	addrsel=pc  dwrite=1  regsrc=databus, goto pcincr				# additional increment (cause immed was read) and then new command
+#	pcload=1  pcsel=pc, goto fetch                                  # not optimal way to do this, better goto to pcincr: instead (line above)
+
+#
+# sw Rd,immed    ; Store Rd into M[immed] Rd->M[immed]; 
+65:	addrsel=pc  imload=1
+	addrsel=immed  datawrite=1  datasel=dreg, goto pcincr			# additional increment (cause immed was read) and then new command
+#	pcload=1  pcsel=pc, goto fetch                                  # not optimal way to do this, better goto to pcincr: instead (line above)
+
+# swri Rd,Rs,Rt (74)
+# M[Rs+Rt] <- Rd		PC <- PC + 1
+74:	aluop=add op2sel=treg 
+	addrsel=aluout datawrite=1 datasel=dreg, goto fetch
+
+#
+# Other code which we call
+#
+# Increment PC and goto new command; for all commands that use immediate operand - they need additional PC increment !
+pcincr:	pcload=1  pcsel=pc, goto fetch
+
+# Set address to immed and goto new command; for jumps to absolute immed address
+jump:	pcload=1  pcsel=immed, goto fetch

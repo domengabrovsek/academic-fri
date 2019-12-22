@@ -1,0 +1,10 @@
+00: 00002000 0101	# fetch:	addrsel=pc irload=1
+01: 00080800 0202	# 	pcload=1  pcsel=pc, opcode_jump
+02: 00011000 0000	# 0:	aluop=add  op2sel=treg  dwrite=1  regsrc=aluout, goto fetch
+2a: 00004000 8282	# 40:	addrsel=pc  imload=1
+41: 00001000 8484	# 63:	addrsel=pc  dwrite=1  regsrc=databus, goto pcincr
+43: 00004000 8383	# 65:	addrsel=pc  imload=1
+82: 00040021 8485	# 	aluop=sub  op2sel=const0, if z then pcincr else jump
+83: 001000c0 8484	# 	addrsel=immed  datawrite=1  datasel=dreg, goto pcincr
+84: 00000800 0000	# pcincr:	pcload=1  pcsel=pc, goto fetch
+85: 00000a00 0000	# jump:	pcload=1  pcsel=immed, goto fetch
