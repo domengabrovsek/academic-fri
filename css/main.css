@@ -1,47 +1,9 @@
-#glcanvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-}
-
-#text {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 2;
-}
-
-#content {
+html, body {
 	width: 100%;
-	text-align: center;
+	height: 100%;
+	margin: 0;
 }
-
 canvas {
-	display: inline;
-	border: 1px solid black;
-}
-
-h1 {
-	text-align: left;
-}
-
-h2 {
-	text-align: left;
-}
-
-ul {
-	text-align: left;
-}
-
-td {
-	width: 200px;
-}
-
-#loadingtext {
-	position:absolute;
-	top:250px;
-	left:150px;
-	font-size:2em;
-	color: white;
+	margin: 0;
+	padding: 0;
 }
