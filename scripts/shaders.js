@@ -1,32 +1,34 @@
-const vertex = `#version 300 es
-layout (location = 0) in vec4 aPosition;
-layout (location = 1) in vec2 aTexCoord;
+'use strict';
 
-uniform mat4 uViewModel;
-uniform mat4 uProjection;
+let vertexShaderString = `
+  // atributes for setting vertex position and texture coordinates
+  attribute vec3 aVertexPosition;
+  attribute vec2 aTextureCoord;
 
-out vec2 vTexCoord;
+  uniform mat4 uMVMatrix;	// model-view matrix
+  uniform mat4 uPMatrix;	// projection matrix
 
-void main() {
-    vTexCoord = aTexCoord;
-    gl_Position = uProjection * uViewModel * aPosition;
-}
+  // variable for passing texture coordinates
+  // from vertex shader to fragment shader
+  varying vec2 vTextureCoord;
+
+  void main(void) {
+    // calculate the vertex position
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    vTextureCoord = aTextureCoord;
 `;
 
-const fragment = `#version 300 es
-precision mediump float;
+let fragmentShaderString = `
+  precision mediump float;
 
-uniform mediump sampler2D uTexture;
+  // uniform attribute for setting texture coordinates
+  varying vec2 vTextureCoord;
 
-in vec2 vTexCoord;
+  // uniform attribute for setting 2D sampler
+  uniform sampler2D uSampler;
 
-out vec4 oColor;
-
-void main() {
-    oColor = texture(uTexture, vTexCoord);
-}
+  void main(void) {
+    // sample the fragment color from texture
+    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  }
 `;
-
-export default {
-    simple: { vertex, fragment }
-};
