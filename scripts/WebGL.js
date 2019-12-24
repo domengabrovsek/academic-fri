@@ -1,90 +1,110 @@
-export function createShader(gl, source, type) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    const status = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!status) {
-        const log = gl.getShaderInfoLog(shader);
-        throw new Error('Cannot compile shader\nInfo log:\n' + log);
-    }
-    return shader;
+'use strict';
+
+function initGL(canvas) {
+  let gl = null;
+  
+  gl = canvas.getContext("webgl");
+  gl.viewportWidth = canvas.width;
+  gl.viewportHeight = canvas.height;
+  
+  if (!gl) {
+    alert("Unable to initialize WebGL. Your browser may not support it.");
+  }
+
+  return gl;
 }
 
-export function createProgram(gl, shaders) {
-    const program = gl.createProgram();
-    for (let shader of shaders) {
-        gl.attachShader(program, shader);
-    }
-    gl.linkProgram(program);
-    const status = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (!status) {
-        const log = gl.getProgramInfoLog(program);
-        throw new Error('Cannot link program\nInfo log:\n' + log);
-    }
-
-    let attributes = {};
-    const activeAttributes = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-    for (let i = 0; i < activeAttributes; i++) {
-        const info = gl.getActiveAttrib(program, i);
-        attributes[info.name] = gl.getAttribLocation(program, info.name);
-    }
-
-    let uniforms = {};
-    const activeUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-    for (let i = 0; i < activeUniforms; i++) {
-        const info = gl.getActiveUniform(program, i);
-        uniforms[info.name] = gl.getUniformLocation(program, info.name);
-    }
-
-    return { program, attributes, uniforms };
+function setMatrixUniforms() {
+  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 }
 
-export function buildPrograms(gl, shaders) {
-    var programs = {};
-    for (let name in shaders) {
-        try {
-            var program = shaders[name];
-            programs[name] = createProgram(gl, [
-                createShader(gl, program.vertex, gl.VERTEX_SHADER),
-                createShader(gl, program.fragment, gl.FRAGMENT_SHADER)
-            ]);
-        } catch (err) {
-            throw new Error('Error compiling ' + name + '\n' + err);
-        }
+//
+// getShader
+//
+// Loads a shader program by scouring the current document,
+// looking for a script with the specified ID.
+//
+function getShader(gl, id) {
+  var shaderScript = document.getElementById(id);
+
+  // Didn't find an element with the specified ID; abort.
+  if (!shaderScript) {
+    return null;
+  }
+  
+  // Walk through the source element's children, building the
+  // shader source string.
+  var shaderSource = "";
+  var currentChild = shaderScript.firstChild;
+  while (currentChild) {
+    if (currentChild.nodeType == 3) {
+        shaderSource += currentChild.textContent;
     }
-    return programs;
+    currentChild = currentChild.nextSibling;
+  }
+  
+  // Now figure out what type of shader script we have,
+  // based on its MIME type.
+  var shader;
+  if (shaderScript.type == "x-shader/x-fragment") {
+    shader = gl.createShader(gl.FRAGMENT_SHADER);
+  } else if (shaderScript.type == "x-shader/x-vertex") {
+    shader = gl.createShader(gl.VERTEX_SHADER);
+  } else {
+    return null;  // Unknown shader type
+  }
+
+  // Send the source to the shader object
+  gl.shaderSource(shader, shaderSource);
+
+  // Compile the shader program
+  gl.compileShader(shader);
+
+  // See if it compiled successfully
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert(gl.getShaderInfoLog(shader));
+    return null;
+  }
+
+  return shader;
 }
 
-export function createTexture(gl, options) {
-    const target  = options.target  || gl.TEXTURE_2D;
-    const iformat = options.iformat || gl.RGBA;
-    const format  = options.format  || gl.RGBA;
-    const type    = options.type    || gl.UNSIGNED_BYTE;
-    const texture = options.texture || gl.createTexture();
+function initShaders() {
+  var fragmentShader = getShader(gl, "shader-fs");
+  var vertexShader = getShader(gl, "shader-vs");
 
-    if (typeof options.unit !== 'undefined') {
-        gl.activeTexture(gl.TEXTURE0 + options.unit);
-    }
+  // Create the shader program
+  shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
 
-    gl.bindTexture(target, texture);
+  // If creating the shader program failed, alert
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    alert("Unable to initialize the shader program.");
+  }
 
-    if (options.image) {
-        gl.texImage2D(
-            target, 0, iformat,
-            format, type, options.image);
-    } else {
-        // if options.data == null, just allocate
-        gl.texImage2D(
-            target, 0, iformat,
-            options.width, options.height, 0,
-            format, type, options.data);
-    }
+  // start using shading program for rendering
+  gl.useProgram(shaderProgram);
 
-    if (options.wrapS) { gl.texParameteri(target, gl.TEXTURE_WRAP_S, options.wrapS); }
-    if (options.wrapT) { gl.texParameteri(target, gl.TEXTURE_WRAP_T, options.wrapT); }
-    if (options.min) { gl.texParameteri(target, gl.TEXTURE_MIN_FILTER, options.min); }
-    if (options.mag) { gl.texParameteri(target, gl.TEXTURE_MAG_FILTER, options.mag); }
-    if (options.mip) { gl.generateMipmap(target); }
+  // store location of aVertexPosition variable defined in shader
+  shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 
-    return texture;
+  // turn on vertex position attribute at specified position
+  gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+  // store location of aVertexNormal variable defined in shader
+  shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+
+  // store location of aTextureCoord variable defined in shader
+  gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+  // store location of uPMatrix variable defined in shader - projection matrix 
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+  // store location of uMVMatrix variable defined in shader - model-view matrix 
+  shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+  // store location of uSampler variable defined in shader
+  shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+  shaderProgram.mvvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 }
