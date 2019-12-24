@@ -186,7 +186,7 @@ function drawFloor() {
 
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, metalTexture);
+    gl.bindTexture(gl.TEXTURE_2D, floorTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 // Set the texture coordinates attribute for the vertices.

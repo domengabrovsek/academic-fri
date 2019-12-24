@@ -18,7 +18,7 @@ var worldVertexPositionBuffer = null;
 var worldVertexTextureCoordBuffer = null;
 
 var floorTexture;
-var metalTexture;
+var floorTexture;
 
 // Model-view and projection matrix and model-view matrix stack
 var mvMatrixStack = [];
@@ -66,10 +66,10 @@ function initTextures() {
   floorTexture.image.onload = () => handleTextureLoaded(floorTexture);
   floorTexture.image.src = "./images/grass.png";
 
-  metalTexture = gl.createTexture();
-  metalTexture.image = new Image();
-  metalTexture.image.onload = () => handleTextureLoaded(metalTexture);
-  metalTexture.image.src = "./images/metal.png";
+  floorTexture = gl.createTexture();
+  floorTexture.image = new Image();
+  floorTexture.image.onload = () => handleTextureLoaded(floorTexture);
+  floorTexture.image.src = "./images/floor.png";
 }
 
 function handleTextureLoaded(texture) {
