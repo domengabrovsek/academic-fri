@@ -51,6 +51,11 @@ var joggingAngle = 0;
 // Helper variable for animation
 var lastTime = 0;
 
+var apiURL = 'http://localhost:3000';
+
+// player textbox name
+var playerName = document.getElementById("txtPlayerName");
+
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
 // the job; it gets called each time a texture finishes loading.
@@ -144,6 +149,27 @@ function loadWorld() {
   };
   request.send();
 }
+
+
+function saveDataToDB(name, time) {
+  var request = new XMLHttpRequest();
+
+  request.open("POST", `${apiURL}/statictic`);
+  request.setRequestHeader("Content-Type", "application/json");
+  request.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      console.log("Succesfully saved data");
+    }
+  }
+
+  let data = {
+    "name": name,
+    "time": time
+  };
+
+  request.send(JSON.stringify(data));
+}
+
 
 function drawScene() {
 
@@ -321,6 +347,7 @@ function vmes() {
 
       if (konec) {
         gameover();
+        saveDataToDB(playerName.value, 50);
       }
     }
   }, 15);
