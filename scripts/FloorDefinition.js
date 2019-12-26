@@ -1,5 +1,20 @@
 
 // each subarray in floor represents a triangle
+
+let floorStartData = [
+  [
+    { x:  3.5, z: 0.0, y: -0.5,  tX: -0.5, tY: 3.5 },
+    { x:  3.5, z: 0.0, y: 10.0,  tX: 10.0, tY: 3.5 },
+    { x: 10.0, z: 0.0, y: 10.0,  tX: 10.0, tY: 10.0 }
+  ],
+  [
+    { x: 10.0, z: 0.0, y: 10.0,  tX: 10.0, tY: 10.0 },
+    { x: 10.0, z: 0.0, y: -0.5,  tX: -0.5, tY: 10.0 },
+    { x:  3.5, z: 0.0, y: -0.5,  tX: -0.5, tY: 3.5 }
+  ]
+];
+
+
 let floor = 
 [
   // starting square

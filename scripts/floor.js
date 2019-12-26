@@ -6,49 +6,25 @@ var floorINVertexPositionBuffer;
 var floorINVertexTextureCoordBuffer;
 var floorINVertexIndexBuffer;
 
+function initBuffersFloor(gl) {
 
-function initBuffersTla(gl) {
-  var dataa = "";
-  "3.5       0.0      -0.5    -0.5   3.5" + '\n' +
-  "3.5     0.0     10.0    10.0   3.5" + '\n' +
-  "10.0  0.0     10.0    10.0   10.0" + '\n' +
-  "10.0  0.0     10.0    10.0   10.0" + '\n' +
-  "10.0  0.0      -0.5    -0.5   10.0" + '\n' +
-  "3.5    0.0      -0.5    -0.5   3.5" + '\n';
-
-  var lineFloor = dataa.split("\n");
-  var vertexCountFloor = 0;
-  var vertexPositionsFloor = [];
-  var vertexTextureCoordsFloor = [];
-  for (var i in lineFloor) {
-    var vals = lineFloor[i].replace(/^\s+/, "").split(/\s+/);
-    if (vals.length == 5 && vals[0] != "//") {
-      // It is a line describing a vertex; get X, Y and Z first
-      vertexPositionsFloor.push(parseFloat(vals[0]));
-      vertexPositionsFloor.push(parseFloat(vals[1]));
-      vertexPositionsFloor.push(parseFloat(vals[2]));
-
-      // And then the texture coords
-      vertexTextureCoordsFloor.push(parseFloat(vals[3]));
-      vertexTextureCoordsFloor.push(parseFloat(vals[4]));
-
-      vertexCountFloor += 1;
-    }
-  }
+  // get coordinates to draw start floor
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floorStartData);
 
   floorVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPositionsFloor), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoordinates), gl.STATIC_DRAW);
   floorVertexPositionBuffer.itemSize = 3;
-  floorVertexPositionBuffer.numItems = vertexCountFloor;
+  floorVertexPositionBuffer.numItems = vertexCount;
 
   floorVertexTextureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexTextureCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexTextureCoordsFloor), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
   floorVertexTextureCoordBuffer.itemSize = 2;
-  floorVertexTextureCoordBuffer.numItems = vertexCountFloor;
+  floorVertexTextureCoordBuffer.numItems = vertexCount;
 
-  let { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
+  // get coordinates to draw floor
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
 
   floorINVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, floorINVertexPositionBuffer);

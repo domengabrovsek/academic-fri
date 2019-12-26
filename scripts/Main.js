@@ -368,7 +368,7 @@ function startGame() {
 
     initShaders();
     initTextures();
-    initBuffersTla(gl);
+    initBuffersFloor(gl);
 
     // Initialise world objects
     loadWorld();
