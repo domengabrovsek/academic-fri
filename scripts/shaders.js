@@ -1,4 +1,3 @@
-'use strict';
 
 let vertexShaderString = `
   // atributes for setting vertex position and texture coordinates

@@ -22,6 +22,24 @@ function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
+function generatePoint(x, y) {
+  return {
+    x: x,
+    z: 0.0,
+    y: y,
+    tX: x,
+    tY: y
+  };
+}
+
+function generateTriangle({ aX, aY, bX, bY, cX, cY}) {
+  return [
+    generatePoint(aX, aY),
+    generatePoint(bX, bY),
+    generatePoint(cX, cY)
+  ];
+}
+
 function filterCoordinates(coordinates) {
   let vertexCoordinates = [];
   let textureCoordinates = [];
@@ -40,7 +58,7 @@ function filterCoordinates(coordinates) {
 
       // increase vertex count
       vertexCount += 1;
-      
+
     }));
       
   return {
