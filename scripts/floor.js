@@ -8,17 +8,14 @@ var floorINVertexIndexBuffer;
 
 
 function initBuffersTla(gl) {
-    var dataa=   "3.5       0.0      -0.5    -0.5   3.5"+ '\n' +
-                    "3.5     0.0     100.0    100.0   3.5"+ '\n' +
-                    "100.0  0.0     100.0    100.0   100.0"+ '\n' +
-                    "100.0  0.0     100.0    100.0   100.0"+ '\n' +
-                    "100.0  0.0      -0.5    -0.5   100.0"+ '\n' +
-                    "3.5    0.0      -0.5    -0.5   3.5"+ '\n'
+    var dataa =  ""; 
+        "3.5       0.0      -0.5    -0.5   3.5"+ '\n' +
+        "3.5     0.0     10.0    10.0   3.5"+ '\n' +
+        "10.0  0.0     10.0    10.0   10.0"+ '\n' +
+        "10.0  0.0     10.0    10.0   10.0"+ '\n' +
+        "10.0  0.0      -0.5    -0.5   10.0"+ '\n' +
+        "3.5    0.0      -0.5    -0.5   3.5"+ '\n'
     ;
-
-
-
-
 
     var lineFloor = dataa.split("\n");
     var vertexCountFloor = 0;
@@ -52,87 +49,112 @@ function initBuffersTla(gl) {
     floorVertexTextureCoordBuffer.itemSize = 2;
     floorVertexTextureCoordBuffer.numItems = vertexCountFloor;
 
-    var dataaIN= // MAIN Floor 1
-        "2.0  0.0  2.0  2.0  2.0" + '\n' +
-        "2.0  0.0  -2.0 -2.0 2.0" + '\n' +
-        "-2.0 0.0  2.0  2.0 -2.0" + '\n' +
-        "-2.0 0.0  2.0  2.0 -2.0" + '\n' +
-        "-2.0 0.0  -2.0  -2.0 -2.0" + '\n' +
-        "2.0  0.0  -2.0 -2.0 2.0" + '\n' +
+    // x, z, y
 
-        // Tla za hodnik naravnost(prepad)
-        "-1.0  0.0 -20.0 -20.0 -1.0" + '\n' +
+    let floor = "";
+
+        // starting point
+        let startingPoint = 
+            // first triangle
+            // x   z   y
+            "1.0 -0.5 1.0  1.0  1.0" + '\n' + // right bottom
+            "1.0  -0.5  -1.0 -1.0 1.0" + '\n' + // right top
+            "-1.0 -0.5  1.0  1.0 -1.0" + '\n' + // left bottom
+
+            // second triangle
+            "-1.0 0.0  1.0  1.0 -1.0" + '\n' +
+            "-1.0 0.0  -1.0  -1.0 -1.0" + '\n' +
+            "1.0  0.0  -1.0 -1.0 1.0" + '\n';
+        
+        floor += startingPoint;
+
+        // hallway straight
+        let hallwayStraight =
+        // first triangle
+        // x   z  
+        "-1.0  0.0 -10.0 -10.0 -1.0" + '\n' +
         "-1.0  0.0  -2.0 -2.0 -1.0" + '\n' +
         "1.0  0.0  -2.0 -2.0 1.0" + '\n' +
-        "-1.0  0.0 -20.0 -20.0 -1.0" + '\n' +
-        " 1.0  0.0 -20.0 -20.0 1.0" + '\n' +
-        " 1.0  0.0  -2.0  -2.0 1.0" + '\n' +
 
-        //Tla za hodnik levo(krogla)
-        "-30.0 0.0  1.0  1.0  -30.0" + '\n' +
-        "-30.0 0.0 -1.0 -1.0  -30.0" + '\n' +
+        // second triangle
+        "-1.0  0.0 -10.0 -10.0 -1.0" + '\n' +
+        " 1.0  0.0 -10.0 -10.0 1.0" + '\n' +
+        " 1.0  0.0  -2.0  -2.0 1.0" + '\n';
+
+        floor += hallwayStraight;
+
+        // hallway left
+        let hallwayLeft =
+        "-10.0 0.0  1.0  1.0  -10.0" + '\n' +
+        "-10.0 0.0 -1.0 -1.0  -10.0" + '\n' +
         "-2.0  0.0 -1.0 -1.0  -2.0" + '\n' +
+
         "-2.0  0.0 -1.0 -1.0  -2.0" + '\n' +
         "-2.0  0.0  1.0  1.0  -2.0" + '\n' +
-        "-30.0 0.0  1.0  1.0  -30.0" + '\n'+
-        //Tla zpred vrati
+        "-10.0 0.0  1.0  1.0  -10.0" + '\n';
+
+        floor += hallwayLeft;
+
+        
+        let hallwayRight =
         "3.5 0.0  -0.5  -0.5  3.5" + '\n' +
         "3.5 0.0  0.5  0.5  3.5" + '\n' +
         "2.0  0.0 -0.5 -0.5  2.0" + '\n' +
         "2.0  0.0 -0.5 -0.5  2.0" + '\n' +
         "2.0  0.0  0.5  0.5  2.0" + '\n' +
-        "3.5 0.0  0.5  0.5  3.5" + '\n' +
-        //podn rova od zadi
-        "-1.0 0.0  2.0 2.0 -1.0"  + '\n' +
-        "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
-        "1.0  0.0  2.0 2.0 1.0" + '\n' +
-        "1.0  0.0  2.0 2.0 1.0" + '\n' +
-        "1.0  0.0  8.0 8.0 1.0" + '\n' +
-        "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
-        //tla desnega rova
-        "-1.0  0.0  6.0 6.0 -1.0"+ '\n' +
-        "-8.0  0.0  6.0 6.0 -8.0"+ '\n' +
-        "-8.0  0.0  8.0 8.0 -8.0"+ '\n' +
-        "-8.0  0.0  8.0 8.0 -8.0"+ '\n' +
-        "-1.0  0.0  8.0 8.0 -1.0"+ '\n' +
-        "-1.0  0.0  6.0 6.0 -1.0"+ '\n' +
+        "3.5 0.0  0.5  0.5  3.5" + '\n';
+
+        floor += hallwayRight;
 
 
-        //podn labirinta 1
-        "1.0  0.0  6.0 6.0 1.0" + '\n' +
-        "3.0  0.0  6.0 6.0 3.0" + '\n' +
-        "3.0  0.0  18.0 18.0 3.0" + '\n' +
-        "3.0  0.0  18.0 18.0 3.0" + '\n' +
-        "1.0  0.0  18.0 18.0 1.0" + '\n' +
-        "1.0  0.0  6.0  6.0 1.0" + '\n' +
+        // //podn rova od zadi
+        // "-1.0 0.0  2.0 2.0 -1.0"  + '\n' +
+        // "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
+        // "1.0  0.0  2.0 2.0 1.0" + '\n' +
+        // "1.0  0.0  2.0 2.0 1.0" + '\n' +
+        // "1.0  0.0  8.0 8.0 1.0" + '\n' +
+        // "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
+        // //tla desnega rova
+        // "-1.0  0.0  6.0 6.0 -1.0"+ '\n' +
+        // "-8.0  0.0  6.0 6.0 -8.0"+ '\n' +
+        // "-8.0  0.0  8.0 8.0 -8.0"+ '\n' +
+        // "-8.0  0.0  8.0 8.0 -8.0"+ '\n' +
+        // "-1.0  0.0  8.0 8.0 -1.0"+ '\n' +
+        // "-1.0  0.0  6.0 6.0 -1.0"+ '\n' +
 
-        //podn labirinta 3
+        // //podn labirinta 1
+        // "1.0  0.0  6.0 6.0 1.0" + '\n' +
+        // "3.0  0.0  6.0 6.0 3.0" + '\n' +
+        // "3.0  0.0  18.0 18.0 3.0" + '\n' +
+        // "3.0  0.0  18.0 18.0 3.0" + '\n' +
+        // "1.0  0.0  18.0 18.0 1.0" + '\n' +
+        // "1.0  0.0  6.0  6.0 1.0" + '\n' +
 
-        "-1.0 0.0  12.0 12.0 -1.0" + '\n' +
-        "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
-        "-6.0  0.0  12.0 12.0 -6.0" + '\n' +
-        "-6.0  0.0  18.0 18.0 -6.0" + '\n' +
-        "-6.0  0.0  12.0 12.0 -6.0" + '\n' +
-        "-1.0  0.0  18.0 18.0 -1.0"+ '\n' +
+        // //podn labirinta 3
+        // "-1.0 0.0  12.0 12.0 -1.0" + '\n' +
+        // "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
+        // "-6.0  0.0  12.0 12.0 -6.0" + '\n' +
+        // "-6.0  0.0  18.0 18.0 -6.0" + '\n' +
+        // "-6.0  0.0  12.0 12.0 -6.0" + '\n' +
+        // "-1.0  0.0  18.0 18.0 -1.0"+ '\n' +
 
-    //podn labirinta 2
-     "1.0 0.0  8.0 8.0 1.0" + '\n' +
-    "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
-    "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
-    "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
-    "1.0  0.0  18.0 18.0 1.0" + '\n' +
-    "1.0  0.0  8.0 8.0 1.0" ;
+        // //podn labirinta 2
+        // "1.0 0.0  8.0 8.0 1.0" + '\n' +
+        // "-1.0  0.0  8.0 8.0 -1.0" + '\n' +
+        // "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
+        // "-1.0  0.0  18.0 18.0 -1.0" + '\n' +
+        // "1.0  0.0  18.0 18.0 1.0" + '\n' +
+        // "1.0  0.0  8.0 8.0 1.0" ;
 
-
-//notranji podn
-
-
-    var lineFloorIN = dataaIN.split("\n");
+    var lineFloorIN = floor.split("\n");
     var vertexCountFloorIN = 0;
     var vertexPositionsFloorIN = [];
     var vertexTextureCoordsFloorIN = [];
     for (var i in lineFloorIN) {
         var vals = lineFloorIN[i].replace(/^\s+/, "").split(/\s+/);
+
+        console.log(vals);
+
         if (vals.length == 5 && vals[0] != "//") {
             // It is a line describing a vertex; get X, Y and Z first
             vertexPositionsFloorIN.push(parseFloat(vals[0]));
@@ -161,44 +183,41 @@ function initBuffersTla(gl) {
 }
 
 function drawFloor() {
-// Activate textures
-
+    // Activate textures
     var copy = mat4.create(); //naredi novo matriko
     mat4.set(mvMatrix, copy); //shrani trenutno matriko
 
-
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, floorTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 0);
 
-// Set the texture coordinates attribute for the vertices.
+    // Set the texture coordinates attribute for the vertices.
     gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexTextureCoordBuffer);
     gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, floorVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-// Draw the floor by binding the array buffer to the floor's vertices
-// array, setting attributes, and pushing it to GL.
+    // Draw the floor by binding the array buffer to the floor's vertices
+    // array, setting attributes, and pushing it to GL.
     gl.bindBuffer(gl.ARRAY_BUFFER, floorVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-// Draw the cube.
+    // Draw the cube.
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLES, 0, floorVertexPositionBuffer.numItems);
-
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, floorTexture);
     gl.uniform1i(shaderProgram.samplerUniform, 0);
 
-// Set the texture coordinates attribute for the vertices.
+    // Set the texture coordinates attribute for the vertices.
     gl.bindBuffer(gl.ARRAY_BUFFER, floorINVertexTextureCoordBuffer);
     gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, floorINVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-// Draw the floor by binding the array buffer to the floor's vertices
-// array, setting attributes, and pushing it to GL.
+    // Draw the floor by binding the array buffer to the floor's vertices
+    // array, setting attributes, and pushing it to GL.
     gl.bindBuffer(gl.ARRAY_BUFFER, floorINVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorINVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-// Draw the cube.
+    // Draw the cube.
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLES, 0, floorINVertexPositionBuffer.numItems);
 

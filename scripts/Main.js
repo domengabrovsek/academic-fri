@@ -214,8 +214,8 @@ function drawScene() {
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, worldVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
   // Draw the cube.
-  setMatrixUniforms();
-  gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
+  // setMatrixUniforms();
+  // gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
 
 }
 
