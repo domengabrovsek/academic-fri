@@ -6,16 +6,7 @@ var floorINVertexPositionBuffer;
 var floorINVertexTextureCoordBuffer;
 var floorINVertexIndexBuffer;
 
-function initBuffersFloor() {
-
-  // TODO REMOVE ----------------------------------------------------------
-
-  let floorStartData = [generateTriangle({ 
-    aX: 0, aY: 0, aZ: 0,
-    bX: 0, bY: 0, bZ: 0,
-    cX: 0, cY: 0, cZ: 0,
-    m: 'f' 
-  })];
+function initBuffersFloor(gl) {
 
   // get coordinates to draw start floor
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floorStartData);
@@ -31,12 +22,6 @@ function initBuffersFloor() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
   floorVertexTextureCoordBuffer.itemSize = 2;
   floorVertexTextureCoordBuffer.numItems = vertexCount;
-
-  // ----------------------------------------------------------
-
-  let floor = generateSquare({x: -13, y: -13, z: 0, l: 26, m: 'f' });
-
-  console.log('floor', floor)
 
   // get coordinates to draw floor
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
