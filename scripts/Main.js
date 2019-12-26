@@ -150,7 +150,6 @@ function loadWorld() {
   request.send();
 }
 
-
 function saveDataToDB(name, time) {
   var request = new XMLHttpRequest();
 
@@ -169,7 +168,6 @@ function saveDataToDB(name, time) {
 
   request.send(JSON.stringify(data));
 }
-
 
 function drawScene() {
 
