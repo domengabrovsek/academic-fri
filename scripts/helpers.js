@@ -22,10 +22,10 @@ function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
-function generatePoint(x, y) {
+function generatePoint(x, y, z = 0) {
   return {
     x: x,
-    z: 0.0,
+    z: z,
     y: y,
     tX: x,
     tY: y
