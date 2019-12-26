@@ -189,6 +189,9 @@ function getStatistics() {
 
 function showStatistics(jsonData) {
   let statisticDiv = document.getElementById("statistics");
+  let loader = document.getElementsByClassName("loader")[0];
+  // hide loader
+  loader.style.display = 'none';
 
   if(Object.keys(jsonData).length > 0) {
     Object.keys(jsonData).forEach(key => {
