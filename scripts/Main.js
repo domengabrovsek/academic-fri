@@ -3,7 +3,7 @@
 // game canvas
 let canvas;
 
-let start = true;
+let start = false;
 
 var gl;
 var shaderProgram;
@@ -54,7 +54,7 @@ var lastTime = 0;
 var apiURL = 'http://localhost:3000';
 
 // player textbox name
-var playerName = document.getElementById("txtPlayerName");
+var playerName = '';
 
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
@@ -153,7 +153,7 @@ function loadWorld() {
 function saveDataToDB(name, time) {
   var request = new XMLHttpRequest();
 
-  request.open("POST", `${apiURL}/statictic`);
+  request.open("POST", `${apiURL}/statistic`);
   request.setRequestHeader("Content-Type", "application/json");
   request.onreadystatechange = function() {
     if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
@@ -162,11 +162,48 @@ function saveDataToDB(name, time) {
   }
 
   let data = {
-    "name": name,
-    "time": time
+    "playerName": name,
+    "time": time,
+    "date": new Date()
   };
 
   request.send(JSON.stringify(data));
+}
+
+function getStatistics() {
+  var request = new XMLHttpRequest();
+
+  request.open("GET", `${apiURL}/statistic`);
+  request.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+      console.log("Succesfully exported data");
+      if (this.response) {
+        let parsedJSON = JSON.parse(this.response);
+        console.log(parsedJSON);
+        showStatistics(parsedJSON);
+      }
+    }
+  }
+  request.send();
+}
+
+function showStatistics(jsonData) {
+  let statisticDiv = document.getElementById("statistics");
+
+  if(Object.keys(jsonData).length > 0) {
+    Object.keys(jsonData).forEach(key => {
+      let item = jsonData[key];
+      let nodeTitle = document.createElement("h1");
+      nodeTitle.innerHTML = key;
+      statisticDiv.appendChild(nodeTitle);
+
+      item.forEach(entry => {
+        let newNode = document.createElement("p");
+        newNode.innerHTML = `Porabljen čas: ${entry.time}, datum: ${new Date(entry.date).toString()}`;
+        statisticDiv.appendChild(newNode);
+      })
+    });
+  }
 }
 
 function drawScene() {
@@ -325,6 +362,10 @@ function handleKeys() {
   }
 }
 
+function updateTimer(time) {
+  document.getElementsByClassName("elapsedTime")[0].innerHTML = time;
+}
+
 function vmes() {
 
   setInterval(function () {
@@ -335,7 +376,7 @@ function vmes() {
         stevec = 0;
       }
 
-      if (!konec) { //dokler ni konec igre lahko opravlamo
+      if (!konec && start) { //dokler ni konec igre lahko opravlamo
         requestAnimationFrame(animate);
         handleKeys();
       }
@@ -345,10 +386,34 @@ function vmes() {
 
       if (konec) {
         gameover();
-        saveDataToDB(playerName.value, 50);
+        saveDataToDB(playerName, 50);
       }
     }
   }, 15);
+ 
+  /* update timer */
+  let i = 0;
+  setInterval(() => {
+    if (!konec && start) {
+      i++;
+      updateTimer(i);
+      //saveDataToDB(playerName, i);
+    }
+  }, 1000);
+}
+
+function savePlayer() {
+  var textBoxPlayerName = document.getElementById("txtPlayerName");
+
+  if (!textBoxPlayerName.value.length > 0) {
+    alert("Ime igralca naj ne bo nič");
+  } else {
+    playerName = textBoxPlayerName.value;
+    start = true;
+    // show timer
+    document.getElementsByClassName("elapsedTime")[0].style.display = 'block';
+  }
+
 }
 
 function startGame() {
@@ -374,6 +439,9 @@ function startGame() {
     // keyboard bindings
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
+
+    // load API
+    getStatistics();
 
     drawScene();
     drawFloor();
