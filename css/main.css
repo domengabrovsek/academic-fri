@@ -35,6 +35,11 @@ canvas {
 	width: 100%;
 }
 
+.statisticTable {
+	width: 40%;
+	margin: 0 auto;
+}
+
 .loader {
 	border: 8px solid #f3f3f3; /* Light grey */
 	border-top: 8px solid #3498db; /* Blue */
