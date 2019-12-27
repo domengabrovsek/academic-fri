@@ -200,11 +200,53 @@ function showStatistics(jsonData) {
       nodeTitle.innerHTML = key;
       statisticDiv.appendChild(nodeTitle);
 
+      let nodeTable = document.createElement("table");
+      nodeTable.className = "table table-dark statisticTable";
+      let tableHeader = document.createElement("thead");
+      let tableHeaderRow = document.createElement("tr");
+
+      // th 1
+      let thTime = document.createElement("th");
+      thTime.innerHTML = "Porabljen čas";
+      thTime.scope = "col";
+      tableHeaderRow.appendChild(thTime);
+
+      // th 2
+      let thDate = document.createElement("th");
+      thDate.innerHTML = "Datum";
+      thDate.scope = "col";
+      tableHeaderRow.appendChild(thDate);
+
+      tableHeader.appendChild(tableHeaderRow);
+      nodeTable.appendChild(tableHeader);
+
+      let tableBody = document.createElement("tbody");
+      
+
+
+
+
       item.forEach(entry => {
         let newNode = document.createElement("p");
-        newNode.innerHTML = `Porabljen čas: ${entry.time}, datum: ${new Date(entry.date).toString()}`;
-        statisticDiv.appendChild(newNode);
+        let newTableNodeRow = document.createElement("tr");
+    
+        // player time
+        let newTHtime = document.createElement("td");
+        newTHtime.innerHTML = entry.time;
+        newTableNodeRow.appendChild(newTHtime);
+
+        // date
+        let newTHDate = document.createElement("td");
+        newTHDate.innerHTML = new Date(entry.date).toLocaleString();
+        newTableNodeRow.appendChild(newTHDate);
+
+        //newNode.innerHTML = `Porabljen čas: ${entry.time}, datum: ${new Date(entry.date).toString()}`;
+        //statisticDiv.appendChild(newNode);
+        tableBody.appendChild(newTableNodeRow);
       })
+
+      nodeTable.appendChild(tableBody);
+      statisticDiv.appendChild(nodeTable);
     });
   }
 }
