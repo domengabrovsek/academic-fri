@@ -8,6 +8,7 @@
     <!-- Metadata END -->
 
     <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="./css/main.css">
     <!-- CSS END -->
 
@@ -61,7 +62,16 @@
   <body onload="startGame()">
     <div style="position: relative;">
       <canvas id="canvas" width="1920" height="973"></canvas>
+    </div>
+    <div class="playerData">
+      <p class="playerName">Vpiši ime igralca</p>
       <input type="text" id="txtPlayerName" value="">
+      <button type="button" id="btnSavePlayer" onclick="savePlayer()">Potrdi</button>
+      <p class="elapsedTime">0</p>
+    </div>
+
+    <div id="statistics">
+      <div class="loader"></div>
     </div>
   </body>
 </html>
