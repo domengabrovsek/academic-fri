@@ -54,21 +54,10 @@ router.get("/statistic", (req, res) => {
             });
         } else {
             const { Items } = data;
-            let groupedByUser = {};
-
-            Items.forEach(item => {
-                if (groupedByUser[item.playerName] === undefined) {
-                    groupedByUser[item.playerName] = [item];
-                } else {
-                    groupedByUser[item.playerName].push(item);
-                }
-            });
-
-            /* sort array by time spend */
-            Object.keys(groupedByUser).forEach(key => {
-                groupedByUser[key].sort((a, b) => a.time - b.time);
-            })
-            res.send(groupedByUser);
+            
+            // sort items by time
+            Items.sort((a,b) => a.time - b.time);
+            res.send(Items);
         }
     });
 });
