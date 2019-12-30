@@ -1,10 +1,4 @@
-//
-// Matrix utility functions
-//
-// mvPush   ... push current matrix on matrix stack
-// mvPop    ... pop top matrix from stack
-// degToRad ... convert degrees to radians
-//
+
 function mvPushMatrix() {
   var copy = mat4.create();
   mat4.set(mvMatrix, copy);
@@ -12,9 +6,6 @@ function mvPushMatrix() {
 }
 
 function mvPopMatrix() {
-  if (mvMatrixStack.length == 0) {
-    throw "Invalid popMatrix!";
-  }
   mvMatrix = mvMatrixStack.pop();
 }
 
@@ -23,7 +14,6 @@ function degToRad(degrees) {
 }
 
 function generatePoint({ x, y, z, d, m }) {
-
   // we need mode and direction to correctly set texture coordinates (tX, tY)
 
   let tX, tY;
@@ -67,16 +57,6 @@ function generateTriangle({ aX, aY, aZ, bX, bY, bZ, cX, cY, cZ, d, m}) {
   ];
 }
 
-/**
- * Returns an array of polygons(triangles).
- * @param {Object} Object which contains properties needed to generate several squares.
- * @param {number} x represents x coordinate
- * @param {number} y represents y coordinate
- * @param {number} z represents z coordinate
- * @param {number} l represents length of square
- * @param {number} n represents number of squares to generate
- * @param {number} m is used to set mode what to draw w for wall, f for floor
- */
 function generateSquares({ x, y, z, l, n, m, d}) {
 
   let squares = [];
@@ -102,17 +82,6 @@ function generateSquares({ x, y, z, l, n, m, d}) {
   return squares;
 }
 
-/**
- * Returns an array of polygons(triangles) which form a square.
- * @param {Object} Object which contains properties needed to generate several squares.
- * @param {number} x represents x coordinate
- * @param {number} y represents y coordinate
- * @param {number} z represents z coordinate
- * @param {number} l represents length of square
- * @param {number} n represents number of squares to generate
- * @param {string} m is used to set mode what to draw w for wall, f for floor
- * @param {number} d is used to set direction of drawing, either x or y
- */
 function generateSquare({ x, y, z, l, d, m }) {
   
   // m: f(loor), w(all)
@@ -131,9 +100,6 @@ function generateSquare({ x, y, z, l, d, m }) {
 
   // we are drawing wall
   else if(m === 'w') {
-
-    // we can draw in x or y direction
-
 
     // we are drawing in x direction
     if(d === 'x') {
@@ -200,4 +166,113 @@ function filterCoordinates(coordinates) {
     textureCoordinates,
     vertexCount
   };
+}
+
+function getQuadrant(x, y) {
+
+  /*
+    1 2 3 4
+    5 6 7 8
+    9 10 11 12
+    13 14 15 16
+
+  */
+
+  // first row
+  if(y >= -13 && y <= -7) {
+    // quadrant 1
+    if(x >= -13 && x <= -7) return 1;
+    if(x > -7 && x <= 0) return 2;
+    if(x > 0 && x <= 7) return 3;
+    if(x > 7 && x <= 13) return 4;
+  }
+
+  // second row 
+  if(y > -7 && y <= 0) {
+    if(x >= -13 && x <= -7) return 5;
+    if(x > -7 && x <= 0) return 6;
+    if(x > 0 && x <= 7) return 7;
+    if(x > 7 && x <= 13) return 8;
+  }
+
+  // third row
+  if(y > 0 && y <= 7) {
+    if(x >= -13 && x <= -7) return 9;
+    if(x > -7 && x <= 0) return 10;
+    if(x > 0 && x <= 7) return 11;
+    if(x > 7 && x <= 13) return 12;
+  }
+
+  // fourth row
+  if(y > 7 && y <= 13) {
+    if(x >= -13 && x <= -7) return 13;
+    if(x > -7 && x <= 0) return 14;
+    if(x > 0 && x <= 7) return 15;
+    if(x > 7 && x <= 13) return 16;
+  }
+}
+
+function detectCollision() {
+
+  // first check in which quadrant the player is
+  let quadrant = getQuadrant(xPosition, yPosition);
+  let collision = getCollision(cdWalls[quadrant]);
+  
+  // console.log('collision: ', collision);
+
+  return collision;
+}
+
+function getCollision (input)  {
+
+  // error is used to detect collision on both sides of wall
+  let error = 0.5;
+  let collision = false;
+
+  for(let point of input) {
+
+    // console.clear();
+    // console.log(`Wall: x:${point.x}, y: ${point.y}`);
+    // console.log(`Player: x:${xPosition}, y: ${yPosition}`);
+  
+    const xPlusError = point.x + error;
+    const xMinusError = point.x - error;
+    const yPlusError = point.y + error;
+    const yMinusError = point.y - error;
+
+    // console.log(`X: ${xMinusError} <= ${xPosition} <= ${xPlusError}`);
+    // console.log(`Y: ${yMinusError} <= ${yPosition} <= ${yMinusError}`);
+
+    if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
+      collision = true;
+      break;
+    }
+  }
+
+  return collision;
+
+}
+function prepareCollisionDetectionData(walls) {
+
+  let dividedWalls = [];
+
+  let filteredPoints = [];
+
+  walls.forEach(wall => {
+    wall.forEach(point => {
+      if(!filteredPoints.some(fp => fp.x === point.x && fp.y === point.y)) {
+        let p = {x: point.x, y: point.y};
+        let quadrant = getQuadrant(p.x, p.y)
+        filteredPoints.push(p);
+
+        if(!dividedWalls[quadrant]) {
+          dividedWalls[quadrant] = [];
+        }
+
+        dividedWalls[quadrant].push(p);
+      }
+    })
+  })
+
+  return dividedWalls;
 }

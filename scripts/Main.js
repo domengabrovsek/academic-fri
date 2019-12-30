@@ -182,12 +182,22 @@ function animate() {
       joggingAngle += elapsed * 0.6;
 
       // cannot go outside of maze boundaries
-      if(xPosition >= 12 || xPosition <= -12) {
+      if(xPosition >= 12.2 || xPosition <= -12.2) {
         xPosition = xPositionOld;
       }
 
-      if(yPosition >= 12 || yPosition <= -12) {
+      if(yPosition >= 12.2 || yPosition <= -12.2) {
         yPosition = yPositionOld;
+      }
+
+      if(detectCollision()) {
+        xPosition = xPositionOld;
+        yPosition = yPositionOld;
+      }
+
+      // for 'jogging' effect when moving
+      if (stevec == 0) { 
+        zPosition = Math.sin(degToRad(joggingAngle)) / 20 + 0.4;
       }
     }
 
