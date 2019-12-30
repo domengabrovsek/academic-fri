@@ -113,87 +113,6 @@ function saveDataToDB(name, time) {
   request.send(JSON.stringify(data));
 }
 
-function getStatistics() {
-  var request = new XMLHttpRequest();
-
-  request.open("GET", `${apiURL}/statistic`);
-  request.onreadystatechange = function() {
-    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-      console.log("Succesfully exported data");
-      if (this.response) {
-        let parsedJSON = JSON.parse(this.response);
-        console.log(parsedJSON);
-        showStatistics(parsedJSON);
-      }
-    }
-  }
-  request.send();
-}
-
-function showStatistics(jsonData) {
-  let statisticDiv = document.getElementById("statistics");
-  let loader = document.getElementsByClassName("loader")[0];
-  // hide loader
-  loader.style.display = 'none';
-
-  if(Object.keys(jsonData).length > 0) {
-    Object.keys(jsonData).forEach(key => {
-      let item = jsonData[key];
-      let nodeTitle = document.createElement("h1");
-      nodeTitle.innerHTML = key;
-      statisticDiv.appendChild(nodeTitle);
-
-      let nodeTable = document.createElement("table");
-      nodeTable.className = "table table-dark statisticTable";
-      let tableHeader = document.createElement("thead");
-      let tableHeaderRow = document.createElement("tr");
-
-      // th 1
-      let thTime = document.createElement("th");
-      thTime.innerHTML = "Porabljen čas";
-      thTime.scope = "col";
-      tableHeaderRow.appendChild(thTime);
-
-      // th 2
-      let thDate = document.createElement("th");
-      thDate.innerHTML = "Datum";
-      thDate.scope = "col";
-      tableHeaderRow.appendChild(thDate);
-
-      tableHeader.appendChild(tableHeaderRow);
-      nodeTable.appendChild(tableHeader);
-
-      let tableBody = document.createElement("tbody");
-      
-
-
-
-
-      item.forEach(entry => {
-        let newNode = document.createElement("p");
-        let newTableNodeRow = document.createElement("tr");
-    
-        // player time
-        let newTHtime = document.createElement("td");
-        newTHtime.innerHTML = entry.time;
-        newTableNodeRow.appendChild(newTHtime);
-
-        // date
-        let newTHDate = document.createElement("td");
-        newTHDate.innerHTML = new Date(entry.date).toLocaleString();
-        newTableNodeRow.appendChild(newTHDate);
-
-        //newNode.innerHTML = `Porabljen čas: ${entry.time}, datum: ${new Date(entry.date).toString()}`;
-        //statisticDiv.appendChild(newNode);
-        tableBody.appendChild(newTableNodeRow);
-      })
-
-      nodeTable.appendChild(tableBody);
-      statisticDiv.appendChild(nodeTable);
-    });
-  }
-}
-
 function drawScene() {
 
   // set the rendering environment to full canvas size
@@ -425,9 +344,6 @@ function startGame() {
     // keyboard bindings
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
-
-    // load API
-    getStatistics();
 
     drawScene();
     drawFloor();
