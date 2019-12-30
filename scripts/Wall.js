@@ -1,21 +1,97 @@
 function initBuffersWalls() {
 
-  let walls = [
-    // walls around the maze
+  // z and l are always 1 so we can simplify input
+  let wallCoordinates = [
+    { x: -13, y: -13, n: 26, d: 'x' }, // north wall
+    { x: -13, y:  13, n: 26, d: 'x' }, // south wall
+    { x:  13, y: -13, n: 26, d: 'y' }, // east wall
+    { x: -13, y: -13, n: 26, d: 'y' }, // west wall
+    { x:   3, y: -13, n:  2, d: 'y' }, 
+    { x:   5, y: -13, n:  2, d: 'y' }, 
+    { x: -11, y: -11, n:  8, d: 'x' },
+    { x:  -1, y: -11, n:  4, d: 'x' },
+    { x:   7, y: -11, n:  4, d: 'x' }, 
+    { x:  -3, y: -11, n:  6, d: 'y' },
+    { x:  -1, y: -11, n:  2, d: 'y' },
+    { x:   7, y: -11, n:  2, d: 'y' }, 
+    { x:  11, y: -11, n: 10, d: 'y' },
+    { x: -11, y:  -9, n:  6, d: 'x' }, 
+    { x:  -1, y:  -9, n:  2, d: 'x' },
+    { x:   3, y:  -9, n:  6, d: 'x' }, 
+    { x:  -9, y:  -9, n:  2, d: 'y' },
+    { x:   5, y:  -9, n:  4, d: 'y' }, 
+    { x:   9, y:  -9, n:  2, d: 'y' }, 
+    { x: -13, y:  -7, n:  2, d: 'x' }, 
+    { x:  -9, y:  -7, n:  8, d: 'x' }, 
+    { x:   1, y:  -7, n:  4, d: 'x' }, 
+    { x: -11, y:  -7, n:  8, d: 'y' }, 
+    { x:  -1, y:  -7, n:  2, d: 'y' }, 
+    { x:   7, y:  -7, n:  2, d: 'y' }, 
+    { x: -11, y:  -5, n:  8, d: 'x' }, 
+    { x:   1, y:  -5, n:  2, d: 'x' }, 
+    { x:   5, y:  -5, n:  4, d: 'x' }, 
+    { x:  -5, y:  -5, n:  2, d: 'y' }, 
+    { x:   3, y:  -5, n:  2, d: 'y' },
+    { x:   9, y:  -5, n:  2, d: 'y' },
+    { x:  -9, y:  -3, n:  4, d: 'x' },
+    { x:  -3, y:  -3, n:  2, d: 'x' },
+    { x:   1, y:  -3, n:  6, d: 'x' },
+    { x:  -7, y:  -3, n:  2, d: 'y' },
+    { x:  -3, y:  -3, n:  2, d: 'y' },
+    { x:  -1, y:  -3, n:  2, d: 'y' },
+    { x:   1, y:  -3, n:  8, d: 'y' },
+    { x:   7, y:  -3, n:  2, d: 'y' },
+    { x:  -9, y:  -1, n:  2, d: 'x' },
+    { x:  -3, y:  -1, n:  2, d: 'x' },
+    { x:   5, y:  -1, n:  2, d: 'x' },
+    { x:   9, y:  -1, n:  2, d: 'x' },
+    { x:   3, y:  -1, n:  8, d: 'y' },
+    { x:   5, y:  -1, n:  8, d: 'y' },
+    { x:   9, y:  -1, n:  2, d: 'y' },
+    { x: -11, y:   1, n:  2, d: 'x' },
+    { x:  -7, y:   1, n:  4, d: 'x' },
+    { x:  -1, y:   1, n:  2, d: 'x' },
+    { x:   7, y:   1, n:  2, d: 'x' },
+    { x:  11, y:   1, n:  2, d: 'x' },
+    { x:  -9, y:   1, n:  2, d: 'y' },
+    { x:  -7, y:   1, n:  2, d: 'y' },
+    { x:  -3, y:   1, n: 10, d: 'y' },
+    { x:   7, y:   1, n:  2, d: 'y' },
+    { x:  11, y:   1, n:  2, d: 'y' },
+    { x: -13, y:   3, n:  2, d: 'x' },
+    { x: -13, y:   3, n:  2, d: 'x' },
+    { x:  -7, y:   3, n:  2, d: 'x' },
+    { x:  -1, y:   3, n:  2, d: 'x' },
+    { x:   9, y:   3, n:  2, d: 'x' },
+    { x: -11, y:   3, n:  4, d: 'y' },
+    { x:  -5, y:   3, n:  4, d: 'y' },
+    { x:   9, y:   3, n:  2, d: 'y' },
+    { x: -11, y:   5, n:  4, d: 'x' },
+    { x:   5, y:   5, n:  4, d: 'x' },
+    { x:  11, y:   5, n:  2, d: 'x' },
+    { x:  -1, y:   5, n:  4, d: 'y' },
+    { x:  11, y:   5, n:  6, d: 'y' },
+    { x:  -9, y:   7, n:  4, d: 'x' },
+    { x:   1, y:   7, n:  4, d: 'x' },
+    { x:   9, y:   7, n:  2, d: 'x' },
+    { x:  -9, y:   7, n:  4, d: 'y' },
+    { x:  -7, y:   7, n:  2, d: 'y' },
+    { x:   7, y:   7, n:  6, d: 'y' },
+    { x: -13, y:   9, n:  2, d: 'x' },
+    { x:  -1, y:   9, n: 10, d: 'x' },
+    { x:  -5, y:   9, n:  2, d: 'y' },
+    { x:   3, y:   9, n:  2, d: 'y' },
+    { x: -11, y:  11, n:  2, d: 'x' },
+    { x:  -7, y:  11, n:  4, d: 'x' },
+    { x:  -1, y:  11, n:  2, d: 'x' },
+    { x:   3, y:  11, n:  2, d: 'x' },
+    { x:   9, y:  11, n:  2, d: 'x' },
+    { x:  -1, y:  11, n:  2, d: 'y' }
+  ]
 
-    // north wall
-    ...generateSquares({ x: -13, y: -13, z: 1, l: 1, n: 26, m: 'w', d: 'x' }),
+  let walls = [];
 
-    // south wall
-    ...generateSquares({ x: -13, y: 13, z: 1, l: 1, n: 26, m: 'w', d: 'x' }),
-
-    // east wall
-    ...generateSquares({ x: 13, y: -13, z: 1, l: 1, n: 26, m: 'w', d: 'y' }),
-
-    // west wall
-    ...generateSquares({ x: -13, y: -13, z: 1, l: 1, n: 26, m: 'w', d: 'y' }),
-
-  ];
+  wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 1, l: 1, n: wall.n, m: 'w', d: wall.d })));
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
 
