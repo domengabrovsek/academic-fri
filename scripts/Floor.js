@@ -34,9 +34,12 @@ function initBuffersFloor() {
 
   // ----------------------------------------------------------
 
+  // floor
   let floor = generateSquare({x: -13, y: -13, z: 0, l: 26, m: 'f' });
 
-  console.log('floor', floor)
+
+  // ceiling
+  floor.push(...generateSquare({x: -13, y: -13, z: 1, l: 26, m: 'f' }))
 
   // get coordinates to draw floor
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);

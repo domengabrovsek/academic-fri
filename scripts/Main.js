@@ -3,7 +3,7 @@
 // game canvas
 let canvas;
 
-let start = false;
+let start = true;
 
 var gl;
 var shaderProgram;
