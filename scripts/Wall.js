@@ -1,3 +1,6 @@
+
+var cdWalls;
+
 function initBuffersWalls() {
 
   // z and l are always 1 so we can simplify input
@@ -94,6 +97,10 @@ function initBuffersWalls() {
   // map all wall coordinates to proper structure so squares can be generated from them
   wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 1, l: 1, n: wall.n, m: 'w', d: wall.d })));
 
+  cdWalls = prepareCollisionDetectionData(walls);
+
+  // console.log(cdWalls);
+
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
 
   worldVertexPositionBuffer = gl.createBuffer();
@@ -113,6 +120,7 @@ function drawScene() {
 
   // set the rendering environment to full canvas size
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+
   // Clear the canvas before we start drawing on it.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
