@@ -60,6 +60,22 @@
     <!-- Vertex shader END -->
   </head>
   <body onload="startGame()">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Maze</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="statistics.html">Statistics</a>
+          </li>
+      </div>
+    </nav>
     <div style="position: relative;">
       <canvas id="canvas" width="1920" height="973"></canvas>
     </div>
@@ -68,10 +84,6 @@
       <input type="text" id="txtPlayerName" value="">
       <button type="button" id="btnSavePlayer" onclick="savePlayer()">Potrdi</button>
       <p class="elapsedTime">0</p>
-    </div>
-
-    <div id="statistics">
-      <div class="loader"></div>
     </div>
   </body>
 </html>
