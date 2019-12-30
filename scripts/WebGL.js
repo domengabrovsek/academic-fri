@@ -1,5 +1,3 @@
-'use strict';
-
 function initGL(canvas) {
   let gl = null;
   
@@ -19,40 +17,18 @@ function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
 }
 
-//
-// getShader
-//
-// Loads a shader program by scouring the current document,
-// looking for a script with the specified ID.
-//
-function getShader(gl, id) {
-  var shaderScript = document.getElementById(id);
+function getShader(shaderType) {
 
-  // Didn't find an element with the specified ID; abort.
-  if (!shaderScript) {
-    return null;
-  }
-  
-  // Walk through the source element's children, building the
-  // shader source string.
-  var shaderSource = "";
-  var currentChild = shaderScript.firstChild;
-  while (currentChild) {
-    if (currentChild.nodeType == 3) {
-        shaderSource += currentChild.textContent;
-    }
-    currentChild = currentChild.nextSibling;
-  }
-  
-  // Now figure out what type of shader script we have,
-  // based on its MIME type.
-  var shader;
-  if (shaderScript.type == "x-shader/x-fragment") {
-    shader = gl.createShader(gl.FRAGMENT_SHADER);
-  } else if (shaderScript.type == "x-shader/x-vertex") {
+  var shader, shaderSource;
+
+  if(shaderType === 'vertex') {
+    shaderSource = vertexShaderString;
     shader = gl.createShader(gl.VERTEX_SHADER);
+  } else if(shaderType === 'fragment') {
+    shaderSource = fragmentShaderString;
+    shader = gl.createShader(gl.FRAGMENT_SHADER);
   } else {
-    return null;  // Unknown shader type
+    return null;
   }
 
   // Send the source to the shader object
@@ -71,8 +47,8 @@ function getShader(gl, id) {
 }
 
 function initShaders() {
-  var fragmentShader = getShader(gl, "shader-fs");
-  var vertexShader = getShader(gl, "shader-vs");
+  var fragmentShader = getShader('fragment');
+  var vertexShader = getShader('vertex');
 
   // Create the shader program
   shaderProgram = gl.createProgram();

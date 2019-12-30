@@ -13,6 +13,7 @@
     <!-- CSS END -->
 
     <!-- Scripts -->
+    <script type="text/javascript" src="./scripts/Shaders.js"></script>
     <script type="text/javascript" src="./scripts/glMatrix-0.9.5.min.js"></script>
     <script type="text/javascript" src="./scripts/WebGL.js"></script>
     <script type="text/javascript" src="./scripts/Helpers.js"></script>
@@ -20,44 +21,6 @@
     <script type="text/javascript" src="./scripts/Wall.js"></script>
     <script type="text/javascript" src="./scripts/Floor.js" ></script>
     <!-- Scripts END -->
-
-    <!-- Fragment shader -->
-    <script id="shader-fs" type="x-shader/x-fragment">
-      precision mediump float;
-
-      // uniform attribute for setting texture coordinates
-      varying vec2 vTextureCoord;
-
-      // uniform attribute for setting 2D sampler
-      uniform sampler2D uSampler;
-
-      void main(void) {
-        // sample the fragment color from texture
-        gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
-      }
-    </script>
-    <!-- Fragment shader END -->
-
-    <!-- Vertex shader -->
-    <script id="shader-vs" type="x-shader/x-vertex">
-      // atributes for setting vertex position and texture coordinates
-    attribute vec3 aVertexPosition;
-    attribute vec2 aTextureCoord;
-
-    uniform mat4 uMVMatrix;	// model-view matrix
-    uniform mat4 uPMatrix;	// projection matrix
-
-    // variable for passing texture coordinates
-    // from vertex shader to fragment shader
-    varying vec2 vTextureCoord;
-
-    void main(void) {
-      // calculate the vertex position
-      gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-      vTextureCoord = aTextureCoord;
-    }
-    </script>
-    <!-- Vertex shader END -->
   </head>
   <body onload="startGame()">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -84,6 +47,11 @@
       <input type="text" id="txtPlayerName" value="">
       <button type="button" id="btnSavePlayer" onclick="savePlayer()">Potrdi</button>
       <p class="elapsedTime">0</p>
+    </div>
+    <div> Current position: 
+      <p>X: <span id="x"></span></p>
+      <p>Y: <span id="y"></span></p>
+      <p>Z: <span id="z"></span></p>
     </div>
   </body>
 </html>

@@ -7,7 +7,6 @@ let start = true;
 
 var gl;
 var shaderProgram;
-var dovoljenje = true; // pomaga za skok
 var stevec = 0; // pomaga pri času skoka
 
 var skok = false;
@@ -41,8 +40,8 @@ var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
 var xPosition = 0;
-var yPosition = 0.4;
-var zPosition = 0;
+var yPosition = 0;
+var zPosition = 0.4;
 var speed = 0;
 
 // Used to make us "jog" up and down as we move forward.
@@ -163,32 +162,32 @@ function drawScene() {
 
 // Called every time before redeawing the screen.
 function animate() {
+
+  // update current position so player can see it
+  document.getElementById('x').textContent = xPosition;
+  document.getElementById('y').textContent = yPosition;
+  document.getElementById('z').textContent = zPosition;
+
   var timeNow = new Date().getTime();
   if (lastTime != 0) {
     var elapsed = timeNow - lastTime;
 
     if (speed != 0) {
-      var oldX = xPosition;
-      var oldZ = zPosition;
+
+      let xPositionOld = xPosition;
+      let yPositionOld = yPosition;
 
       xPosition -= Math.sin(degToRad(yaw)) * speed * elapsed;
-      zPosition -= Math.cos(degToRad(yaw)) * speed * elapsed;
+      yPosition -= Math.cos(degToRad(yaw)) * speed * elapsed;
       joggingAngle += elapsed * 0.6;
 
-      if (zPosition < -9 && xPosition < 0.9 && xPosition > -0.9 && skatla) {
-        zPosition = oldZ;
+      // cannot go outside of maze boundaries
+      if(xPosition >= 12 || xPosition <= -12) {
+        xPosition = xPositionOld;
       }
 
-      if (zPosition < 15.9 && zPosition > 15.0 && xPosition < -1 && xPosition > -1.3 && !skok && !pobranKljuc2) {
-        xPosition = oldX;
-
-      } else if (zPosition < 15.9 && zPosition > 15.0 && xPosition < -2.4 && xPosition > -2.6 && !skok && pobranKljuc2) {
-
-        xPosition = oldX;
-      }
-
-      if (stevec == 0) { // dodamo da nam ne pokvari skoka
-        yPosition = Math.sin(degToRad(joggingAngle)) / 20 + 0.4
+      if(yPosition >= 12 || yPosition <= -12) {
+        yPosition = yPositionOld;
       }
     }
 
@@ -196,11 +195,24 @@ function animate() {
     pitch += pitchRate * elapsed;
 
   }
+
   lastTime = timeNow;
 }
 
 function handleKeyDown(event) {
-  // storing the pressed state for individual key
+
+  /*  
+  used keyCodes
+    32 - space
+    38 - up arrow
+    40 - down arrow
+    65 - a
+    67 - c
+    68 - d
+    83 - s
+    87 - w 
+  */
+
   currentlyPressedKeys[event.keyCode] = true;
 }
 
@@ -208,64 +220,78 @@ function handleKeyUp(event) {
   // reseting the pressed state for individual key
   currentlyPressedKeys[event.keyCode] = false;
 
+  // space was pressed
   if (event.keyCode == 32) {
-    dovoljenje = true;
-    if (stevec != 0) { // ce skok ni dokoncan, pades na zacetno vrednost yPostiion
-      yPosition = 0.4;
+
+    // to prevent from staying in the air when jumping
+    if (stevec != 0) { 
+      zPosition = 0.4;
     }
+    
     stevec = 0;
     skok = false;
   }
 }
 
-// Called every time before redeawing the screen for keyboard
-// input handling. Function continuisly updates helper variables.
 function handleKeys() {
-  if (currentlyPressedKeys[33]) {
-    // Page Up
+
+  // 'up arrow' was pressed
+  if (currentlyPressedKeys[38]) {
     pitchRate = 0.1;
-  } else if (currentlyPressedKeys[34]) {
-    // Page Down
+  } 
+  // 'down arrow' was pressed
+  else if (currentlyPressedKeys[40]) {
     pitchRate = -0.1;
-  } else {
+  } 
+  // else is needed to stop rotation, othwerise we just rotate forever in circle
+  else {
     pitchRate = 0;
   }
 
+  // 'a' was pressed
   if (currentlyPressedKeys[65]) {
-    // Left cursor key or A
     yawRate = 0.1;
-  } else if (currentlyPressedKeys[68]) {
-    // Right cursor key or D
+  } 
+  // 'd' was pressed
+  else if (currentlyPressedKeys[68]) {
     yawRate = -0.1;
-  } else {
+  } 
+  // else is needed to stop rotation, othwerise we just rotate forever in circle
+  else {
     yawRate = 0;
   }
 
+  // 'w' was pressed
   if (currentlyPressedKeys[87]) {
-    // Up cursor key or W
     speed = 0.003;
-  } else if (currentlyPressedKeys[83]) {
-    // Down cursor key
+  } 
+  // 's' was pressed
+  else if (currentlyPressedKeys[83]) {
     speed = -0.003;
-  } else {
+  } 
+  // else is needed to stop movement, otherwise we would float into space
+  else {
     speed = 0;
   }
 
-  if (currentlyPressedKeys[32] && dovoljenje) { //"space", za skok.
+  // space was pressed
+  if (currentlyPressedKeys[32]) { 
     stevec++;
     if (stevec < 10) {
-      yPosition += 0.04;
+      zPosition += 0.04;
     }
     if (stevec > 10) {
-      if (yPosition - 0.04 > 0.4)
-        yPosition -= 0.04;
+      if (zPosition - 0.04 > 0.4)
+        zPosition -= 0.04;
 
     }
     skok = true;
 
   }
-  if (currentlyPressedKeys[67]) { //"c", za sklont. Ce drzis in se premikas, hodis sklonjen. Ce samo prtisnes se sklonis.
-    yPosition = 0.21;
+
+  // c was pressed
+  if (currentlyPressedKeys[67]) { 
+    zPosition = 0.21;
   }
 }
 
@@ -279,7 +305,6 @@ function vmes() {
     if (texturesLoaded) { // only draw scene and animate when textures are loaded.
 
       if (stevec > 20) { // za skok
-        dovoljenje = false;
         stevec = 0;
       }
 
@@ -297,7 +322,7 @@ function vmes() {
       }
     }
   }, 15);
- 
+
   /* update timer */
   let i = 0;
   setInterval(() => {
@@ -320,7 +345,6 @@ function savePlayer() {
     // show timer
     document.getElementsByClassName("elapsedTime")[0].style.display = 'block';
   }
-
 }
 
 function startGame() {

@@ -91,6 +91,7 @@ function initBuffersWalls() {
 
   let walls = [];
 
+  // map all wall coordinates to proper structure so squares can be generated from them
   wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 1, l: 1, n: wall.n, m: 'w', d: wall.d })));
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
@@ -134,7 +135,7 @@ function drawScene() {
   // drawing the world.
   mat4.rotate(mvMatrix, degToRad(-pitch), [1, 0, 0]);
   mat4.rotate(mvMatrix, degToRad(-yaw), [0, 1, 0]);
-  mat4.translate(mvMatrix, [-xPosition, -yPosition, -zPosition]);
+  mat4.translate(mvMatrix, [-xPosition, -zPosition, -yPosition]);
 
   // Activate textures
   gl.activeTexture(gl.TEXTURE0);
