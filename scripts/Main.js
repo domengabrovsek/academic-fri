@@ -3,7 +3,7 @@
 // game canvas
 let canvas;
 
-let start = true;
+let start = false;
 
 var gl;
 var shaderProgram;
@@ -15,6 +15,10 @@ var konec = false;
 // Buffers
 var worldVertexPositionBuffer = null;
 var worldVertexTextureCoordBuffer = null;
+var elementVertexPositionBuffer = null;
+var elementVertexTextureCoordBuffer = null;
+var elementRoofVertexPositionBuffer = null;
+var elementRoofVertexTextureCoordBuffer = null;
 
 var floorTexture;
 var floorTexture;
@@ -54,6 +58,8 @@ var apiURL = 'http://localhost:3000';
 
 // player textbox name
 var playerName = '';
+
+var playingTime = 0;
 
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
@@ -311,7 +317,7 @@ function updateTimer(time) {
 
 function vmes() {
 
-  setInterval(function () {
+  let gameInterval = setInterval(function () {
     if (texturesLoaded) { // only draw scene and animate when textures are loaded.
 
       if (stevec > 20) { // za skok
@@ -326,20 +332,27 @@ function vmes() {
       drawScene(); // najprej narisemo svet, potem pa razlicne objetke
       drawFloor();
 
+      if(detectEndGame({x:0, y:-2, e: 0.3})) {
+        konec = true;
+      }
+      
       if (konec) {
-        gameover();
-        saveDataToDB(playerName, 50);
+        //gameover();
+        saveDataToDB(playerName, playingTime);
+        clearInterval(gameInterval);
       }
     }
   }, 15);
 
-  /* update timer */
-  let i = 0;
+  gameInterval;
+
+}
+
+function updatePlayingTime() {
   setInterval(() => {
     if (!konec && start) {
-      i++;
-      updateTimer(i);
-      //saveDataToDB(playerName, i);
+      playingTime++;
+      updateTimer(playingTime);
     }
   }, 1000);
 }
@@ -374,6 +387,8 @@ function startGame() {
     initTextures();
     initBuffersFloor();
     initBuffersWalls();
+    initBuffersRandomElement();
+    initRandomElementFloor();
 
     // keyboard bindings
     document.onkeydown = handleKeyDown;
@@ -383,5 +398,6 @@ function startGame() {
     drawFloor();
       
     vmes();
+    updatePlayingTime();
   }
 }
