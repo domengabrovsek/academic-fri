@@ -6,6 +6,9 @@ var floorINVertexPositionBuffer;
 var floorINVertexTextureCoordBuffer;
 var floorINVertexIndexBuffer;
 
+var floorRandomVertexPositionBuffer;
+var floorRandomVertexTextureCoordBuffer;
+
 function initBuffersFloor() {
 
   // floor
@@ -30,6 +33,25 @@ function initBuffersFloor() {
   floorINVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
+function initRandomElementFloor() {
+  /* TODO: get coordinates as parameter */
+  let floor = generateSquares({ x: 0, y: -2, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' });
+
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
+
+  floorRandomVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, floorRandomVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoordinates), gl.STATIC_DRAW);
+  floorRandomVertexPositionBuffer.itemSize = 3;
+  floorRandomVertexPositionBuffer.numItems = vertexCount;
+
+  floorRandomVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, floorRandomVertexTextureCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+  floorRandomVertexTextureCoordBuffer.itemSize = 2;
+  floorRandomVertexTextureCoordBuffer.numItems = vertexCount;
+}
+
 function drawFloor() {
   // Activate textures
   var copy = mat4.create(); // create new matrix
@@ -51,6 +73,24 @@ function drawFloor() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, floorINVertexPositionBuffer.numItems);
+
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, floorTexture);
+  gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+  // Set the texture coordinates attribute for the vertices.
+  gl.bindBuffer(gl.ARRAY_BUFFER, floorRandomVertexTextureCoordBuffer);
+  gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, floorRandomVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw the floor by binding the array buffer to the floor's vertices
+  // array, setting attributes, and pushing it to GL.
+  gl.bindBuffer(gl.ARRAY_BUFFER, floorRandomVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, floorRandomVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw the cube.
+  setMatrixUniforms();
+  gl.drawArrays(gl.TRIANGLES, 0, floorRandomVertexPositionBuffer.numItems);
 
   mat4.set(copy, mvMatrix); // set previous matrix
 }

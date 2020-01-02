@@ -204,7 +204,7 @@ function getQuadrant(x, y) {
   }
 
   // fourth row
-  if(y > 7 && y <= 13) {
+  if(y > 7 && y < 13) {
     if(x >= -13 && x <= -7) return 13;
     if(x > -7 && x <= 0) return 14;
     if(x > 0 && x <= 7) return 15;
@@ -223,16 +223,33 @@ function detectCollision() {
   return collision;
 }
 
+
+function detectEndGame({x,y,e}) {
+
+  let isEndGame = false;
+  
+  const xPlusError = x + e;
+  const xMinusError = x - e;
+  const yPlusError = y + e;
+  const yMinusError = y - e;
+
+  if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
+      isEndGame = true;
+  }
+
+  return isEndGame;
+}
+
 function getCollision (input)  {
 
   // error is used to detect collision on both sides of wall
-  let error = 0.5;
+  let error = 0.3;
   let collision = false;
+  //console.log("Input: ", input);
 
   for(let point of input) {
 
     // console.clear();
-    // console.log(`Wall: x:${point.x}, y: ${point.y}`);
     // console.log(`Player: x:${xPosition}, y: ${yPosition}`);
   
     const xPlusError = point.x + error;

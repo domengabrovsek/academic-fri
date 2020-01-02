@@ -116,6 +116,38 @@ function initBuffersWalls() {
   worldVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
+function initBuffersRandomElement() {
+  /* TODO: get coordinates as parameter */
+  let wallCoordinates = [
+    { x: 0, y: -2, n: 1, d: 'x' },
+    { x: 0, y:  -2, n: 1, d: 'y' }, 
+    { x: 0.3, y:  -2, n: 1, d: 'y' },
+    { x: 0, y:  -1.7, n: 1, d: 'x' },
+  ];
+
+  let walls = [];
+
+  // map all wall coordinates to proper structure so squares can be generated from them
+  wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: 0.3, n: wall.n, m: 'w', d: wall.d })));
+
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
+
+
+
+  elementVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoordinates), gl.STATIC_DRAW);
+  elementVertexPositionBuffer.itemSize = 3;
+  elementVertexPositionBuffer.numItems = vertexCount;
+
+  elementVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexTextureCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+  elementVertexTextureCoordBuffer.itemSize = 2;
+  elementVertexTextureCoordBuffer.numItems = vertexCount;
+
+}
+
 function drawScene() {
 
   // set the rendering environment to full canvas size
@@ -163,4 +195,22 @@ function drawScene() {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
 
+
+  // Activate textures
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, wallTexture);
+  gl.uniform1i(shaderProgram.samplerUniform, 0);
+
+  // Set the texture coordinates attribute for the vertices.
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexTextureCoordBuffer);
+  gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, elementVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw the world by binding the array buffer to the world's vertices
+  // array, setting attributes, and pushing it to GL.
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, elementVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // Draw the cube.
+  setMatrixUniforms();
+  gl.drawArrays(gl.TRIANGLES, 0, elementVertexPositionBuffer.numItems);
 }
