@@ -32,6 +32,9 @@ var pMatrix = mat4.create();
 // Variables for storing textures
 var wallTexture;
 
+// Random element texture
+var randomTexture;
+
 // Variable that stores  loading state of textures.
 var texturesLoaded = false;
 
@@ -61,6 +64,8 @@ var playerName = '';
 
 var playingTime = 0;
 
+let randomElementCoord = {};
+
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
 // the job; it gets called each time a texture finishes loading.
@@ -80,6 +85,11 @@ function initTextures() {
   floorTexture.image = new Image();
   floorTexture.image.onload = () => handleTextureLoaded(floorTexture);
   floorTexture.image.src = "./images/floor.png";
+
+  randomTexture = gl.createTexture();
+  randomTexture.image = new Image();
+  randomTexture.image.onload = () => handleTextureLoaded(randomTexture);
+  randomTexture.image.src = "./images/crate.gif";
 }
 
 function handleTextureLoaded(texture) {
@@ -196,7 +206,8 @@ function animate() {
         yPosition = yPositionOld;
       }
 
-      if(detectCollision()) {
+      if(detectCollision(xPosition, yPosition)) {
+        playWallHitMusic();
         xPosition = xPositionOld;
         yPosition = yPositionOld;
       }
@@ -315,6 +326,21 @@ function updateTimer(time) {
   document.getElementsByClassName("elapsedTime")[0].innerHTML = time;
 }
 
+/* Just for testing purposes */ 
+function moveToRandom() {
+  xPosition = randomElementCoord.x - 0.5;
+  yPosition = randomElementCoord.y - 0.5;
+}
+
+function resetGame() {
+  konec = true;
+  start = false;
+  xPosition = 0;
+  yPosition = 0;
+  playingTime = 0;
+  updateTimer(playingTime);
+}
+
 function vmes() {
 
   let gameInterval = setInterval(function () {
@@ -332,8 +358,12 @@ function vmes() {
       drawScene(); // najprej narisemo svet, potem pa razlicne objetke
       drawFloor();
 
-      if(detectEndGame({x:0, y:-2, e: 0.3})) {
-        konec = true;
+      // {x:0, y:-2, e: 0.3} randomElementCoord
+      if(detectEndGame(randomElementCoord)) {
+        playEndGameMusic();
+        setTimeout(function() {
+          resetGame();
+        }, 2000);
       }
       
       if (konec) {
@@ -387,8 +417,10 @@ function startGame() {
     initTextures();
     initBuffersFloor();
     initBuffersWalls();
-    initBuffersRandomElement();
-    initRandomElementFloor();
+
+    randomElementCoord = spawnRandomElement();
+    initBuffersRandomElement(randomElementCoord);
+    initRandomElementFloor(randomElementCoord);
 
     // keyboard bindings
     document.onkeydown = handleKeyDown;

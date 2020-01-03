@@ -116,19 +116,26 @@ function initBuffersWalls() {
   worldVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
-function initBuffersRandomElement() {
+function initBuffersRandomElement({x, y, e}) {
   /* TODO: get coordinates as parameter */
-  let wallCoordinates = [
+  /*let wallCoordinates = [
     { x: 0, y: -2, n: 1, d: 'x' },
     { x: 0, y:  -2, n: 1, d: 'y' }, 
     { x: 0.3, y:  -2, n: 1, d: 'y' },
     { x: 0, y:  -1.7, n: 1, d: 'x' },
+  ];*/
+
+  let wallCoordinates = [
+    { x: x, y: y, n: 1, d: 'x' },
+    { x: x, y:  y, n: 1, d: 'y' }, 
+    { x: x + e, y:  y, n: 1, d: 'y' },
+    { x: x, y:  y + e, n: 1, d: 'x' },
   ];
 
   let walls = [];
 
   // map all wall coordinates to proper structure so squares can be generated from them
-  wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: 0.3, n: wall.n, m: 'w', d: wall.d })));
+  wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: e, n: wall.n, m: 'w', d: wall.d })));
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
 
@@ -198,7 +205,7 @@ function drawScene() {
 
   // Activate textures
   gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, wallTexture);
+  gl.bindTexture(gl.TEXTURE_2D, randomTexture);
   gl.uniform1i(shaderProgram.samplerUniform, 0);
 
   // Set the texture coordinates attribute for the vertices.

@@ -212,7 +212,7 @@ function getQuadrant(x, y) {
   }
 }
 
-function detectCollision() {
+function detectCollision(xPosition, yPosition) {
 
   // first check in which quadrant the player is
   let quadrant = getQuadrant(xPosition, yPosition);
@@ -238,6 +238,27 @@ function detectEndGame({x,y,e}) {
   }
 
   return isEndGame;
+}
+
+function spawnRandomElement() {
+  let minX = -12.5,
+      maxX = 12.5,
+      minY = -12.5,
+      maxY = 12.5;
+  let randomX = parseFloat((Math.random() * (maxX - minX) + minX).toFixed(3));
+  let randomY = parseFloat((Math.random() * (maxY - minY) + minY).toFixed(3));
+
+
+  if(!detectCollision(randomX, randomY)) {
+    console.log("Random: ", randomX, ": ", randomY);
+    return {
+      "x": randomX,
+      "y": randomY,
+      "e": 0.3 
+    };
+  } else {
+    spawnRandomElement();
+  }
 }
 
 function getCollision (input)  {

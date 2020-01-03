@@ -33,9 +33,9 @@ function initBuffersFloor() {
   floorINVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
-function initRandomElementFloor() {
+function initRandomElementFloor({x, y}) {
   /* TODO: get coordinates as parameter */
-  let floor = generateSquares({ x: 0, y: -2, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' });
+  let floor = generateSquares({ x: x, y: y, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' });
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
 
