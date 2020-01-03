@@ -48,10 +48,6 @@ pcload=1  pcsel=pc, opcode_jump		# PC=PC+1, jump to 2+OPC
 # Rd <- Rs NOR Rt		PC <- PC + 1
 9: aluop=nor op2sel=treg dwrite=1 regsrc=aluout, goto fetch
 
-# not Rd,Rs (10)
-# Rd <- NOT Rs		PC <- PC + 1
-10: aluop=not op2sel=treg dwrite=1 regsrc=aluout, goto fetch
-
 # lsl Rd,Rs,Rt (11)
 # Rd <- Rs << Rt		PC <- PC + 1
 11: aluop=lsl op2sel=treg dwrite=1 regsrc=aluout, goto fetch
