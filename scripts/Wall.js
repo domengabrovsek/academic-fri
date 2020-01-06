@@ -118,19 +118,19 @@ function initBuffersWalls() {
 
 function initBuffersRandomElement({x, y, e}) {
   /* TODO: get coordinates as parameter */
-  /*let wallCoordinates = [
+  let wallCoordinates = [
     { x: 0, y: -2, n: 1, d: 'x' },
     { x: 0, y:  -2, n: 1, d: 'y' }, 
     { x: 0.3, y:  -2, n: 1, d: 'y' },
     { x: 0, y:  -1.7, n: 1, d: 'x' },
-  ];*/
+  ];
 
-  let wallCoordinates = [
+  /*let wallCoordinates = [
     { x: x, y: y, n: 1, d: 'x' },
     { x: x, y:  y, n: 1, d: 'y' }, 
     { x: x + e, y:  y, n: 1, d: 'y' },
     { x: x, y:  y + e, n: 1, d: 'x' },
-  ];
+  ];*/
 
   let walls = [];
 
