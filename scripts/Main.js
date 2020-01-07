@@ -68,6 +68,12 @@ var playAgainBtn = null;
 
 let randomElementCoord = {};
 
+let randomElementCoordinates = [];
+
+let collectedBoxes = 0;
+
+let maxBoxes = 3;
+
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
 // the job; it gets called each time a texture finishes loading.
@@ -332,6 +338,12 @@ function updateTimer(time) {
 function moveToRandom() {
   xPosition = randomElementCoord.x - 0.5;
   yPosition = randomElementCoord.y - 0.5;
+  randomElementCoordinates.forEach(el => {
+    setTimeout(() => {
+      xPosition = el.x - 0.5;
+      yPosition = el.y - 0.5;
+    },2000);
+  });
 }
 
 function resetGame() {
@@ -343,6 +355,9 @@ function resetGame() {
   updateTimer(playingTime);
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'inline-block';
+  document.getElementsByClassName("playerData")[0].style.display = 'block';
+  collectedBoxes = 0;
+  document.getElementsByClassName("collectedBoxes")[0].innerHTML = collectedBoxes;
 }
 
 function playAgain() {
@@ -355,6 +370,17 @@ function playAgain() {
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'none';
   vmes();
+}
+
+function checkBoxesCollection() {
+  for (let i = 0; i < randomElementCoordinates.length; i++) {
+    let element = randomElementCoordinates[i];
+    if (detectBox(element) && !element.detected) {
+      randomElementCoordinates[i].detected = true;
+      collectedBoxes++;
+      document.getElementsByClassName("collectedBoxes")[0].innerHTML = `Collected boxes: ${collectedBoxes}`;
+    }
+  }
 }
 
 function vmes() {
@@ -374,9 +400,11 @@ function vmes() {
 
       drawScene(); // najprej narisemo svet, potem pa razlicne objetke
       drawFloor();
+      checkBoxesCollection();
+      
 
       // {x:0, y:-2, e: 0.3} randomElementCoord
-      if(detectEndGame(randomElementCoord)) {
+      if(maxBoxes == collectedBoxes) {
         saveDataToDB(playerName, playingTime);
         playEndGameMusic();
         resetGame();
@@ -402,17 +430,22 @@ function savePlayer() {
   var textBoxPlayerName = document.getElementById("txtPlayerName");
 
   if (!textBoxPlayerName.value.length > 0) {
-    alert("Ime igralca naj ne bo nič");
+    alert("Player length must not be null");
   } else {
     playerName = textBoxPlayerName.value;
     start = true;
     // show timer
     document.getElementsByClassName("elapsedTime")[0].style.display = 'block';
+
+    // hide main div for player information
+    document.getElementsByClassName("playerData")[0].style.display = 'none';
   }
 }
 
 function startGame() {
   canvas = document.getElementById("canvas");
+  document.getElementsByClassName("totalBoxes")[0].innerHTML = `Total boxes: ${maxBoxes}`;
+  document.getElementsByClassName("collectedBoxes")[0].innerHTML = `Collected boxes: ${collectedBoxes}`;
 
   // Initialize the GL context
   gl = initGL(canvas); 
@@ -429,9 +462,8 @@ function startGame() {
     initBuffersFloor();
     initBuffersWalls();
 
-    randomElementCoord = spawnRandomElement();
-    initBuffersRandomElement(randomElementCoord);
-    initRandomElementFloor(randomElementCoord);
+    initBuffersRandomElement({size: maxBoxes, e: 0.3});
+    
 
     // keyboard bindings
     document.onkeydown = handleKeyDown;
