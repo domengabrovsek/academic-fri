@@ -42,18 +42,20 @@
     </nav>
     <div style="position: relative;">
       <canvas id="canvas" width="1920" height="973"></canvas>
-    </div>
-    <div class="playerData">
-      <p class="playerName">Vpiši ime igralca</p>
-      <input type="text" id="txtPlayerName" value="">
-      <button type="button" id="btnSavePlayer" onclick="savePlayer()">Potrdi</button>
+      <div class="playerData">
+        <h4 class="playerName">Player name</h4>
+        <input type="text" id="txtPlayerName" value="">
+        <button type="button" id="btnSavePlayer" onclick="savePlayer()">Accept</button>
+        <button type="button" id="btnPlayAgain" onclick="playAgain()">Play again</button>
+      </div>
+      <div style="position: absolute; top: 0; left: 0; color: white; font-size: 18px;"> Current position: 
+        <p>X: <span id="x"></span></p>
+        <p>Y: <span id="y"></span></p>
+        <p>Z: <span id="z"></span></p>
+      </div>
       <p class="elapsedTime">0</p>
-      <button type="button" id="btnPlayAgain" onclick="playAgain()">Ponovno igraj</button>
-    </div>
-    <div> Current position: 
-      <p>X: <span id="x"></span></p>
-      <p>Y: <span id="y"></span></p>
-      <p>Z: <span id="z"></span></p>
+      <p class="totalBoxes">5</p>
+      <p class="collectedBoxes">5</p>
     </div>
   </body>
 </html>
