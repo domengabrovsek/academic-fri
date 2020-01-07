@@ -64,6 +64,8 @@ var playerName = '';
 
 var playingTime = 0;
 
+var playAgainBtn = null;
+
 let randomElementCoord = {};
 
 // Initialize the textures we'll be using, then initiate a load of
@@ -339,6 +341,20 @@ function resetGame() {
   yPosition = 0;
   playingTime = 0;
   updateTimer(playingTime);
+  playAgainBtn = document.getElementById("btnPlayAgain");
+  playAgainBtn.style.display = 'inline-block';
+}
+
+function playAgain() {
+  playBackgroundMusic();
+  konec = false;
+  start = true;
+  randomElementCoord = spawnRandomElement();
+  initBuffersRandomElement(randomElementCoord);
+  initRandomElementFloor(randomElementCoord);
+  playAgainBtn = document.getElementById("btnPlayAgain");
+  playAgainBtn.style.display = 'none';
+  vmes();
 }
 
 function vmes() {
@@ -351,6 +367,7 @@ function vmes() {
       }
 
       if (!konec && start) { //dokler ni konec igre lahko opravlamo
+        playBackgroundMusic();
         requestAnimationFrame(animate);
         handleKeys();
       }
@@ -360,15 +377,9 @@ function vmes() {
 
       // {x:0, y:-2, e: 0.3} randomElementCoord
       if(detectEndGame(randomElementCoord)) {
-        playEndGameMusic();
-        setTimeout(function() {
-          resetGame();
-        }, 2000);
-      }
-      
-      if (konec) {
-        //gameover();
         saveDataToDB(playerName, playingTime);
+        playEndGameMusic();
+        resetGame();
         clearInterval(gameInterval);
       }
     }

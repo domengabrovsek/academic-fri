@@ -248,6 +248,13 @@ function spawnRandomElement() {
   let randomX = parseFloat((Math.random() * (maxX - minX) + minX).toFixed(3));
   let randomY = parseFloat((Math.random() * (maxY - minY) + minY).toFixed(3));
 
+  // remove this after showing to profesor
+  return {
+    "x": 0,
+    "y": -2,
+    "e": 0.3
+  };
+
 
   if(!detectCollision(randomX, randomY)) {
     console.log("Random: ", randomX, ": ", randomY);
