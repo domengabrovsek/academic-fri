@@ -6,90 +6,90 @@ function initBuffersWalls() {
   // z and l are always 1 so we can simplify input
   let wallCoordinates = [
     { x: -13, y: -13, n: 26, d: 'x' }, // north wall
-    { x: -13, y:  13, n: 26, d: 'x' }, // south wall
-    { x:  13, y: -13, n: 26, d: 'y' }, // east wall
+    { x: -13, y: 13, n: 26, d: 'x' }, // south wall
+    { x: 13, y: -13, n: 26, d: 'y' }, // east wall
     { x: -13, y: -13, n: 26, d: 'y' }, // west wall
-    { x:   3, y: -13, n:  2, d: 'y' }, 
-    { x:   5, y: -13, n:  2, d: 'y' }, 
-    { x: -11, y: -11, n:  8, d: 'x' },
-    { x:  -1, y: -11, n:  4, d: 'x' },
-    { x:   7, y: -11, n:  4, d: 'x' }, 
-    { x:  -3, y: -11, n:  6, d: 'y' },
-    { x:  -1, y: -11, n:  2, d: 'y' },
-    { x:   7, y: -11, n:  2, d: 'y' }, 
-    { x:  11, y: -11, n: 10, d: 'y' },
-    { x: -11, y:  -9, n:  6, d: 'x' }, 
-    { x:  -1, y:  -9, n:  2, d: 'x' },
-    { x:   3, y:  -9, n:  6, d: 'x' }, 
-    { x:  -9, y:  -9, n:  2, d: 'y' },
-    { x:   5, y:  -9, n:  4, d: 'y' }, 
-    { x:   9, y:  -9, n:  2, d: 'y' }, 
-    { x: -13, y:  -7, n:  2, d: 'x' }, 
-    { x:  -9, y:  -7, n:  8, d: 'x' }, 
-    { x:   1, y:  -7, n:  4, d: 'x' }, 
-    { x: -11, y:  -7, n:  8, d: 'y' }, 
-    { x:  -1, y:  -7, n:  2, d: 'y' }, 
-    { x:   7, y:  -7, n:  2, d: 'y' }, 
-    { x: -11, y:  -5, n:  8, d: 'x' }, 
-    { x:   1, y:  -5, n:  2, d: 'x' }, 
-    { x:   5, y:  -5, n:  4, d: 'x' }, 
-    { x:  -5, y:  -5, n:  2, d: 'y' }, 
-    { x:   3, y:  -5, n:  2, d: 'y' },
-    { x:   9, y:  -5, n:  2, d: 'y' },
-    { x:  -9, y:  -3, n:  4, d: 'x' },
-    { x:  -3, y:  -3, n:  2, d: 'x' },
-    { x:   1, y:  -3, n:  6, d: 'x' },
-    { x:  -7, y:  -3, n:  2, d: 'y' },
-    { x:  -3, y:  -3, n:  2, d: 'y' },
-    { x:  -1, y:  -3, n:  2, d: 'y' },
-    { x:   1, y:  -3, n:  8, d: 'y' },
-    { x:   7, y:  -3, n:  2, d: 'y' },
-    { x:  -9, y:  -1, n:  2, d: 'x' },
-    { x:  -3, y:  -1, n:  2, d: 'x' },
-    { x:   5, y:  -1, n:  2, d: 'x' },
-    { x:   9, y:  -1, n:  2, d: 'x' },
-    { x:   3, y:  -1, n:  8, d: 'y' },
-    { x:   5, y:  -1, n:  8, d: 'y' },
-    { x:   9, y:  -1, n:  2, d: 'y' },
-    { x: -11, y:   1, n:  2, d: 'x' },
-    { x:  -7, y:   1, n:  4, d: 'x' },
-    { x:  -1, y:   1, n:  2, d: 'x' },
-    { x:   7, y:   1, n:  2, d: 'x' },
-    { x:  11, y:   1, n:  2, d: 'x' },
-    { x:  -9, y:   1, n:  2, d: 'y' },
-    { x:  -7, y:   1, n:  2, d: 'y' },
-    { x:  -3, y:   1, n: 10, d: 'y' },
-    { x:   7, y:   1, n:  2, d: 'y' },
-    { x:  11, y:   1, n:  2, d: 'y' },
-    { x: -13, y:   3, n:  2, d: 'x' },
-    { x: -13, y:   3, n:  2, d: 'x' },
-    { x:  -7, y:   3, n:  2, d: 'x' },
-    { x:  -1, y:   3, n:  2, d: 'x' },
-    { x:   9, y:   3, n:  2, d: 'x' },
-    { x: -11, y:   3, n:  4, d: 'y' },
-    { x:  -5, y:   3, n:  4, d: 'y' },
-    { x:   9, y:   3, n:  2, d: 'y' },
-    { x: -11, y:   5, n:  4, d: 'x' },
-    { x:   5, y:   5, n:  4, d: 'x' },
-    { x:  11, y:   5, n:  2, d: 'x' },
-    { x:  -1, y:   5, n:  4, d: 'y' },
-    { x:  11, y:   5, n:  6, d: 'y' },
-    { x:  -9, y:   7, n:  4, d: 'x' },
-    { x:   1, y:   7, n:  4, d: 'x' },
-    { x:   9, y:   7, n:  2, d: 'x' },
-    { x:  -9, y:   7, n:  4, d: 'y' },
-    { x:  -7, y:   7, n:  2, d: 'y' },
-    { x:   7, y:   7, n:  6, d: 'y' },
-    { x: -13, y:   9, n:  2, d: 'x' },
-    { x:  -1, y:   9, n: 10, d: 'x' },
-    { x:  -5, y:   9, n:  2, d: 'y' },
-    { x:   3, y:   9, n:  2, d: 'y' },
-    { x: -11, y:  11, n:  2, d: 'x' },
-    { x:  -7, y:  11, n:  4, d: 'x' },
-    { x:  -1, y:  11, n:  2, d: 'x' },
-    { x:   3, y:  11, n:  2, d: 'x' },
-    { x:   9, y:  11, n:  2, d: 'x' },
-    { x:  -1, y:  11, n:  2, d: 'y' }
+    { x: 3, y: -13, n: 2, d: 'y' },
+    { x: 5, y: -13, n: 2, d: 'y' },
+    { x: -11, y: -11, n: 8, d: 'x' },
+    { x: -1, y: -11, n: 4, d: 'x' },
+    { x: 7, y: -11, n: 4, d: 'x' },
+    { x: -3, y: -11, n: 6, d: 'y' },
+    { x: -1, y: -11, n: 2, d: 'y' },
+    { x: 7, y: -11, n: 2, d: 'y' },
+    { x: 11, y: -11, n: 10, d: 'y' },
+    { x: -11, y: -9, n: 6, d: 'x' },
+    { x: -1, y: -9, n: 2, d: 'x' },
+    { x: 3, y: -9, n: 6, d: 'x' },
+    { x: -9, y: -9, n: 2, d: 'y' },
+    { x: 5, y: -9, n: 4, d: 'y' },
+    { x: 9, y: -9, n: 2, d: 'y' },
+    { x: -13, y: -7, n: 2, d: 'x' },
+    { x: -9, y: -7, n: 8, d: 'x' },
+    { x: 1, y: -7, n: 4, d: 'x' },
+    { x: -11, y: -7, n: 8, d: 'y' },
+    { x: -1, y: -7, n: 2, d: 'y' },
+    { x: 7, y: -7, n: 2, d: 'y' },
+    { x: -11, y: -5, n: 8, d: 'x' },
+    { x: 1, y: -5, n: 2, d: 'x' },
+    { x: 5, y: -5, n: 4, d: 'x' },
+    { x: -5, y: -5, n: 2, d: 'y' },
+    { x: 3, y: -5, n: 2, d: 'y' },
+    { x: 9, y: -5, n: 2, d: 'y' },
+    { x: -9, y: -3, n: 4, d: 'x' },
+    { x: -3, y: -3, n: 2, d: 'x' },
+    { x: 1, y: -3, n: 6, d: 'x' },
+    { x: -7, y: -3, n: 2, d: 'y' },
+    { x: -3, y: -3, n: 2, d: 'y' },
+    { x: -1, y: -3, n: 2, d: 'y' },
+    { x: 1, y: -3, n: 8, d: 'y' },
+    { x: 7, y: -3, n: 2, d: 'y' },
+    { x: -9, y: -1, n: 2, d: 'x' },
+    { x: -3, y: -1, n: 2, d: 'x' },
+    { x: 5, y: -1, n: 2, d: 'x' },
+    { x: 9, y: -1, n: 2, d: 'x' },
+    { x: 3, y: -1, n: 8, d: 'y' },
+    { x: 5, y: -1, n: 8, d: 'y' },
+    { x: 9, y: -1, n: 2, d: 'y' },
+    { x: -11, y: 1, n: 2, d: 'x' },
+    { x: -7, y: 1, n: 4, d: 'x' },
+    { x: -1, y: 1, n: 2, d: 'x' },
+    { x: 7, y: 1, n: 2, d: 'x' },
+    { x: 11, y: 1, n: 2, d: 'x' },
+    { x: -9, y: 1, n: 2, d: 'y' },
+    { x: -7, y: 1, n: 2, d: 'y' },
+    { x: -3, y: 1, n: 10, d: 'y' },
+    { x: 7, y: 1, n: 2, d: 'y' },
+    { x: 11, y: 1, n: 2, d: 'y' },
+    { x: -13, y: 3, n: 2, d: 'x' },
+    { x: -13, y: 3, n: 2, d: 'x' },
+    { x: -7, y: 3, n: 2, d: 'x' },
+    { x: -1, y: 3, n: 2, d: 'x' },
+    { x: 9, y: 3, n: 2, d: 'x' },
+    { x: -11, y: 3, n: 4, d: 'y' },
+    { x: -5, y: 3, n: 4, d: 'y' },
+    { x: 9, y: 3, n: 2, d: 'y' },
+    { x: -11, y: 5, n: 4, d: 'x' },
+    { x: 5, y: 5, n: 4, d: 'x' },
+    { x: 11, y: 5, n: 2, d: 'x' },
+    { x: -1, y: 5, n: 4, d: 'y' },
+    { x: 11, y: 5, n: 6, d: 'y' },
+    { x: -9, y: 7, n: 4, d: 'x' },
+    { x: 1, y: 7, n: 4, d: 'x' },
+    { x: 9, y: 7, n: 2, d: 'x' },
+    { x: -9, y: 7, n: 4, d: 'y' },
+    { x: -7, y: 7, n: 2, d: 'y' },
+    { x: 7, y: 7, n: 6, d: 'y' },
+    { x: -13, y: 9, n: 2, d: 'x' },
+    { x: -1, y: 9, n: 10, d: 'x' },
+    { x: -5, y: 9, n: 2, d: 'y' },
+    { x: 3, y: 9, n: 2, d: 'y' },
+    { x: -11, y: 11, n: 2, d: 'x' },
+    { x: -7, y: 11, n: 4, d: 'x' },
+    { x: -1, y: 11, n: 2, d: 'x' },
+    { x: 3, y: 11, n: 2, d: 'x' },
+    { x: 9, y: 11, n: 2, d: 'x' },
+    { x: -1, y: 11, n: 2, d: 'y' }
   ]
 
   let walls = [];
@@ -116,21 +116,37 @@ function initBuffersWalls() {
   worldVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
-function initBuffersRandomElement({x, y, e}) {
+function initBuffersRandomElement({ size, e }) {
   /* TODO: get coordinates as parameter */
-  let wallCoordinates = [
+  /*let wallCoordinates = [
     { x: 0, y: -2, n: 1, d: 'x' },
     { x: 0, y:  -2, n: 1, d: 'y' }, 
     { x: 0.3, y:  -2, n: 1, d: 'y' },
     { x: 0, y:  -1.7, n: 1, d: 'x' },
+  ];*/
+
+  let wallCoordinates = [];
+  for (let i = 0; i < size; i++) {
+    let element = spawnRandomElement();
+    element.detected = false;
+    randomElementCoordinates.push(element);
+    
+    wallCoordinates.push({ x: element.x, y: element.y, n: 1, d: 'x' });
+    wallCoordinates.push({ x: element.x, y: element.y, n: 1, d: 'y' });
+    wallCoordinates.push({ x: element.x + 0.3, y: element.y, n: 1, d: 'y' });
+    wallCoordinates.push({ x: element.x, y: element.y + 0.3, n: 1, d: 'x' });
+  }
+
+
+  /*wallCoordinates = [
+    { x: x, y: y, n: 1, d: 'x' },
+    { x: x, y: y, n: 1, d: 'y' },
+    { x: x + e, y: y, n: 1, d: 'y' },
+    { x: x, y: y + e, n: 1, d: 'x' },
   ];
 
-  /*let wallCoordinates = [
-    { x: x, y: y, n: 1, d: 'x' },
-    { x: x, y:  y, n: 1, d: 'y' }, 
-    { x: x + e, y:  y, n: 1, d: 'y' },
-    { x: x, y:  y + e, n: 1, d: 'x' },
-  ];*/
+  wallCoordinates = [];*/
+  console.log(wallCoordinates);
 
   let walls = [];
 

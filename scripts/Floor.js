@@ -33,11 +33,15 @@ function initBuffersFloor() {
   floorINVertexTextureCoordBuffer.numItems = vertexCount;
 }
 
-function initRandomElementFloor({x, y}) {
+function initRandomElementFloor(walls) {
   /* TODO: get coordinates as parameter */
-  let floor = generateSquares({ x: x, y: y, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' });
+  let floors = [];
+  walls.forEach(wall => floors.push(generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' })));
+  //let floor = generateSquares({ x: x, y: y, z: 0.25, l: 0.3, n: 1, m: 'f', d: 'x' });
 
-  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floor);
+  console.log(floors);
+
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(floors);
 
   floorRandomVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, floorRandomVertexPositionBuffer);
@@ -75,7 +79,7 @@ function drawFloor() {
   gl.drawArrays(gl.TRIANGLES, 0, floorINVertexPositionBuffer.numItems);
 
 
-  gl.activeTexture(gl.TEXTURE0);
+  /*gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, floorTexture);
   gl.uniform1i(shaderProgram.samplerUniform, 0);
 
@@ -92,5 +96,5 @@ function drawFloor() {
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, floorRandomVertexPositionBuffer.numItems);
 
-  mat4.set(copy, mvMatrix); // set previous matrix
+  mat4.set(copy, mvMatrix); // set previous matrix*/
 }

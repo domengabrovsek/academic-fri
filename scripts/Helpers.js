@@ -224,9 +224,9 @@ function detectCollision(xPosition, yPosition) {
 }
 
 
-function detectEndGame({x,y,e}) {
+function detectBox({x,y,e}) {
 
-  let isEndGame = false;
+  let isBoxDetected = false;
   
   const xPlusError = x + e;
   const xMinusError = x - e;
@@ -234,13 +234,15 @@ function detectEndGame({x,y,e}) {
   const yMinusError = y - e;
 
   if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
-      isEndGame = true;
+    isBoxDetected = true;
   }
 
-  return isEndGame;
+  return isBoxDetected;
 }
 
 function spawnRandomElement() {
+
+  let maxDistance = 3;
   let minX = -12.5,
       maxX = 12.5,
       minY = -12.5,
@@ -249,11 +251,11 @@ function spawnRandomElement() {
   let randomY = parseFloat((Math.random() * (maxY - minY) + minY).toFixed(3));
 
   // remove this after showing to profesor
-  return {
+  /*return {
     "x": 0,
     "y": -2,
     "e": 0.3
-  };
+  };*/
 
 
   if(!detectCollision(randomX, randomY)) {
@@ -266,6 +268,10 @@ function spawnRandomElement() {
   } else {
     spawnRandomElement();
   }
+}
+
+function getDistance({x1,y1}, {x2,y2}) {
+  return Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 - y1), 2));
 }
 
 function getCollision (input)  {
