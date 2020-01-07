@@ -1,19 +1,21 @@
 'use strict';
 
-function moveRight(node) {
-  return [node[0], node[1] + 1];
-}
+function move(node, direction) {
 
-function moveLeft(node) {
-  return [node[0], node[1] - 1];
-}
-
-function moveUp(node) {
-  return [node[0] + 1, node[1]];
-}
-
-function moveDown(node) {
-  return [node[0] - 1, node[1]];
+  switch(direction) {
+    case 'right': {
+      return [node[0], node[1] + 1];
+    }
+    case 'left': {
+      return [node[0], node[1] - 1];
+    }
+    case 'up': {
+      return [node[0] - 1, node[1]];    
+    }
+    case 'down': {
+      return [node[0] + 1, node[1]];    
+    }
+  }  
 }
 
 function findStartEnd(graph) {
@@ -42,9 +44,10 @@ function transform(matrix) {
 
   let transformedMatrix = [];
 
+  // split by rows and remove empty rows
   let rows = matrix
     .split('\n')
-    .map(row => row);
+    .filter(row => row.length > 0);
 
   for(let i = 0; i < rows.length; i++) {
 
@@ -92,25 +95,24 @@ function getAdjMatrix(graph) {
     }
 
     // if node above is valid
-    if(isValidNode(graph, moveUp(validNodes[i]))) {
-      adjMatrix[validNodes[i]].push(moveUp(validNodes[i]));
+    if(isValidNode(graph, move(validNodes[i], 'up'))) {
+      adjMatrix[validNodes[i]].push(move(validNodes[i], 'up'));
     }
 
     // if node right is valid
-    if(isValidNode(graph, moveRight(validNodes[i]))) {
-      adjMatrix[validNodes[i]].push(moveRight(validNodes[i]));
+    if(isValidNode(graph, move(validNodes[i], 'right'))) {
+      adjMatrix[validNodes[i]].push(move(validNodes[i], 'right'));
     }
 
     // if node down is valid
-    if(isValidNode(graph, moveDown(validNodes[i]))) {
-      adjMatrix[validNodes[i]].push(moveDown(validNodes[i]));
+    if(isValidNode(graph, move(validNodes[i], 'down'))) {
+      adjMatrix[validNodes[i]].push(move(validNodes[i], 'down'));
     }
 
     // if node left is valid
-    if(isValidNode(graph, moveLeft(validNodes[i]))) {
-      adjMatrix[validNodes[i]].push(moveLeft(validNodes[i]));
+    if(isValidNode(graph, move(validNodes[i], 'left'))) {
+      adjMatrix[validNodes[i]].push(move(validNodes[i], 'left'));
     }
-
   }
 
   return adjMatrix;
@@ -134,11 +136,9 @@ function compare(arr1, arr2) {
 module.exports = {
   transform,
   findStartEnd,
-  moveDown,
-  moveUp,
-  moveLeft,
-  moveRight,
+  move,
   getAdjMatrix,
   getParent,
-  compare
+  compare,
+  isValidNode
 };

@@ -1,34 +1,76 @@
 'use strict';
 
-const fs = require('fs');
-const glob = require('glob');
-const files = glob.sync(`${__dirname}/labyrinths/*.txt`);
-const DFS = require('./DFS');
-const { transform, findStartEnd, getAdjMatrix, getParent } = require('./helpers');
+const DFS = require('./src/DFS');
+const { transform, findStartEnd, getAdjMatrix } = require('./src/helpers');
+const { getLabyrinths } = require('./src/fileHelpers');
 
-let labyrinths = [];
+// TODO add more algorithms 
+const algorithms = ['dfs', 'bfs', 'astar'];
 
-files.forEach(file => {
-    labyrinths.push(fs.readFileSync(file, 'utf8'));
-})
+// read from user input and execute according to input
+console.clear();
+console.log('Please enter algorithm and labyrinth number: ');
 
-let graph = transform(labyrinths[0]);
-let adjMatrix = getAdjMatrix(graph);
-let { startNode, endNodes } = findStartEnd(graph);
+let stdin = process.openStdin();
 
-console.log(graph);
-console.log(`\nStart: ${startNode}`);
-console.log(`End: `);
-endNodes.forEach(endNode => console.log(`  ${endNode}`));
+stdin.addListener("data", input => {
 
-console.log('\ngraph: ', graph);
-console.log('\nadjMatrix: ', adjMatrix);
+    input = input.toString().trim().split(' ');
 
-DFS(adjMatrix, startNode, endNodes);
-// console.log(getParent(adjMatrix, [2, 1]));
+    const algorithm = input[0];
+    const labyrinth = input[1];
 
+    console.clear();
+    console.log('Algorythm:', algorithm);
+    console.log('Labyrinth:', labyrinth);
 
+    // validate algorithm input
+    if(!algorithms.includes(algorithm)) {
+        console.log('Wrong algorithm selected! Please use one of', algorithms, '.');
+    }
 
+    // validate labyrinth input
+    if(labyrinth === undefined || labyrinth < 0 || labyrinth > 15) {
+        console.log('Wrong labyrinth number selected! Please use one of [0-15].')
+    }
 
+    // get all labyrinth definitions
+    const labyrinths = getLabyrinths();
 
-// DFS(graph, startNode, endNodes);
+    // transform initial labyrinth structure to array
+    let graph = transform(labyrinths[labyrinth]);
+
+    // find where to start/end search
+    let { startNode, endNodes } = findStartEnd(graph);
+
+    // transform graph to adjacent matrix
+    let adjMatrix = getAdjMatrix(graph);
+
+    // path will be returned by the search algorithm
+    let path;
+
+    console.log('Graph: ', graph);
+    console.log(`\nStart node: ${startNode}`);
+    console.log(`End nodes: ${endNodes}`);
+    console.log('\nAdjMatrix: ', adjMatrix);
+
+    console.log(`\nStarting search: `);
+
+    // have to decide which algorithm to run on which graph (labyrinth)
+    switch(algorithm) {
+        case 'dfs': {
+            path = DFS(adjMatrix, startNode, endNodes);
+            break;
+        }
+        case 'bfs': {
+            break;
+            // TODO
+        }
+        case 'astar': {
+            // TODO
+            break;
+        }
+    }
+
+    console.log('Found end node using path: ', path);
+});
