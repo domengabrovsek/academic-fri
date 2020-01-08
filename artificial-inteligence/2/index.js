@@ -1,7 +1,8 @@
 'use strict';
 
 const DFS = require('./src/DFS');
-const { transform, findStartEnd, getAdjMatrix } = require('./src/helpers');
+const BFS = require('./src/BFS');
+const { transform, findStartEnd, getAdjMatrix, getPathLength } = require('./src/helpers');
 const { getLabyrinths } = require('./src/fileHelpers');
 
 // TODO add more algorithms 
@@ -17,8 +18,8 @@ stdin.addListener("data", input => {
 
     input = input.toString().trim().split(' ');
 
-    const algorithm = input[0];
-    const labyrinth = input[1];
+    const algorithm = input[0] || 'dfs';
+    const labyrinth = input[1] || 0;
 
     console.clear();
     console.log('Algorythm:', algorithm);
@@ -46,6 +47,9 @@ stdin.addListener("data", input => {
     // transform graph to adjacent matrix
     let adjMatrix = getAdjMatrix(graph);
 
+    // flatten adjMatrix to get valid nodes list
+    let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
+
     // path will be returned by the search algorithm
     let path;
 
@@ -59,12 +63,12 @@ stdin.addListener("data", input => {
     // have to decide which algorithm to run on which graph (labyrinth)
     switch(algorithm) {
         case 'dfs': {
-            path = DFS(adjMatrix, startNode, endNodes);
+            path = DFS(validNodes, startNode, endNodes);
             break;
         }
         case 'bfs': {
+            path = BFS(validNodes, startNode, endNodes);
             break;
-            // TODO
         }
         case 'astar': {
             // TODO
@@ -72,5 +76,6 @@ stdin.addListener("data", input => {
         }
     }
 
+    console.log('Path length: ', getPathLength(path, graph));
     console.log('Found end node using path: ', path);
 });

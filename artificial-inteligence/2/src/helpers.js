@@ -118,19 +118,51 @@ function getAdjMatrix(graph) {
   return adjMatrix;
 }
 
-function getParent(matrix, node) {
-  
-    for(let parent of Object.keys(matrix)) {
-      for(let child of matrix[parent]) {
-        if(compare(child, node)) {
-          return parent;
-        }
-      }
-    }
-}
-
 function compare(arr1, arr2) {
   return arr1[0] === arr2[0] && arr1[1] === arr2[1];
+}
+
+function constructPath(currentNode, parents) {
+  let path = [];
+
+  // add last node to the path
+  path.unshift(currentNode);
+
+  // construct path
+  while(true) {
+
+    // we came to start node
+    if(parents[currentNode] === null) {
+      break;
+    }
+
+    let parent = parents[currentNode];
+    path.unshift(parent);
+    currentNode = parent;
+  }
+
+  return path;
+}
+
+function getPathLength(path, graph) {
+
+  let length = 0;
+  let steps = "";
+
+  path.forEach(step => {    
+    let stepLength = graph[step[0]][step[1]];
+
+    // first and last step have negative weight and we don't count them in
+    if(stepLength > 0 ) {
+      steps += `${stepLength} + `;
+      length += parseInt(stepLength);
+    }
+  });
+
+  // remove + at the end 
+  steps = steps.slice(0, steps.length -3);
+
+  return `${steps} = ${length}`;
 }
 
 module.exports = {
@@ -138,7 +170,8 @@ module.exports = {
   findStartEnd,
   move,
   getAdjMatrix,
-  getParent,
   compare,
-  isValidNode
+  isValidNode,
+  constructPath,
+  getPathLength
 };
