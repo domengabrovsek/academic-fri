@@ -1,6 +1,5 @@
 'use strict';
 
-const Stack = require('stack-lifo');
 const { move, compare } = require('./helpers');
 
 module.exports = function DFS(graph, startNode, endNodes) {
@@ -11,7 +10,7 @@ module.exports = function DFS(graph, startNode, endNodes) {
   // flatten graph to valid nodes list
   let validNodes = [].concat(...Object.keys(graph).map(key => graph[key]));
 
-  let stack = new Stack();
+  let stack = [];
 
   // start node
   parents[startNode] = [-1, -1];
@@ -19,7 +18,7 @@ module.exports = function DFS(graph, startNode, endNodes) {
 
   stack.push(startNode);
 
-  while(!stack.isEmpty()) {
+  while(stack.length > 0) {
 
     // set current node 
     let currentNode = stack.pop();

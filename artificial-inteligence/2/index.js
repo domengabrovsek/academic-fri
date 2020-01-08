@@ -26,12 +26,12 @@ stdin.addListener("data", input => {
 
     // validate algorithm input
     if(!algorithms.includes(algorithm)) {
-        console.log('Wrong algorithm selected! Please use one of', algorithms, '.');
+        return console.log('Wrong algorithm selected! Please use one of', algorithms, '.');
     }
 
     // validate labyrinth input
     if(labyrinth === undefined || labyrinth < 0 || labyrinth > 15) {
-        console.log('Wrong labyrinth number selected! Please use one of [0-15].')
+        return console.log('Wrong labyrinth number selected! Please use one of [0-15].')
     }
 
     // get all labyrinth definitions
