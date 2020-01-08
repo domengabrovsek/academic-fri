@@ -18,8 +18,8 @@ stdin.addListener("data", input => {
 
     input = input.toString().trim().split(' ');
 
-    const algorithm = input[0] || 'dfs';
-    const labyrinth = input[1] || 0;
+    const algorithm = input[0];
+    const labyrinth = input[1];
 
     console.clear();
     console.log('Algorythm:', algorithm);
