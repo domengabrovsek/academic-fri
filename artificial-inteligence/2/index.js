@@ -62,15 +62,28 @@ stdin.addListener("data", input => {
 
     // have to decide which algorithm to run on which graph (labyrinth)
     switch(algorithm) {
+        // depth first search
         case 'dfs': {
             path = DFS(validNodes, startNode, endNodes);
             break;
         }
+        // breadth first search
         case 'bfs': {
             path = BFS(validNodes, startNode, endNodes);
             break;
         }
+        // a* search
         case 'astar': {
+            // TODO
+            break;
+        }
+        // iterative deepening search
+        case 'ids': {
+            // TODO
+            break;
+        }
+        // iterative deepening a* search
+        case 'idas': {
             // TODO
             break;
         }
