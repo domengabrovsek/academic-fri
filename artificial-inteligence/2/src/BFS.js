@@ -2,21 +2,21 @@
 
 const { move, compare, constructPath } = require('./helpers');
 
-module.exports = function DFS(validNodes, startNode, endNodes) {
+module.exports = function BFS(validNodes, startNode, endNodes) {
 
   let visited = [];
   let parents = {};
-  let stack = [];
+  let queue = [];
 
   // start node
   parents[startNode] = null;
   visited[startNode] = true;
-  stack.push(startNode);
+  queue.push(startNode);
 
-  while(stack.length > 0) {
+  while(queue.length > 0) {
 
     // set current node 
-    let currentNode = stack.pop();
+    let currentNode = queue.shift();
 
     console.log('  Current node: ', currentNode);
 
@@ -29,7 +29,7 @@ module.exports = function DFS(validNodes, startNode, endNodes) {
     if(!visited[currentNode]) {
 
       visited[currentNode] = true;
-      stack.push(currentNode);
+      queue.push(currentNode);
 
       console.log(`  Adding node ${currentNode} to stack.`);
     }
@@ -43,7 +43,7 @@ module.exports = function DFS(validNodes, startNode, endNodes) {
       if(!visited[adjacent] && validNodes.some(node => compare(node, adjacent))) {
         parents[adjacent] = currentNode;
         console.log(`  Adding node ${adjacent} to stack.`);
-        stack.push(adjacent);
+        queue.push(adjacent);
       }
     }
   }

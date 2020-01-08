@@ -1,7 +1,8 @@
 'use strict';
 
 const DFS = require('./src/DFS');
-const { transform, findStartEnd, getAdjMatrix } = require('./src/helpers');
+const BFS = require('./src/BFS');
+const { transform, findStartEnd, getAdjMatrix, getPathLength } = require('./src/helpers');
 const { getLabyrinths } = require('./src/fileHelpers');
 
 // TODO add more algorithms 
@@ -26,12 +27,12 @@ stdin.addListener("data", input => {
 
     // validate algorithm input
     if(!algorithms.includes(algorithm)) {
-        console.log('Wrong algorithm selected! Please use one of', algorithms, '.');
+        return console.log('Wrong algorithm selected! Please use one of', algorithms, '.');
     }
 
     // validate labyrinth input
     if(labyrinth === undefined || labyrinth < 0 || labyrinth > 15) {
-        console.log('Wrong labyrinth number selected! Please use one of [0-15].')
+        return console.log('Wrong labyrinth number selected! Please use one of [0-15].')
     }
 
     // get all labyrinth definitions
@@ -46,6 +47,9 @@ stdin.addListener("data", input => {
     // transform graph to adjacent matrix
     let adjMatrix = getAdjMatrix(graph);
 
+    // flatten adjMatrix to get valid nodes list
+    let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
+
     // path will be returned by the search algorithm
     let path;
 
@@ -59,12 +63,12 @@ stdin.addListener("data", input => {
     // have to decide which algorithm to run on which graph (labyrinth)
     switch(algorithm) {
         case 'dfs': {
-            path = DFS(adjMatrix, startNode, endNodes);
+            path = DFS(validNodes, startNode, endNodes);
             break;
         }
         case 'bfs': {
+            path = BFS(validNodes, startNode, endNodes);
             break;
-            // TODO
         }
         case 'astar': {
             // TODO
@@ -72,5 +76,6 @@ stdin.addListener("data", input => {
         }
     }
 
+    console.log('Path length: ', getPathLength(path, graph));
     console.log('Found end node using path: ', path);
 });

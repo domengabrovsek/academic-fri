@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "glob": "^7.1.6",
-    "stack-lifo": "^0.1.6"
+    "glob": "^7.1.6"
   }
 }
