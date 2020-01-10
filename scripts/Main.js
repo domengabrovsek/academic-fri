@@ -4,13 +4,14 @@
 let canvas;
 
 let start = false;
+let jump = false;
+let end = false;
+
+// for jump
+let counter = 0; 
 
 var gl;
 var shaderProgram;
-var stevec = 0; // pomaga pri času skoka
-
-var skok = false;
-var konec = false;
 
 // Buffers
 var worldVertexPositionBuffer = null;
@@ -20,7 +21,6 @@ var elementVertexTextureCoordBuffer = null;
 var elementRoofVertexPositionBuffer = null;
 var elementRoofVertexTextureCoordBuffer = null;
 
-var floorTexture;
 var floorTexture;
 
 // Model-view and projection matrix and model-view matrix stack
@@ -97,7 +97,12 @@ function initTextures() {
   randomTexture = gl.createTexture();
   randomTexture.image = new Image();
   randomTexture.image.onload = () => handleTextureLoaded(randomTexture);
-  randomTexture.image.src = "./images/crate.gif";
+  randomTexture.image.src = "./images/crate.png";
+
+  obstacleTexture = gl.createTexture();
+  obstacleTexture.image = new Image();
+  obstacleTexture.image.onload = () => handleTextureLoaded(obstacleTexture);
+  obstacleTexture.image.src = "./images/obstacle.png";
 }
 
 function handleTextureLoaded(texture) {
@@ -184,7 +189,7 @@ function drawScene() {
 
 }
 
-// Called every time before redeawing the screen.
+// Called every time before redrawing the screen.
 function animate() {
 
   // update current position so player can see it
@@ -217,6 +222,7 @@ function animate() {
         yPosition = yPositionOld;
       }
 
+      // detect collision with a wall
       if(detectCollision(xPosition, yPosition)) {
         playWallHitMusic();
         document.getElementById('hit').textContent = true;
@@ -225,7 +231,7 @@ function animate() {
       }
 
       // for 'jogging' effect when moving
-      if (stevec == 0) { 
+      if (counter == 0) { 
         zPosition = Math.sin(degToRad(joggingAngle)) / 20 + 0.4;
       }
     }
@@ -263,12 +269,12 @@ function handleKeyUp(event) {
   if (event.keyCode == 32) {
 
     // to prevent from staying in the air when jumping
-    if (stevec != 0) { 
+    if (counter != 0) { 
       zPosition = 0.4;
     }
     
-    stevec = 0;
-    skok = false;
+    counter = 0;
+    jump = false;
   }
 }
 
@@ -315,16 +321,16 @@ function handleKeys() {
 
   // space was pressed
   if (currentlyPressedKeys[32]) { 
-    stevec++;
-    if (stevec < 10) {
+    counter++;
+    if (counter < 10) {
       zPosition += 0.04;
     }
-    if (stevec > 10) {
+    if (counter > 10) {
       if (zPosition - 0.04 > 0.4)
         zPosition -= 0.04;
 
     }
-    skok = true;
+    jump = true;
 
   }
 
@@ -345,7 +351,7 @@ function moveToRandom() {
 }
 
 function resetGame() {
-  konec = true;
+  end = true;
   start = false;
   updateTimer(playingTime);
   // show play again button
@@ -368,11 +374,12 @@ function playAgain() {
   initBuffersRandomElement({size: maxBoxes, e: 0.3});
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'none';
+
   // hide playerData div
   document.getElementsByClassName("playerData")[0].style.display = 'none';
 
   // start updating scene rendering
-  vmes();
+  render();
 }
 
 function checkBoxesCollection() {
@@ -391,26 +398,37 @@ function checkBoxesCollection() {
   }
 }
 
-function vmes() {
+function render() {
 
-  let gameInterval = setInterval(function () {
-    if (texturesLoaded) { // only draw scene and animate when textures are loaded.
+  let gameInterval = setInterval(() => {
+    // draw scene and animate when textures are loaded.
+    if (texturesLoaded) { 
 
-      if (stevec > 20) { // za skok
-        stevec = 0;
+      // hack for jump
+      if (counter > 20) { 
+        counter = 0;
       }
 
-      if (!konec && start) { //dokler ni konec igre lahko opravlamo
+      // while we're playing
+      if (!end && start) { 
         playBackgroundMusic();
         requestAnimationFrame(animate);
         handleKeys();
       }
-     
-      drawScene(); // najprej narisemo svet, potem pa razlicne objetke
+
+      // draw walls
+      drawScene(); 
+
+      // draw floow
       drawFloor();
+
+      // draw obstacles
+      drawObstacles();
+
+      // check how many boxes were collected already
       checkBoxesCollection();
       
-      
+      // if all boxes were collected end the game
       // {x:0, y:-2, e: 0.3} randomElementCoord
       if(maxBoxes == collectedBoxes) {
         saveDataToDB(playerName, playingTime);
@@ -427,7 +445,7 @@ function vmes() {
 
 function updatePlayingTime() {
   setInterval(() => {
-    if (!konec && start) {
+    if (!end && start) {
       playingTime++;
       updateTimer(playingTime);
     }
@@ -469,17 +487,17 @@ function startGame() {
     initTextures();
     initBuffersFloor();
     initBuffersWalls();
-
+    initBuffersObstacles();
     initBuffersRandomElement({size: maxBoxes, e: 0.3});
     
-    // keyboard bindings
+    // handle user input
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;
 
-    drawScene();
-    drawFloor();
-      
-    vmes();
+    // render the world
+    render();
+
+    // update timer
     updatePlayingTime();
   }
 }

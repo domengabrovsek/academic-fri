@@ -173,23 +173,21 @@ function updateRandomElementsBuffers(boxesArray) {
     wallCoordinates.push({ x: element.x, y: element.y + 0.3, n: 1, d: 'x', e: element.e });
   }
    // map all wall coordinates to proper structure so squares can be generated from them
-   wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: wall.e, n: wall.n, m: 'w', d: wall.d })));
+  wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: wall.e, n: wall.n, m: 'w', d: wall.d })));
 
-   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
- 
- 
- 
-   elementVertexPositionBuffer = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexPositionBuffer);
-   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoordinates), gl.STATIC_DRAW);
-   elementVertexPositionBuffer.itemSize = 3;
-   elementVertexPositionBuffer.numItems = vertexCount;
- 
-   elementVertexTextureCoordBuffer = gl.createBuffer();
-   gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexTextureCoordBuffer);
-   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
-   elementVertexTextureCoordBuffer.itemSize = 2;
-   elementVertexTextureCoordBuffer.numItems = vertexCount;
+  var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
+  
+  elementVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoordinates), gl.STATIC_DRAW);
+  elementVertexPositionBuffer.itemSize = 3;
+  elementVertexPositionBuffer.numItems = vertexCount;
+
+  elementVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexTextureCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
+  elementVertexTextureCoordBuffer.itemSize = 2;
+  elementVertexTextureCoordBuffer.numItems = vertexCount;
 
 }
 

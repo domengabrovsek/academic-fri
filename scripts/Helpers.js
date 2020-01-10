@@ -215,7 +215,10 @@ function detectCollision(xPosition, yPosition) {
 
   // first check in which quadrant the player is
   let quadrant = getQuadrant(xPosition, yPosition);
-  let collision = getCollision(cdWalls[quadrant]);
+
+  let input = cdWalls[quadrant].concat(obstacles);
+
+  let collision = getCollision(input, quadrant);
 
   return collision;
 }
@@ -261,36 +264,35 @@ function getDistance({x1,y1}, {x2,y2}) {
   return Math.sqrt(Math.pow((x2 - x1),2) + Math.pow((y2 - y1), 2));
 }
 
-function getCollision (input)  {
+function getCollision (walls, quadrant)  {
 
   // error is used to detect collision on both sides of wall
-  let error = 0.62;
+  let error = 0.55;
   let correction = 0.35;
   let collision = false;
 
-  
-  let maxX = input[0].x;
-  let maxY = input[0].y;
+  let maxX = walls[0].x;
+  let maxY = walls[0].y;
 
-  let minX = input[0].x;
-  let minY = input[0].y;
+  let minX = walls[0].x;
+  let minY = walls[0].y;
 
-  input.forEach(point => {
+  walls.forEach(point => {
     if(point.x > maxX) maxX = point.x;
-    if(point.x < maxX) minX = point.x;
+    if(point.x < minX) minX = point.x;
     if(point.y > maxY) maxY = point.y;
-    if(point.y < maxY) minY = point.y;
+    if(point.y < minY) minY = point.y;
   })
   
   console.clear();
 
+  console.log('quadrant: ', quadrant);
   console.log(`X: ${minX} <= ${xPosition} <= ${maxX}`);
   console.log(`Y: ${minY} <= ${yPosition} <= ${maxY}`);
   
-
-  for(let point of input) {
+  for(let point of walls) {
   
-    // console.log(point.x, point.y);
+    console.log(point.x, point.y);
     
     let yPlusError = point.y + error;
     let yMinusError = point.y - error;
@@ -298,13 +300,13 @@ function getCollision (input)  {
     let xMinusError = point.x - error;
 
     // we are checking walls which were drawn in X or Y direction
-    if(point.d === 'x') {
-      // yPlusError -= correction;
-      // yMinusError += correction;
-    } else if(point.d === 'y') {
-      // xPlusError -= correction;
-      // xMinusError += correction;
-    }
+    // if(point.d === 'x') {
+    //   xPlusError -= correction;
+    //   xMinusError += correction;
+    // } else if(point.d === 'y') {
+    //   yPlusError -= correction;
+    //   yMinusError += correction;
+    // }
 
     if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
       collision = true;
