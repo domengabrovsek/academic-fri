@@ -181,6 +181,5 @@ function drawObstacle({ x, y } = {}) {
 }
 
 function drawObstacles() {
-
     obstacles.forEach(obstacle => drawObstacle(obstacle))    
 }

@@ -11,8 +11,8 @@ function initBuffersWalls() {
     { x: -13, y: 13, n: 26, d: 'x' }, // south wall
     { x: 13, y: -13, n: 26, d: 'y' }, // east wall
     { x: -13, y: -13, n: 26, d: 'y' }, // west wall
-    { x: 3, y: -13, n: 2, d: 'y' },
-    { x: 5, y: -13, n: 2, d: 'y' },
+    { x: 3, y: -13, n: 1, d: 'y' },
+    { x: 5, y: -13, n: 1, d: 'y' },
     { x: -11, y: -11, n: 8, d: 'x' },
     { x: -1, y: -11, n: 4, d: 'x' },
     { x: 7, y: -11, n: 4, d: 'x' },

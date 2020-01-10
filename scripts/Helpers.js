@@ -219,7 +219,6 @@ function detectCollision(xPosition, yPosition) {
   let input = cdWalls[quadrant].concat(obstacles);
 
   let collision = getCollision(input, quadrant);
-
   return collision;
 }
 
@@ -267,7 +266,7 @@ function getDistance({x1,y1}, {x2,y2}) {
 function getCollision (walls, quadrant)  {
 
   // error is used to detect collision on both sides of wall
-  let error = 0.55;
+  let error = 0.50;
   let correction = 0.35;
   let collision = false;
 
@@ -284,15 +283,8 @@ function getCollision (walls, quadrant)  {
     if(point.y < minY) minY = point.y;
   })
   
-  console.clear();
-
-  console.log('quadrant: ', quadrant);
-  console.log(`X: ${minX} <= ${xPosition} <= ${maxX}`);
-  console.log(`Y: ${minY} <= ${yPosition} <= ${maxY}`);
   
   for(let point of walls) {
-  
-    console.log(point.x, point.y);
     
     let yPlusError = point.y + error;
     let yMinusError = point.y - error;
@@ -300,19 +292,20 @@ function getCollision (walls, quadrant)  {
     let xMinusError = point.x - error;
 
     // we are checking walls which were drawn in X or Y direction
-    // if(point.d === 'x') {
-    //   xPlusError -= correction;
-    //   xMinusError += correction;
-    // } else if(point.d === 'y') {
-    //   yPlusError -= correction;
-    //   yMinusError += correction;
-    // }
+    /* if(point.d === 'x') {
+       xPlusError -= correction;
+       xMinusError += correction;
+     } else if(point.d === 'y') {
+       yPlusError -= correction;
+       yMinusError += correction;
+     }
+    */
 
     if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
       collision = true;
-      console.log(`X: ${xMinusError} <= ${xPosition} <= ${xPlusError}`);
+      /*console.log(`X: ${xMinusError} <= ${xPosition} <= ${xPlusError}`);
       console.log(`Y: ${yMinusError} <= ${yPosition} <= ${yPlusError}`);
-      console.log(`Collision at (${xPosition}, ${yPosition})`);
+      console.log(`Collision at (${xPosition}, ${yPosition})`);*/
       break;
     }
   }

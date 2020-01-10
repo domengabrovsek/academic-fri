@@ -365,10 +365,17 @@ function playAgain() {
   xPosition = 0;
   yPosition = 0;
   playingTime = 0;
+  yawRate = 0;
+  pitch = 0;
+  pitchRate = 0;
+  yaw = 0;
+  yawRate = 0;
+  speed = 0;
+
   playBackgroundMusic();
   collectedBoxes = 0;
   document.getElementsByClassName("collectedBoxes")[0].innerHTML = `Collected boxes: ${collectedBoxes}`;
-  konec = false;
+  end = false;
   start = true;
   randomElementCoordinates = [];
   initBuffersRandomElement({size: maxBoxes, e: 0.3});
