@@ -343,21 +343,21 @@ function moveToRandom() {
 function resetGame() {
   konec = true;
   start = false;
-  xPosition = 0;
-  yPosition = 0;
-  playingTime = 0;
   updateTimer(playingTime);
   // show play again button
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'inline-block';
   // show player div
   document.getElementsByClassName("playerData")[0].style.display = 'block';
-  collectedBoxes = 0;
-  document.getElementsByClassName("collectedBoxes")[0].innerHTML = collectedBoxes;
 }
 
 function playAgain() {
+  xPosition = 0;
+  yPosition = 0;
+  playingTime = 0;
   playBackgroundMusic();
+  collectedBoxes = 0;
+  document.getElementsByClassName("collectedBoxes")[0].innerHTML = `Collected boxes: ${collectedBoxes}`;
   konec = false;
   start = true;
   randomElementCoordinates = [];
