@@ -382,6 +382,7 @@ function checkBoxesCollection() {
 
       // set randomElement coordinates to latest 
       randomElementCoordinates = randomElementCoordinates.filter(box => !box.detected);
+      updateRandomElementsBuffers(randomElementCoordinates);
     }
   }
 }
@@ -400,14 +401,12 @@ function vmes() {
         requestAnimationFrame(animate);
         handleKeys();
       }
-
-      
+     
       drawScene(); // najprej narisemo svet, potem pa razlicne objetke
       drawFloor();
       checkBoxesCollection();
       
       
-
       // {x:0, y:-2, e: 0.3} randomElementCoord
       if(maxBoxes == collectedBoxes) {
         saveDataToDB(playerName, playingTime);
