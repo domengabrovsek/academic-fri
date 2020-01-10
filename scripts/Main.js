@@ -72,7 +72,7 @@ let randomElementCoordinates = [];
 
 let collectedBoxes = 0;
 
-let maxBoxes = 3;
+let maxBoxes = 2;
 
 // Initialize the textures we'll be using, then initiate a load of
 // the texture images. The handleTextureLoaded() callback will finish
@@ -144,7 +144,7 @@ function drawScene() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // If buffers are empty we stop loading the application.
-  if (worldVertexTextureCoordBuffer == null || worldVertexPositionBuffer == null) {
+  if (worldVertexTextureCoordBuffer == null || worldVertexPositionBuffer == null || elementVertexPositionBuffer == null) {
     return;
   }
 
@@ -336,14 +336,8 @@ function updateTimer(time) {
 
 /* Just for testing purposes */ 
 function moveToRandom() {
-  xPosition = randomElementCoord.x - 0.5;
-  yPosition = randomElementCoord.y - 0.5;
-  randomElementCoordinates.forEach(el => {
-    setTimeout(() => {
-      xPosition = el.x - 0.5;
-      yPosition = el.y - 0.5;
-    },2000);
-  });
+  xPosition = randomElementCoordinates[0].x - 0.5;
+  yPosition = randomElementCoordinates[0].y - 0.5;
 }
 
 function resetGame() {
@@ -353,8 +347,10 @@ function resetGame() {
   yPosition = 0;
   playingTime = 0;
   updateTimer(playingTime);
+  // show play again button
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'inline-block';
+  // show player div
   document.getElementsByClassName("playerData")[0].style.display = 'block';
   collectedBoxes = 0;
   document.getElementsByClassName("collectedBoxes")[0].innerHTML = collectedBoxes;
@@ -364,11 +360,14 @@ function playAgain() {
   playBackgroundMusic();
   konec = false;
   start = true;
-  randomElementCoord = spawnRandomElement();
-  initBuffersRandomElement(randomElementCoord);
-  initRandomElementFloor(randomElementCoord);
+  randomElementCoordinates = [];
+  initBuffersRandomElement({size: maxBoxes, e: 0.3});
   playAgainBtn = document.getElementById("btnPlayAgain");
   playAgainBtn.style.display = 'none';
+  // hide playerData div
+  document.getElementsByClassName("playerData")[0].style.display = 'none';
+
+  // start updating scene rendering
   vmes();
 }
 
@@ -376,9 +375,13 @@ function checkBoxesCollection() {
   for (let i = 0; i < randomElementCoordinates.length; i++) {
     let element = randomElementCoordinates[i];
     if (detectBox(element) && !element.detected) {
+      playCollectBoxMusic();
       randomElementCoordinates[i].detected = true;
       collectedBoxes++;
       document.getElementsByClassName("collectedBoxes")[0].innerHTML = `Collected boxes: ${collectedBoxes}`;
+
+      // set randomElement coordinates to latest 
+      randomElementCoordinates = randomElementCoordinates.filter(box => !box.detected);
     }
   }
 }
@@ -398,9 +401,11 @@ function vmes() {
         handleKeys();
       }
 
+      
       drawScene(); // najprej narisemo svet, potem pa razlicne objetke
       drawFloor();
       checkBoxesCollection();
+      
       
 
       // {x:0, y:-2, e: 0.3} randomElementCoord
