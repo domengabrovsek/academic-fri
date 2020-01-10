@@ -1,10 +1,12 @@
 
 var cdWalls;
+var walls = [];
+var wallCoordinates;
 
 function initBuffersWalls() {
 
   // z and l are always 1 so we can simplify input
-  let wallCoordinates = [
+  wallCoordinates = [
     { x: -13, y: -13, n: 26, d: 'x' }, // north wall
     { x: -13, y: 13, n: 26, d: 'x' }, // south wall
     { x: 13, y: -13, n: 26, d: 'y' }, // east wall
@@ -92,14 +94,10 @@ function initBuffersWalls() {
     { x: -1, y: 11, n: 2, d: 'y' }
   ]
 
-  let walls = [];
-
   // map all wall coordinates to proper structure so squares can be generated from them
   wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 1, l: 1, n: wall.n, m: 'w', d: wall.d })));
 
   cdWalls = prepareCollisionDetectionData(walls);
-
-  // console.log(cdWalls);
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
 
@@ -132,15 +130,13 @@ function initBuffersRandomElement({ size, e }) {
     wallCoordinates.push({ x: element.x, y: element.y + 0.3, n: 1, d: 'x' });
   }
 
-
   /*wallCoordinates = [
     { x: x, y: y, n: 1, d: 'x' },
     { x: x, y: y, n: 1, d: 'y' },
     { x: x + e, y: y, n: 1, d: 'y' },
     { x: x, y: y + e, n: 1, d: 'x' },
   ];
-
-  wallCoordinates = [];*/
+  */
 
   let walls = [];
 
@@ -148,8 +144,6 @@ function initBuffersRandomElement({ size, e }) {
   wallCoordinates.map(wall => walls.push(...generateSquares({ x: wall.x, y: wall.y, z: 0.25, l: e, n: wall.n, m: 'w', d: wall.d })));
 
   var { vertexCoordinates, textureCoordinates, vertexCount } = filterCoordinates(walls);
-
-
 
   elementVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, elementVertexPositionBuffer);
@@ -245,7 +239,6 @@ function drawScene() {
   // Draw the cube.
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLES, 0, worldVertexPositionBuffer.numItems);
-
 
   // Activate textures
   gl.activeTexture(gl.TEXTURE0);

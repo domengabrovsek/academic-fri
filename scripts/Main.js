@@ -191,6 +191,7 @@ function animate() {
   document.getElementById('x').textContent = xPosition;
   document.getElementById('y').textContent = yPosition;
   document.getElementById('z').textContent = zPosition;
+  document.getElementById('hit').textContent = false;
 
   var timeNow = new Date().getTime();
   if (lastTime != 0) {
@@ -207,15 +208,18 @@ function animate() {
 
       // cannot go outside of maze boundaries
       if(xPosition >= 12.2 || xPosition <= -12.2) {
+        playWallHitMusic();
         xPosition = xPositionOld;
       }
 
       if(yPosition >= 12.2 || yPosition <= -12.2) {
+        playWallHitMusic();
         yPosition = yPositionOld;
       }
 
       if(detectCollision(xPosition, yPosition)) {
         playWallHitMusic();
+        document.getElementById('hit').textContent = true;
         xPosition = xPositionOld;
         yPosition = yPositionOld;
       }
@@ -468,7 +472,6 @@ function startGame() {
 
     initBuffersRandomElement({size: maxBoxes, e: 0.3});
     
-
     // keyboard bindings
     document.onkeydown = handleKeyDown;
     document.onkeyup = handleKeyUp;

@@ -45,7 +45,8 @@ function generatePoint({ x, y, z, d, m }) {
     z: z,
     y: y,
     tX: tX, 
-    tY: tY
+    tY: tY,
+    d: d
   };
 }
 
@@ -135,8 +136,6 @@ function generateSquare({ x, y, z, l, d, m }) {
     d, m 
   });  
 
-  // console.log(A, B, C, D);
-
   return [t1, t2];
 }
 
@@ -217,14 +216,11 @@ function detectCollision(xPosition, yPosition) {
   // first check in which quadrant the player is
   let quadrant = getQuadrant(xPosition, yPosition);
   let collision = getCollision(cdWalls[quadrant]);
-  
-  // console.log('collision: ', collision);
 
   return collision;
 }
 
-
-function detectBox({x,y,e}) {
+function detectBox({ x,y,e }) {
 
   let isBoxDetected = false;
   
@@ -242,21 +238,12 @@ function detectBox({x,y,e}) {
 
 function spawnRandomElement() {
 
-  let maxDistance = 3;
   let minX = -12.5,
       maxX = 12.5,
       minY = -12.5,
       maxY = 12.5;
   let randomX = parseFloat((Math.random() * (maxX - minX) + minX).toFixed(3));
   let randomY = parseFloat((Math.random() * (maxY - minY) + minY).toFixed(3));
-
-  // remove this after showing to profesor
-  /*return {
-    "x": 0,
-    "y": -2,
-    "e": 0.3
-  };*/
-
 
   if(!detectCollision(randomX, randomY)) {
     console.log("Random: ", randomX, ": ", randomY);
@@ -277,25 +264,53 @@ function getDistance({x1,y1}, {x2,y2}) {
 function getCollision (input)  {
 
   // error is used to detect collision on both sides of wall
-  let error = 0.3;
+  let error = 0.62;
+  let correction = 0.35;
   let collision = false;
-  //console.log("Input: ", input);
+
+  
+  let maxX = input[0].x;
+  let maxY = input[0].y;
+
+  let minX = input[0].x;
+  let minY = input[0].y;
+
+  input.forEach(point => {
+    if(point.x > maxX) maxX = point.x;
+    if(point.x < maxX) minX = point.x;
+    if(point.y > maxY) maxY = point.y;
+    if(point.y < maxY) minY = point.y;
+  })
+  
+  console.clear();
+
+  console.log(`X: ${minX} <= ${xPosition} <= ${maxX}`);
+  console.log(`Y: ${minY} <= ${yPosition} <= ${maxY}`);
+  
 
   for(let point of input) {
-
-    // console.clear();
-    // console.log(`Player: x:${xPosition}, y: ${yPosition}`);
   
-    const xPlusError = point.x + error;
-    const xMinusError = point.x - error;
-    const yPlusError = point.y + error;
-    const yMinusError = point.y - error;
+    // console.log(point.x, point.y);
+    
+    let yPlusError = point.y + error;
+    let yMinusError = point.y - error;
+    let xPlusError = point.x + error;
+    let xMinusError = point.x - error;
 
-    // console.log(`X: ${xMinusError} <= ${xPosition} <= ${xPlusError}`);
-    // console.log(`Y: ${yMinusError} <= ${yPosition} <= ${yMinusError}`);
+    // we are checking walls which were drawn in X or Y direction
+    if(point.d === 'x') {
+      // yPlusError -= correction;
+      // yMinusError += correction;
+    } else if(point.d === 'y') {
+      // xPlusError -= correction;
+      // xMinusError += correction;
+    }
 
     if((xPosition >= xMinusError && xPosition <= xPlusError) && (yPosition >= yMinusError && yPosition <= yPlusError)) {
       collision = true;
+      console.log(`X: ${xMinusError} <= ${xPosition} <= ${xPlusError}`);
+      console.log(`Y: ${yMinusError} <= ${yPosition} <= ${yPlusError}`);
+      console.log(`Collision at (${xPosition}, ${yPosition})`);
       break;
     }
   }
@@ -312,7 +327,7 @@ function prepareCollisionDetectionData(walls) {
   walls.forEach(wall => {
     wall.forEach(point => {
       if(!filteredPoints.some(fp => fp.x === point.x && fp.y === point.y)) {
-        let p = {x: point.x, y: point.y};
+        let p = {x: point.x, y: point.y, d: point.d};
         let quadrant = getQuadrant(p.x, p.y)
         filteredPoints.push(p);
 
