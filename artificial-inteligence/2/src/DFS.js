@@ -1,17 +1,19 @@
 'use strict';
 
-const { move, compare, constructPath, getAdjMatrix } = require('./helpers');
+const { move, compare, constructPath } = require('./helpers');
 
 module.exports = function DFS(graph, startNode, endNodes) {
 
   let visited = [];
   let parents = {};
   let stack = [];
+  let steps = 0;
 
   // start node
   parents[startNode] = null;
   visited[startNode] = true;
   stack.push(startNode);
+  steps++;
   console.log(`  Adding node ${startNode} to stack.`);
 
   // while we have elements on stack we iterate
@@ -22,7 +24,7 @@ module.exports = function DFS(graph, startNode, endNodes) {
 
     // if we found the final node
     if(endNodes.some(node => compare(node, currentNode))) {
-      return constructPath(currentNode, parents);
+      return { path: constructPath(currentNode, parents), steps };
     }
 
     let found = false;
@@ -37,6 +39,7 @@ module.exports = function DFS(graph, startNode, endNodes) {
         visited[adjacent] = true;
         parents[adjacent] = currentNode;
         stack.push(adjacent);
+        steps++;
         console.log(`  Adding node ${adjacent} to stack.`);
 
         found = true;
