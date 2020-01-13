@@ -11,7 +11,8 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}\\artificial-inteligence\\2\\index.js"
+      "program": "${workspaceFolder}\\artificial-inteligence\\2\\index.js",
+      "console": "externalTerminal"
     }
   ]
 }

@@ -1,8 +1,8 @@
 'use strict';
 
-const { move, compare, constructPath } = require('./helpers');
+const { move, compare, constructPath, getAdjMatrix } = require('./helpers');
 
-module.exports = function DFS(validNodes, startNode, endNodes) {
+module.exports = function DFS(graph, startNode, endNodes) {
 
   let visited = [];
   let parents = {};
@@ -12,39 +12,44 @@ module.exports = function DFS(validNodes, startNode, endNodes) {
   parents[startNode] = null;
   visited[startNode] = true;
   stack.push(startNode);
+  console.log(`  Adding node ${startNode} to stack.`);
 
+  // while we have elements on stack we iterate
   while(stack.length > 0) {
 
-    // set current node 
-    let currentNode = stack.pop();
-
-    console.log('  Current node: ', currentNode);
+    // stack.peek()
+    let currentNode = stack[stack.length - 1];
 
     // if we found the final node
     if(endNodes.some(node => compare(node, currentNode))) {
       return constructPath(currentNode, parents);
     }
-      
-    // if node was not visited yet
-    if(!visited[currentNode]) {
 
-      visited[currentNode] = true;
-      stack.push(currentNode);
+    let found = false;
 
-      console.log(`  Adding node ${currentNode} to stack.`);
-    }
-      
     // check adjacent nodes (children)
     for(let direction of ['up', 'right', 'down', 'left']) {
-      
+                          
       let adjacent = move(currentNode, direction);
 
       // if not visited yet and is valid node then add it to stack
-      if(!visited[adjacent] && validNodes.some(node => compare(node, adjacent))) {
+      if(!visited[adjacent] && graph.some(node => compare(node, adjacent))) {
+        visited[adjacent] = true;
         parents[adjacent] = currentNode;
-        console.log(`  Adding node ${adjacent} to stack.`);
         stack.push(adjacent);
+        console.log(`  Adding node ${adjacent} to stack.`);
+
+        found = true;
+        break;
       }
     }
+    
+    if(!found) {
+      stack.pop();
+      console.log(`  Removing node ${currentNode} from stack.`);
+    }
   }
+
+  console.log('-------------------------------------------------');
+  
 }
