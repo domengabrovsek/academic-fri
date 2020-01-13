@@ -2,11 +2,14 @@
 
 const DFS = require('./src/DFS');
 const BFS = require('./src/BFS');
-const { transform, findStartEnd, getAdjMatrix, getPathLength } = require('./src/helpers');
+const ASTAR = require('./src/ASTAR');
+const IDDFS = require('./src/IDDFS');
+
+const { transform, findStartEnd, getPathPrice, getDistance } = require('./src/helpers');
 const { getLabyrinths } = require('./src/fileHelpers');
 
 // TODO add more algorithms 
-const algorithms = ['dfs', 'bfs', 'astar'];
+const algorithms = ['dfs', 'bfs', 'astar', 'iddfs'];
 
 // read from user input and execute according to input
 console.clear();
@@ -22,7 +25,7 @@ stdin.addListener("data", input => {
     const labyrinth = input[1];
 
     console.clear();
-    console.log('Algorythm:', algorithm);
+    console.log('Algorithm:', algorithm);
     console.log('Labyrinth:', labyrinth);
 
     // validate algorithm input
@@ -44,42 +47,34 @@ stdin.addListener("data", input => {
     // find where to start/end search
     let { startNode, endNodes } = findStartEnd(graph);
 
-    // transform graph to adjacent matrix
-    let adjMatrix = getAdjMatrix(graph);
-
-    // flatten adjMatrix to get valid nodes list
-    let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
-
     // path will be returned by the search algorithm
     let path;
 
     console.log('Graph: ', graph);
     console.log(`\nStart node: ${startNode}`);
     console.log(`End nodes: ${endNodes}`);
-    console.log('\nAdjMatrix: ', adjMatrix);
-
     console.log(`\nStarting search: `);
 
     // have to decide which algorithm to run on which graph (labyrinth)
     switch(algorithm) {
         // depth first search
         case 'dfs': {
-            path = DFS(validNodes, startNode, endNodes);
+            path = DFS(graph, startNode, endNodes);
             break;
         }
         // breadth first search
         case 'bfs': {
-            path = BFS(validNodes, startNode, endNodes);
+            path = BFS(graph, startNode, endNodes);
             break;
         }
         // a* search
         case 'astar': {
-            // TODO
+            path = ASTAR(graph, startNode, endNodes)
             break;
         }
         // iterative deepening search
-        case 'ids': {
-            // TODO
+        case 'iddfs': {
+            path = IDDFS(graph, startNode, endNodes);
             break;
         }
         // iterative deepening a* search
@@ -88,7 +83,8 @@ stdin.addListener("data", input => {
             break;
         }
     }
-
-    console.log('Path length: ', getPathLength(path, graph));
+    console.log('Max graph depth: ', graph.length);
+    console.log('Path price: ', getPathPrice(path, graph));
+    console.log('Path length:', getDistance(path[0], path[path.length - 1]));
     console.log('Found end node using path: ', path);
 });

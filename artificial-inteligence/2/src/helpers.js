@@ -144,7 +144,15 @@ function constructPath(currentNode, parents) {
   return path;
 }
 
-function getPathLength(path, graph) {
+function getDistance(a, b) {
+  return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+}
+
+function getCost(node, graph) {
+  return parseInt(graph[node[0]][node[1]]);
+}
+
+function getPathPrice(path, graph) {
 
   let length = 0;
   let steps = "";
@@ -173,5 +181,7 @@ module.exports = {
   compare,
   isValidNode,
   constructPath,
-  getPathLength
+  getPathPrice,
+  getDistance,
+  getCost
 };

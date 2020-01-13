@@ -1,8 +1,16 @@
 'use strict';
 
-const { move, compare, constructPath } = require('./helpers');
+const { move, compare, constructPath, getAdjMatrix } = require('./helpers');
 
-module.exports = function DFS(validNodes, startNode, endNodes) {
+module.exports = function DFS(graph, startNode, endNodes) {
+
+  // transform graph to adjacent matrix
+  let adjMatrix = getAdjMatrix(graph);
+  console.log('\nAdjMatrix: ', adjMatrix);
+
+  // flatten adjMatrix to get valid nodes list
+  let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
+  console.log('\nValid nodes: ', validNodes);
 
   let visited = [];
   let parents = {};
