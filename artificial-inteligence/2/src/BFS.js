@@ -7,11 +7,13 @@ module.exports = function BFS(graph, startNode, endNodes) {
   let visited = [];
   let parents = {};
   let queue = [];
+  let steps = 0;
 
   // start node
   parents[startNode] = null;
   visited[startNode] = true;
   queue.push(startNode);
+  steps++;
   console.log(`  Adding node ${startNode} to queue.`);
 
   // while we have elements in queue we iterate
@@ -23,7 +25,7 @@ module.exports = function BFS(graph, startNode, endNodes) {
 
     // if we found the final node
     if(endNodes.some(node => compare(node, currentNode))) {
-      return constructPath(currentNode, parents);
+      return { path: constructPath(currentNode, parents), steps };
     }
       
     // check adjacent nodes (children)
@@ -36,6 +38,7 @@ module.exports = function BFS(graph, startNode, endNodes) {
         visited[adjacent] = true;
         parents[adjacent] = currentNode;
         queue.push(adjacent);
+        steps++;
         console.log(`  Adding node ${adjacent} to queue.`);
       }
     }

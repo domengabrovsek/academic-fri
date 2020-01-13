@@ -4,6 +4,8 @@ const { constructPath, compare, move } = require('./helpers');
 
 module.exports = function IDDFS(graph, startNode, endNodes) {
 
+  let steps = 0;
+
   // main loop which iterates by depth of graph
   for(let depthLimit = 0; depthLimit < graph.length; depthLimit++) {
     console.log('\nCurrent depth limit: ', depthLimit);
@@ -16,6 +18,7 @@ module.exports = function IDDFS(graph, startNode, endNodes) {
     parents[startNode] = null;
     visited[startNode] = true;
     stack.push(startNode);
+    steps++;
     console.log(`  Adding node ${startNode} to stack.`);
 
     // while we have elements on stack we iterate
@@ -26,7 +29,7 @@ module.exports = function IDDFS(graph, startNode, endNodes) {
 
       // if we found the final node
       if(endNodes.some(node => compare(node, currentNode))) {
-        return constructPath(currentNode, parents);
+        return { path: constructPath(currentNode, parents), steps };
       }
 
       let found = false;
@@ -44,6 +47,7 @@ module.exports = function IDDFS(graph, startNode, endNodes) {
             visited[adjacent] = true;
             parents[adjacent] = currentNode;
             stack.push(adjacent);
+            steps++;
             console.log(`  Adding node ${adjacent} to stack.`);
 
             found = true;

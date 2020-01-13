@@ -10,5 +10,6 @@ function getLabyrinths() {
 }
 
 module.exports = {
-  getLabyrinths
+  getLabyrinths,
+  files
 };
