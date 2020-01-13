@@ -2,7 +2,7 @@
 
 const { constructPath, compare, move } = require('./helpers');
 
-module.exports = function IDDFSv1(graph, startNode, endNodes) {
+module.exports = function IDDFS(graph, startNode, endNodes) {
 
   // main loop which iterates by depth of graph
   for(let depthLimit = 0; depthLimit < graph.length; depthLimit++) {
