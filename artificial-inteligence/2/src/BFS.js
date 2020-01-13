@@ -1,16 +1,8 @@
 'use strict';
 
-const { move, compare, constructPath, getAdjMatrix } = require('./helpers');
+const { move, compare, constructPath } = require('./helpers');
 
 module.exports = function BFS(graph, startNode, endNodes) {
-
-  // transform graph to adjacent matrix
-  let adjMatrix = getAdjMatrix(graph);
-  console.log('\nAdjMatrix: ', adjMatrix);
-
-  // flatten adjMatrix to get valid nodes list
-  let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
-  console.log('\nValid nodes: ', validNodes);
 
   let visited = [];
   let parents = {};
@@ -20,26 +12,18 @@ module.exports = function BFS(graph, startNode, endNodes) {
   parents[startNode] = null;
   visited[startNode] = true;
   queue.push(startNode);
+  console.log(`  Adding node ${startNode} to queue.`);
 
+  // while we have elements in queue we iterate
   while(queue.length > 0) {
 
     // set current node 
     let currentNode = queue.shift();
-
-    console.log('  Current node: ', currentNode);
+    console.log(`  Removing node ${currentNode} from queue.`);
 
     // if we found the final node
     if(endNodes.some(node => compare(node, currentNode))) {
       return constructPath(currentNode, parents);
-    }
-      
-    // if node was not visited yet
-    if(!visited[currentNode]) {
-
-      visited[currentNode] = true;
-      queue.push(currentNode);
-
-      console.log(`  Adding node ${currentNode} to stack.`);
     }
       
     // check adjacent nodes (children)
@@ -48,10 +32,11 @@ module.exports = function BFS(graph, startNode, endNodes) {
       let adjacent = move(currentNode, direction);
 
       // if not visited yet and is valid node then add it to stack
-      if(!visited[adjacent] && validNodes.some(node => compare(node, adjacent))) {
+      if(!visited[adjacent] && graph.some(node => compare(node, adjacent))) {
+        visited[adjacent] = true;
         parents[adjacent] = currentNode;
-        console.log(`  Adding node ${adjacent} to stack.`);
         queue.push(adjacent);
+        console.log(`  Adding node ${adjacent} to queue.`);
       }
     }
   }

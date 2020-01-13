@@ -29,7 +29,7 @@ function findStartEnd(graph) {
       }
 
       if(graph[i][j] === '-3') {
-        endNodes.push([i, j])
+        endNodes.push([i, j]);
       } 
     }
   }

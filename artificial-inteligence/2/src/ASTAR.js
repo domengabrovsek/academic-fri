@@ -28,11 +28,11 @@ module.exports = function ASTAR(graph, startNode, endNodes) {
   }
 
   gScore[startNode] = 0;
-  fScore[startNode] = hCost[startNode];
+  fScore[startNode] = getCost(startNode, graph);
   parents[startNode] = -1;
 
   // open starting node
-  open.push();
+  open.push(startNode);
   console.log('Opening node: ', startNode);
 
   while(open.length > 0) {
@@ -51,7 +51,7 @@ module.exports = function ASTAR(graph, startNode, endNodes) {
 
     let index = open.indexOf(minPos);
 
-    if(index >= -1) {
+    if(index > -1) {
       open.splice(index, 1);
     }
     

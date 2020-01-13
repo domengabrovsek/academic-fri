@@ -5,17 +5,19 @@ const BFS = require('./src/BFS');
 const ASTAR = require('./src/ASTAR');
 const IDDFS = require('./src/IDDFS');
 
-const { transform, findStartEnd, getPathPrice, getDistance } = require('./src/helpers');
+const { transform, findStartEnd, getPathPrice, getDistance, getAdjMatrix } = require('./src/helpers');
 const { getLabyrinths } = require('./src/fileHelpers');
 
 // TODO add more algorithms 
-const algorithms = ['dfs', 'bfs', 'astar', 'iddfs'];
+const algorithms = ['dfs', 'bfs', 'astar', 'iddfs', 'idastar'];
+
+let stdin = process.openStdin();
 
 // read from user input and execute according to input
 console.clear();
-console.log('Please enter algorithm and labyrinth number: ');
-
-let stdin = process.openStdin();
+console.log('Algorithms: ', algorithms);
+console.log('Labyrinths: [0-15]');
+console.log('Please enter algorithm and labyrinth number e.g. "dfs 1": ');
 
 stdin.addListener("data", input => {
 
@@ -25,7 +27,8 @@ stdin.addListener("data", input => {
     const labyrinth = input[1];
 
     console.clear();
-    console.log('Algorithm:', algorithm);
+    console.log('-------------------------------------------------------');
+    console.log('\nAlgorithm:', algorithm);
     console.log('Labyrinth:', labyrinth);
 
     // validate algorithm input
@@ -50,31 +53,39 @@ stdin.addListener("data", input => {
     // path will be returned by the search algorithm
     let path;
 
-    console.log('Graph: ', graph);
-    console.log(`\nStart node: ${startNode}`);
-    console.log(`End nodes: ${endNodes}`);
+    // transform graph to adjacent matrix
+    let adjMatrix = getAdjMatrix(graph);
+    // console.log('\nAdjMatrix: ', adjMatrix);
+
+    // flatten adjMatrix to get valid nodes list
+    let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
+    // console.log('\nValid nodes: ', validNodes);
+
+    // console.log('\nGraph: ', graph);
+    console.log(`Start node: [${startNode}]`);
+    console.log(`End nodes: ${endNodes.map(node => `[${node}]`)}`);
     console.log(`\nStarting search: `);
 
     // have to decide which algorithm to run on which graph (labyrinth)
     switch(algorithm) {
         // depth first search
         case 'dfs': {
-            path = DFS(graph, startNode, endNodes);
+            path = DFS(validNodes, startNode, endNodes);
             break;
         }
         // breadth first search
         case 'bfs': {
-            path = BFS(graph, startNode, endNodes);
+            path = BFS(validNodes, startNode, endNodes);
             break;
         }
         // a* search
         case 'astar': {
-            path = ASTAR(graph, startNode, endNodes)
+            path = ASTAR(validNodes, startNode, endNodes)
             break;
         }
         // iterative deepening search
         case 'iddfs': {
-            path = IDDFS(graph, startNode, endNodes);
+            path = IDDFS(validNodes, startNode, endNodes);
             break;
         }
         // iterative deepening a* search

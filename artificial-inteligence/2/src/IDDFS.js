@@ -1,22 +1,11 @@
 'use strict';
 
-const { move, compare, constructPath, getAdjMatrix } = require('./helpers');
+const { constructPath, compare, move } = require('./helpers');
 
-module.exports = function IDDFS(graph, startNode, endNodes) {
-
-  // transform graph to adjacent matrix
-  let adjMatrix = getAdjMatrix(graph);
-  console.log('\nAdjMatrix: ', adjMatrix);
-
-  // flatten adjMatrix to get valid nodes list
-  let validNodes = [].concat(...Object.keys(adjMatrix).map(key => adjMatrix[key]));
-  console.log('\nValid nodes: ', validNodes);
+module.exports = function IDDFSv1(graph, startNode, endNodes) {
 
   // main loop which iterates by depth of graph
   for(let depthLimit = 0; depthLimit < graph.length; depthLimit++) {
-
-    let currentDepth = 0;
-
     console.log('\nCurrent depth limit: ', depthLimit);
 
     let visited = [];
@@ -29,41 +18,46 @@ module.exports = function IDDFS(graph, startNode, endNodes) {
     stack.push(startNode);
     console.log(`  Adding node ${startNode} to stack.`);
 
+    // while we have elements on stack we iterate
     while(stack.length > 0) {
 
-      // set current node 
-      let currentNode = stack.pop();
+      // stack.peek()
+      let currentNode = stack[stack.length - 1];
 
-      console.log('  Current node: ', currentNode);
-
-      // if we found the final node we end the search
+      // if we found the final node
       if(endNodes.some(node => compare(node, currentNode))) {
         return constructPath(currentNode, parents);
       }
-        
-      // if node was not visited yet
-      if(!visited[currentNode]) {
 
-        visited[currentNode] = true;
-        console.log(`  Visited node ${currentNode}.`);
-      }
+      let found = false;
 
-      if(currentDepth >= depthLimit) { break; }
+      // if depth limit allows then check children
+      if(stack.length <= depthLimit) {
 
         // check adjacent nodes (children)
         for(let direction of ['up', 'right', 'down', 'left']) {
-                      
+                              
           let adjacent = move(currentNode, direction);
 
           // if not visited yet and is valid node then add it to stack
-          if(!visited[adjacent] && validNodes.some(node => compare(node, adjacent))) {
+          if(!visited[adjacent] && graph.some(node => compare(node, adjacent))) {
+            visited[adjacent] = true;
             parents[adjacent] = currentNode;
-            console.log(`  Adding node ${adjacent} to stack.`);
             stack.push(adjacent);
+            console.log(`  Adding node ${adjacent} to stack.`);
+
+            found = true;
+            break;
           }
         }
+      }
 
-        currentDepth += 1;
+      if(!found) {
+        stack.pop();
+        console.log(`  Removing node ${currentNode} from stack.`);
+      }
     }
+
+    console.log('-------------------------------------------------');
   }
 }
