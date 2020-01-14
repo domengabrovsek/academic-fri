@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGl Game</title>
+
+    <!-- Metadata-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- Metadata END -->
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
+    <!-- CSS END -->
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="./scripts/Shaders.js"></script>
+    <script type="text/javascript" src="./scripts/glMatrix-0.9.5.min.js"></script>
+    <script type="text/javascript" src="./scripts/WebGL.js"></script>
+    <script type="text/javascript" src="./scripts/Helpers.js"></script>
+    <script type="text/javascript" src="./scripts/Sound.js"></script>
+    <script type="text/javascript" src="./scripts/Main.js"></script>
+    <script type="text/javascript" src="./scripts/Wall.js"></script>
+    <script type="text/javascript" src="./scripts/Floor.js" ></script>
+    <script type="text/javascript" src="./scripts/Obstacle.js" ></script>
+    <!-- Scripts END -->
+  </head>
+  <body onload="startGame()">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">Maze</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="statistics.html">Statistics</a>
+          </li>
+      </div>
+    </nav>
+    <div style="position: relative;">
+      <canvas id="canvas" width="1920" height="973"></canvas>
+      <div class="playerData">
+        <h4 class="playerName">Player name</h4>
+        <input type="text" id="txtPlayerName" value="">
+        <button type="button" id="btnSavePlayer" onclick="savePlayer()">Accept</button>
+        <button type="button" id="btnPlayAgain" onclick="playAgain()">Play again</button>
+      </div>
+      <div style="position: absolute; top: 0; left: 0; color: white; font-size: 18px;"> Current position: 
+        <p>X: <span id="x"></span></p>
+        <p>Y: <span id="y"></span></p>
+        <p>Z: <span id="z"></span></p>
+        <p>Touching wall: <span id="hit"></span></p>
+      </div>
+      <p class="elapsedTime">0</p>
+      <p class="totalBoxes">5</p>
+      <p class="collectedBoxes">5</p>
+    </div>
+  </body>
+</html>
