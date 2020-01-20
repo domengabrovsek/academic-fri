@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
    ubuntu.vm.hostname = "ubuntu"
   #  ubuntu.vm.network "forwarded_port", guest: 80, host: 8080
    ubuntu.vm.provision "shell", inline: $script
-   ubuntu.vm.provider "virtualbox" do |v| # https://www.vagrantup.com/docs/virtualbox/configuration.html
+   ubuntu.vm.provider "hyperv" do |v| # https://www.vagrantup.com/docs/virtualbox/configuration.html
     v.memory = 1024
     v.cpus = 2
     end
@@ -30,9 +30,13 @@ Vagrant.configure("2") do |config|
     debian.vm.network :private_network, ip: "192.168.27.101"
     debian.vm.box_check_update = false
     debian.vm.hostname = "debian"
-    debian.vm.provider "virtualbox" do |v|
+    debian.vm.provider "hyperv" do |v|
       v.memory = 1024
       v.cpus = 1
       end
   end
 end
+
+# inline provisioning
+  config.vm.provision :shell, :inline => "apt-get update && apt-get install -y nginx"
+  config.vm.provision :shell, :inline => "ln -s /vagrant /usr/share/nginx/html/demo"
