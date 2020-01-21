@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: exam-ingress
+spec:
+  rules:
+  - host: exam.172.17.136.154.xip.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: exam-v3
+          servicePort: 8080

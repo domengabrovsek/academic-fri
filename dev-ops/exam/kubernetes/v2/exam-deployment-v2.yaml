@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: exam
+  name: exam
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: exam
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: exam
+    spec:
+      containers:
+      - image: exam:v2
+        imagePullPolicy: IfNotPresent
+        name: exam
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: 8080
+          initialDelaySeconds: 3
+          failureThreshold: 5
+          periodSeconds: 3
