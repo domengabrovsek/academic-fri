@@ -4,6 +4,9 @@
 #  k8s & minikube installation
 choco install kubernetes-cli minikube
 
+# helm installation
+choco install kubernetes-helm
+
 # check versions
 minikube version
 kubectl version --client
@@ -41,6 +44,7 @@ kubectl get all
 kubectl get pod
 kubectl get pod [pod_name] -o wide # look up pod
 kubectl delete pod [pod_name] --wait=false # delete pod without waiting
+kubectl get pods --namespace=monitoring
 
 # deployments
 kubectl get deployment
@@ -71,12 +75,24 @@ kubectl run -ti --rm alpine --image=alpine # run an interactive pod
 Invoke-WebRequest -Uri "uri" # send http get request from powershell
 
 # minikube
+minikube service list
 minikube service [service_name] --url # check service url
 minikube service [service_name] # open service in browser
+minikube service [service_name] -n monitoring
 minikub ssh curl http://[ip]:[port]
 minikube ip # get ip
 
 # blue green deployment
 # in ingress yaml change serviceName from 1 to 2
+
+kubectl get deployment [name] -o wide --watch
+kubectl get pod --watch
+
+# monitoring 
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/ # helm
+
+k create ns monitoring # create namespace for monitoring
+helm install --namespace monitoring prometheus stable/prometheus # install prometheus
+helm install --namespace=monitoring grafana --set=adminUser=admin --set=adminPassword=admin --set=service.type=NodePort stable/grafana # install grafana
 
 ```
