@@ -49,6 +49,12 @@ kubectl scale deployment [deployment_name] --replicas=3 --record # scale deploym
 kubectl rollout history deployment [deployment_name] # check history
 kubectl get deployment [deployment_name] -o yaml --export > hello-deployment.yaml # export
 
+# create from yaml
+
+k apply -f hi-deployment.yaml # deployment
+k apply -f hi-service.yaml # service
+k apply -f hi-ingres.yaml # ingress
+
 
 # ClusterIP (default -  "virtual" IP accessible inside k8s cluster)
 # NodePort (expose on all nodes on the same port, 30000-32768 by default)
@@ -67,7 +73,10 @@ Invoke-WebRequest -Uri "uri" # send http get request from powershell
 # minikube
 minikube service [service_name] --url # check service url
 minikube service [service_name] # open service in browser
+minikub ssh curl http://[ip]:[port]
 minikube ip # get ip
 
+# blue green deployment
+# in ingress yaml change serviceName from 1 to 2
 
 ```
