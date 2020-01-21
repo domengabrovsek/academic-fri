@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hi-v2
+  name: hi-v2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hi-v2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hi-v2
+    spec:
+      containers:
+      - image: hi:v2
+        imagePullPolicy: IfNotPresent
+        name: hi-v2
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
