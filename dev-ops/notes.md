@@ -1,29 +1,22 @@
-# turn off hyper-v
-bcdedit /set hypervisorlaunchtype off
+# Notes
 
-# vagrant
+## Virtualization
 
-vagrant box
-vagrant box list
-vagrant destroy -f
+### Basic definition
 
-# boxes
-https://app.vagrantup.com/boxes/search
+- Virtualization - process of creating a virtual machine
+- Virtual machine - efficient isolated duplicate of a real machine
+- Guest OS - runs in a VM
+- Host OS - runs on a host
+- Hypervisor (virtual machine monitor) - software that implements the VM
 
-provisioning
+### History
 
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.provision :shell, path: "bootstrap.sh"
-  config.vm.network :forwarded_port, guest: 80, host: 4567
-  
-vagrant ssh - connect to virtual machine
-  
-vagrant suspend
-vagrant halt
-vagrant destroy 
+- (1960-1970) - IBM mainframes
+- (1980s) - weak commercial interest (cheaper, smaller HW, multitasking OS)
+- (1998-1999) - VMware
+- (2003) - first open source hypervisor (Xen)
+- (2006) - hardware supported virtualizaion enhanced with Intel VT-x & AMD-V
+- (2007) - Linux KVM
 
-linked clone 
-
-ansible, chef, puppet, salt provisioning
-
-multimachine
+![image info](./images/virtualization-taxonomy.png)
