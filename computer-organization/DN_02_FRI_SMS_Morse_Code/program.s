@@ -242,7 +242,7 @@ INIT_IO:
   # nastavimo bit 1 v registru PIO_PER (omogoci digitalni vhod/izhod)
   str r1, [r1, #PIO_PER]
 
-  # omogoci izhod v b1 (PORTB)
+  # omogoci izhod (PORTC)
   str r1, [r0, #PIO_OER]
 
   # nastavi stanje izhoda na 1 (ugasnjena LED dioda)
@@ -311,8 +311,8 @@ INIT_DBGU:
   str r1, [r0, #DBGU_BRGR]
   
   # omogocimo sprejemnik z vpisom 1 v bit 4 v registru DBGU_CR 
-  # RXEN (oddajnik) - bit 4
-  # TXEN (sprejemnik) - bit 6 (ne potrebujemo)
+  # RXEN (sprejemnik) - bit 4
+  # TXEN (oddajnik) - bit 6 (ne potrebujemo)
   mov r1, #1 << 4
   str r1, [r0, #DBGU_CR]  
   
@@ -328,7 +328,7 @@ LED_ON:
   # bazni register za PIO
   ldr r0, =PIOC_BASE
 
-  # TODO komentarji
+  # prizgemo led diodo
   mov r1, #2
   str r1, [r0, #PIO_CODR]
 
