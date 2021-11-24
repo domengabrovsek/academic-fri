@@ -1,0 +1,3 @@
+Ljubljana;oblačno;12.1
+Maribor;sončno;9
+Koper;sončno;14.7

@@ -1,0 +1,12 @@
+import math
+stranica1 = float(input('Vnesi prvo stranico: '))
+stranica2 = float(input('Vnesi drugo stranico: '))
+stranica3 = float(input('Vnesi tretjo stranico: '))
+s = float((stranica1 + stranica2 + stranica3) / 2)
+p = float(math.sqrt(s*(s-stranica1)*(s-stranica2)*(s-stranica3)))
+r = float(p/s)
+r2 = float((stranica1 * stranica2 * stranica3) / (4*p))
+ploscina_vcrtana = float((3.14 * r**2))
+ploscina_ocrtana = float((3.14 * r2**2))
+print('Ploscina ocrtane kroznice je:' ,ploscina_ocrtana, 'm')
+print('Ploscina vcrtane kroznice je:' ,ploscina_vcrtana, 'm')
