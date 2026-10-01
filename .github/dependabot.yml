@@ -1,0 +1,68 @@
+# One monthly pull request with every version update across all ecosystems, plus
+# one grouped pull request per ecosystem for security fixes. Same file in every repo.
+version: 2
+
+multi-ecosystem-groups:
+  dependencies:
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
+
+updates:
+  - package-ecosystem: npm
+    directories:
+      - /artificial-inteligence/2
+      - /computer-graphics/maze-game/api
+      - /dev-ops/exam/kubernetes/v1
+      - /dev-ops/exam/kubernetes/v2
+      - /dev-ops/exam/kubernetes/v3
+      - /dev-ops/kubernetes/v1
+      - /dev-ops/kubernetes/v2
+      - /dev-ops/kubernetes/v3
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
+    cooldown:
+      default-days: 7
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directories:
+      - /dev-ops/exam/docker
+      - /dev-ops/exam/kubernetes/v1
+      - /dev-ops/exam/kubernetes/v2
+      - /dev-ops/exam/kubernetes/v3
+      - /dev-ops/kubernetes/v1
+      - /dev-ops/kubernetes/v2
+      - /dev-ops/kubernetes/v3
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
+    cooldown:
+      default-days: 7
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+    # Template default: a major Node bump must move together with .nvmrc and CI, by hand.
+    ignore:
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: pip
+    directories:
+      - /dev-ops/exam/kubernetes/v1
+      - /dev-ops/kubernetes/v1
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
+    cooldown:
+      default-days: 7
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
